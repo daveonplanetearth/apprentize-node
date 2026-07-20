@@ -1,5 +1,4 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
 
 export type SubscribeState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -20,6 +19,8 @@ export interface UseSubscribeResult {
   reset: () => void;
 }
 
+const ENDPOINT = import.meta.env.VITE_AZURE_SUBSCRIBE_URL as string | undefined;
+
 export function useSubscribe(): UseSubscribeResult {
   const [state, setState] = useState<SubscribeState>('idle');
   const [message, setMessage] = useState('');
@@ -28,30 +29,45 @@ export function useSubscribe(): UseSubscribeResult {
     setState('loading');
     setMessage('');
 
-    const { error } = await supabase
-      .from('subscribers')
-      .insert({
-        email,
-        source,
-        age_group: ageGroup ?? null,
-        postcode: postcode?.trim() || null,
-        radius_miles: radiusMiles ?? null,
+    if (!ENDPOINT) {
+      setState('error');
+      setMessage('Subscription endpoint is not configured.');
+      return;
+    }
+
+    const payload: SubscribePayload = {
+      email,
+      source,
+      ageGroup: ageGroup || undefined,
+      postcode: postcode?.trim() || undefined,
+      radiusMiles,
+    };
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
 
-    if (error) {
-      // Unique constraint violation = already subscribed
-      if (error.code === '23505') {
+      if (res.status === 409) {
         setState('success');
         setMessage("You're already on the list — we'll be in touch soon.");
         return;
       }
+
+      if (!res.ok) {
+        setState('error');
+        setMessage('Something went wrong. Please try again.');
+        return;
+      }
+
+      setState('success');
+      setMessage("You're in. Check your inbox — we'll email you the moment a match appears.");
+    } catch {
       setState('error');
       setMessage('Something went wrong. Please try again.');
-      return;
     }
-
-    setState('success');
-    setMessage("You're in. Check your inbox — we'll email you the moment a match appears.");
   }, []);
 
   const reset = useCallback(() => {
