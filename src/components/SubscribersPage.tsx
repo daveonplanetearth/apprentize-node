@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
-  TrendingUp, Clock, ArrowUpRight, Loader2, AlertCircle, Ruler, X,
+  TrendingUp, Clock, ArrowUpRight, Loader2, AlertCircle, Ruler, X, Share2,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
 
@@ -253,6 +253,15 @@ export default function SubscribersPage() {
                               View <ArrowUpRight className="w-3.5 h-3.5" />
                             </a>
                           )}
+                          <a
+                            href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${job.location}${job.url ? ` ${job.url}` : ''}`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            aria-label={`Share ${job.title} on WhatsApp`}
+                            className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-teal/10 text-teal px-3 py-2 text-xs font-semibold hover:bg-teal hover:text-paper transition-colors"
+                          >
+                            <Share2 className="w-3.5 h-3.5" /> WhatsApp
+                          </a>
                         </div>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2.5 text-xs text-ink-soft font-mono">
                           <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> {job.level}</span>
