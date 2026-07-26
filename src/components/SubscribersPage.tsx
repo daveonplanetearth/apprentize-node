@@ -10,11 +10,11 @@ const DEFAULT_RADIUS = 15;
 const PAGE_SIZE = 8;
 
 export default function SubscribersPage() {
-  const [postcode, setPostcode] = useState('');
+  const [postcode, setPostcode] = useState('SW1A 1AA');
   const [radiusMiles, setRadiusMiles] = useState<number>(DEFAULT_RADIUS);
   const [title, setTitle] = useState('');
   const [page, setPage] = useState(1);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(true);
 
   const { state, result, error, retry } = useApprenticeships({
     postcode,

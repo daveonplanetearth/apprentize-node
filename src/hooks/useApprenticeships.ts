@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { sampleApprenticeships } from './sampleApprenticeships';
 
 export interface Apprenticeship {
   id: string;
@@ -45,8 +46,9 @@ export function useApprenticeships({ postcode, radiusMiles, title, page, pageSiz
       return;
     }
     if (!ENDPOINT) {
-      setState('error');
-      setError('Apprenticeships endpoint is not configured.');
+      const data = sampleApprenticeships({ postcode: postcode.trim(), radiusMiles, title, page, pageSize });
+      setResult(data);
+      setState('success');
       return;
     }
     setState('loading');
