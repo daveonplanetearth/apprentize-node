@@ -76,18 +76,6 @@ export default function EmailPreview() {
           </div>
         </div>
       </div>
-
-      {/* floating badge */}
-      <div className="absolute -bottom-4 -left-4 sm:-left-6 rounded-xl bg-card border border-line shadow-lg px-3.5 py-2.5 flex items-center gap-2.5 animate-float" style={{ animationDelay: '1s' }}>
-        <div className="relative">
-          <div className="w-2.5 h-2.5 rounded-full bg-safety" />
-          <div className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
-        </div>
-        <div>
-          <p className="text-xs font-bold text-ink leading-tight">Live match</p>
-          <p className="text-[10px] text-ink-soft">checked 4 min ago</p>
-        </div>
-      </div>
     </div>
   );
 }
