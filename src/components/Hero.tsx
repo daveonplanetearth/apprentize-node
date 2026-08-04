@@ -1,4 +1,4 @@
-import { Mail, ShieldCheck, Bell, MapPin } from 'lucide-react';
+import { Mail, ShieldCheck, Bell } from 'lucide-react';
 import EmailSignup from './EmailSignup';
 import EmailPreview from './EmailPreview';
 
@@ -13,16 +13,16 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* copy */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3.5 py-1.5 text-xs font-semibold text-ink-soft animate-fade-up">
+            <div className="inline-flex items-center gap-2 rounded-full border border-safety/30 bg-safety/10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-safety animate-fade-up">
               <span className="relative flex w-2 h-2">
                 <span className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
                 <span className="relative rounded-full w-2 h-2 bg-safety" />
               </span>
-              England apprenticeships · Free · No spam
+              Free apprenticeship alerts
             </div>
-            <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-teal animate-fade-up" style={{ animationDelay: '0.02s', opacity: 0 }}>
+            {/* <div className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-teal animate-fade-up" style={{ animationDelay: '0.02s', opacity: 0 }}>
               <MapPin className="w-4 h-4" /> England only
-            </div>
+            </div> */}
 
             <h1 className="mt-6 font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
               Get notified the <span className="relative whitespace-nowrap">
@@ -34,7 +34,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto lg:mx-0 text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-              The UK Government Find An Apprenticeship own email alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an <strong className="text-ink font-semibold">apprenticeship in England</strong> opens — filtered by your region.
+              The UK Government Find An Apprenticeship own email alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an apprenticeship in <strong className="text-ink font-semibold">England</strong> opens — filtered by your region.
             </p>
 
             <div id="signup" className="mt-8 max-w-lg mx-auto lg:mx-0 animate-fade-up" style={{ animationDelay: '0.15s', opacity: 0 }}>

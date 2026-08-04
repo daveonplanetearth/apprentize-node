@@ -55,6 +55,12 @@ export default function Footer() {
             Apprentize is an independent service and is not affiliated with the UK government or the Find An Apprenticeship service.
           </p>
         </div>
+
+        <div className="mx-auto max-w-6xl px-5 sm:px-6 pb-8 flex items-center justify-center gap-4 text-sm">
+          <a href="#" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Terms of Service</a>
+          <span className="text-line">·</span>
+          <a href="#" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Privacy Notice</a>
+        </div>
       </div>
     </footer>
   );
