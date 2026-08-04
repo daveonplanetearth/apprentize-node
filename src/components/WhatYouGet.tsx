@@ -7,7 +7,7 @@ const features = [
   { icon: MapPin, title: 'Location-aware', body: 'Filter by city, region, or distance from your postcode. Apprenticeships near you get surfaced first.' },
   { icon: Share2, title: 'Share to WhatsApp', body: 'Spot a role a friend or family member would love? Share any apprenticeship straight to WhatsApp from the browse page — one tap, no copy-paste.' },
   { icon: Link2, title: 'Direct apply links', body: 'Every listing links straight to the official posting. No middleman, no redirects, no job-board paywalls.' },
-  { icon: Clock, title: 'No app, no dashboard', body: 'You never have to open an app or remember to check a site. Your inbox does the work.' },
+  { icon: Clock, title: 'Set once, forget it', body: 'Your inbox does the work automatically. Want to look right now instead? Browse live listings anytime, no waiting required.' },
 ];
 
 export default function WhatYouGet() {

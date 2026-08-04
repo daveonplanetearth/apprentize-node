@@ -10,8 +10,12 @@ export interface Apprenticeship {
   location: string;
   distanceMiles?: number;
   postedDate: string;
+  closingDate?: string;
   url?: string;
 }
+
+export type SortBy = 'postedDate' | 'closingDate' | 'distance';
+export type SortOrder = 'asc' | 'desc';
 
 export interface ApprenticeshipsResult {
   items: Apprenticeship[];
@@ -30,10 +34,15 @@ export interface UseApprenticeshipsParams {
   title: string;
   page: number;
   pageSize: number;
+  sortBy?: SortBy;
+  sortOrder?: SortOrder;
   enabled?: boolean;
 }
 
-export function useApprenticeships({ postcode, radiusMiles, title, page, pageSize, enabled = true }: UseApprenticeshipsParams) {
+export function useApprenticeships({
+  postcode, radiusMiles, title, page, pageSize,
+  sortBy = 'distance', sortOrder = 'asc', enabled = true,
+}: UseApprenticeshipsParams) {
   const [state, setState] = useState<SearchState>('idle');
   const [result, setResult] = useState<ApprenticeshipsResult | null>(null);
   const [error, setError] = useState<string>('');
@@ -46,7 +55,7 @@ export function useApprenticeships({ postcode, radiusMiles, title, page, pageSiz
       return;
     }
     if (!ENDPOINT) {
-      const data = sampleApprenticeships({ postcode: postcode.trim(), radiusMiles, title, page, pageSize });
+      const data = sampleApprenticeships({ postcode: postcode.trim(), radiusMiles, title, page, pageSize, sortBy, sortOrder });
       setResult(data);
       setState('success');
       return;
@@ -58,6 +67,8 @@ export function useApprenticeships({ postcode, radiusMiles, title, page, pageSiz
       radius: String(radiusMiles),
       page: String(page),
       pageSize: String(pageSize),
+      sortBy,
+      sortOrder,
     });
     if (title.trim()) params.set('title', title.trim());
 
@@ -78,7 +89,7 @@ export function useApprenticeships({ postcode, radiusMiles, title, page, pageSiz
       setState('error');
       setError('Could not load apprenticeships. Please try again.');
     }
-  }, [postcode, radiusMiles, title, page, pageSize, enabled]);
+  }, [postcode, radiusMiles, title, page, pageSize, sortBy, sortOrder, enabled]);
 
   useEffect(() => {
     search();

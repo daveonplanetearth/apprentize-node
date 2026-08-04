@@ -4,7 +4,6 @@ import { useSubscribe, AgeGroup } from '../hooks/useSubscribe';
 
 interface EmailSignupProps {
   source: string;
-  variant?: 'primary' | 'compact';
   className?: string;
 }
 
@@ -17,7 +16,7 @@ const AGE_OPTIONS: { value: AgeGroup; label: string }[] = [
 const RADIUS_OPTIONS = [5, 10, 15, 20, 30, 50] as const;
 const DEFAULT_RADIUS = 15;
 
-export default function EmailSignup({ source, variant = 'primary', className = '' }: EmailSignupProps) {
+export default function EmailSignup({ source, className = '' }: EmailSignupProps) {
   const { state, message, subscribe } = useSubscribe();
   const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
@@ -40,14 +39,24 @@ export default function EmailSignup({ source, variant = 'primary', className = '
   };
 
   if (state === 'success') {
+    const browseHref = postcode.trim()
+      ? `#/apprenticeships?postcode=${encodeURIComponent(postcode.trim())}&radius=${radiusMiles}`
+      : '#/apprenticeships';
+
     return (
       <div className={`rounded-2xl bg-teal/5 border border-teal/20 p-5 flex items-start gap-3 animate-slide-in ${className}`}>
         <div className="shrink-0 w-8 h-8 rounded-full bg-teal flex items-center justify-center">
           <Check className="w-5 h-5 text-white" strokeWidth={3} />
         </div>
-        <div>
+        <div className="flex-1">
           <p className="font-display font-bold text-ink text-lg leading-tight">You're on the list</p>
           <p className="text-ink-soft text-sm mt-1">{message}</p>
+          <a
+            href={browseHref}
+            className="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-teal hover:text-teal-soft transition-colors"
+          >
+            Browse live listings now <ArrowRight className="w-4 h-4" />
+          </a>
         </div>
       </div>
     );
@@ -55,52 +64,13 @@ export default function EmailSignup({ source, variant = 'primary', className = '
 
   const inputBase = 'w-full rounded-xl border bg-card text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:ring-2';
 
-  if (variant === 'compact') {
-    return (
-      <div className={className}>
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2.5">
-          <div className="relative flex-1">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/60" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onBlur={() => setTouched(true)}
-              placeholder="you@example.com"
-              aria-label="Email address"
-              disabled={state === 'loading'}
-              className={`${inputBase} pl-10 pr-4 py-3 border-line ${
-                touched && !isValid ? 'border-safety focus:ring-safety/30' : 'focus:border-ink focus:ring-ink/20'
-              } ${state === 'loading' ? 'opacity-60' : ''}`}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={state === 'loading' || (touched && !isValid)}
-            className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-6 py-3 transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
-          >
-            {state === 'loading' ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <>Get alerts <ArrowRight className="w-4 h-4" /></>
-            )}
-          </button>
-        </form>
-        {state === 'error' && (
-          <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium">
-            <AlertCircle className="w-4 h-4" /> {message}
-          </p>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div className={className}>
       <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-2 sm:p-3">
         <div className="relative">
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/60" />
           <input
+            id="signup-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

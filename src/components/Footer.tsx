@@ -1,5 +1,4 @@
-import { Zap, Mail, ShieldCheck, Bell } from 'lucide-react';
-import EmailSignup from './EmailSignup';
+import { Zap, Mail, ShieldCheck, Bell, ArrowRight } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -26,7 +25,12 @@ export default function Footer() {
           </p>
 
           <div className="mt-8 max-w-md mx-auto">
-            <EmailSignup source="footer" variant="compact" />
+            <a
+              href="#signup"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-3.5 text-base transition-all hover:bg-safety-deep active:scale-[0.98]"
+            >
+              Get alerts <ArrowRight className="w-4 h-4" />
+            </a>
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-ink-soft">

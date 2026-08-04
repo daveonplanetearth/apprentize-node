@@ -6,7 +6,8 @@ import Stats from './components/Stats';
 import WhatYouGet from './components/WhatYouGet';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
-import SubscribersPage from './components/SubscribersPage';
+import ApprenticeshipsPage from './components/ApprenticeshipsPage';
+import PreferencesPage from './components/PreferencesPage';
 
 function useHashRoute() {
   const [hash, setHash] = useState(() => window.location.hash.replace(/^#\/?/, ''));
@@ -19,14 +20,39 @@ function useHashRoute() {
 }
 
 export default function App() {
-  const route = useHashRoute();
+  const rawRoute = useHashRoute();
+  const [path, search] = rawRoute.split('?');
+  const params = new URLSearchParams(search ?? '');
 
-  if (route === 'subscribers') {
+  useEffect(() => {
+    if (path !== 'signup') return;
+    const input = document.getElementById('signup-email');
+    input?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    input?.focus();
+  }, [path]);
+
+  if (path === 'apprenticeships') {
+    const initialPostcode = params.get('postcode') ?? undefined;
+    const initialRadiusParam = params.get('radius');
+    const initialRadiusMiles = initialRadiusParam ? Number(initialRadiusParam) : undefined;
+
     return (
       <div className="min-h-screen bg-paper text-ink">
         <Nav />
         <main>
-          <SubscribersPage />
+          <ApprenticeshipsPage initialPostcode={initialPostcode} initialRadiusMiles={initialRadiusMiles} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'preferences') {
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <PreferencesPage />
         </main>
         <Footer />
       </div>

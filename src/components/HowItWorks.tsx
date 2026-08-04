@@ -28,7 +28,7 @@ export default function HowItWorks() {
             Three steps. Done in under a minute.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            No account, no app, no dashboard to check. You set it once and forget it.
+            No account needed, no app to download. Set your alert once — or browse live listings anytime you feel like looking.
           </p>
         </div>
 

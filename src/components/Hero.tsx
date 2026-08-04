@@ -34,7 +34,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto lg:mx-0 text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-              Find An Apprenticeship's own alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an <strong className="text-ink font-semibold">apprenticeship in England</strong> opens — filtered by sector, region, and level.
+              The UK Government Find An Apprenticeship own email alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an <strong className="text-ink font-semibold">apprenticeship in England</strong> opens — filtered by your region.
             </p>
 
             <div id="signup" className="mt-8 max-w-lg mx-auto lg:mx-0 animate-fade-up" style={{ animationDelay: '0.15s', opacity: 0 }}>
@@ -43,7 +43,7 @@ export default function Hero() {
 
             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.2s', opacity: 0 }}>
               <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-teal" /> No spam, ever</span>
-              <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> One email a day</span>
+              <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> Daily alerts only</span>
               <span className="inline-flex items-center gap-1.5"><Bell className="w-4 h-4 text-teal" /> Cancel anytime</span>
             </div>
           </div>

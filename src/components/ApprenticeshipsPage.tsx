@@ -2,17 +2,37 @@ import { useState, useEffect, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
   TrendingUp, Clock, ArrowUpRight, Loader2, AlertCircle, Ruler, X, Share2,
+  ArrowUpDown, CalendarClock,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
+import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
 
 const RADIUS_OPTIONS = [5, 10, 15, 20, 30, 50] as const;
 const DEFAULT_RADIUS = 15;
 const PAGE_SIZE = 8;
 
-export default function SubscribersPage() {
-  const [postcode, setPostcode] = useState('SW1A 1AA');
-  const [radiusMiles, setRadiusMiles] = useState<number>(DEFAULT_RADIUS);
+const SORT_BY_OPTIONS: { value: SortBy; label: string }[] = [
+  { value: 'postedDate', label: 'Posted date' },
+  { value: 'closingDate', label: 'Closing date' },
+  { value: 'distance', label: 'Distance' },
+];
+
+const SORT_ORDER_OPTIONS: { value: SortOrder; label: string }[] = [
+  { value: 'desc', label: 'Descending' },
+  { value: 'asc', label: 'Ascending' },
+];
+
+interface ApprenticeshipsPageProps {
+  initialPostcode?: string;
+  initialRadiusMiles?: number;
+}
+
+export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMiles }: ApprenticeshipsPageProps) {
+  const [postcode, setPostcode] = useState(initialPostcode || 'SW1A 1AA');
+  const [radiusMiles, setRadiusMiles] = useState<number>(initialRadiusMiles || DEFAULT_RADIUS);
   const [title, setTitle] = useState('');
+  const [sortBy, setSortBy] = useState<SortBy>('distance');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [page, setPage] = useState(1);
   const [hasSearched, setHasSearched] = useState(true);
 
@@ -22,13 +42,15 @@ export default function SubscribersPage() {
     title,
     page,
     pageSize: PAGE_SIZE,
+    sortBy,
+    sortOrder,
     enabled: hasSearched,
   });
 
   // Reset to page 1 when filters change (after first search)
   useEffect(() => {
     if (hasSearched) setPage(1);
-  }, [postcode, radiusMiles, title, hasSearched]);
+  }, [postcode, radiusMiles, title, sortBy, sortOrder, hasSearched]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -49,7 +71,7 @@ export default function SubscribersPage() {
         <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
         <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
         <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
-          <p className="text-sm font-bold uppercase tracking-widest text-safety animate-fade-up">Subscriber dashboard</p>
+          <p className="text-sm font-bold uppercase tracking-widest text-safety animate-fade-up">Browse live listings</p>
           <h1 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
             Apprenticeships near you
           </h1>
@@ -216,12 +238,42 @@ export default function SubscribersPage() {
           {/* Success — results */}
           {hasSearched && state === 'success' && result && result.items.length > 0 && (
             <>
-              <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+              <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
                 <p className="text-sm text-ink-soft">
                   <span className="font-semibold text-ink">{result.total}</span> apprenticeship{result.total === 1 ? '' : 's'} within <span className="font-semibold text-ink">{radiusMiles} miles</span> of <span className="font-semibold text-ink">{postcode}</span>
                   {title.trim() && <> matching <span className="font-semibold text-ink">"{title.trim()}"</span></>}
                 </p>
-                <p className="text-xs text-ink-soft font-mono">Page {page} of {totalPages}</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="relative">
+                    <CalendarClock className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" />
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as SortBy)}
+                      aria-label="Sort by"
+                      className="appearance-none rounded-lg border border-line bg-card pl-8 pr-7 py-1.5 text-xs font-medium text-ink transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
+                    >
+                      {SORT_BY_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8l4 4 4-4" /></svg>
+                  </div>
+                  <div className="relative">
+                    <ArrowUpDown className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" />
+                    <select
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                      aria-label="Sort order"
+                      className="appearance-none rounded-lg border border-line bg-card pl-8 pr-7 py-1.5 text-xs font-medium text-ink transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
+                    >
+                      {SORT_ORDER_OPTIONS.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8l4 4 4-4" /></svg>
+                  </div>
+                  <p className="text-xs text-ink-soft font-mono">Page {page} of {totalPages}</p>
+                </div>
               </div>
 
               <ul className="space-y-3">
@@ -267,6 +319,7 @@ export default function SubscribersPage() {
                           <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> {job.level}</span>
                           <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {job.location}{typeof job.distanceMiles === 'number' && <> · {job.distanceMiles.toFixed(1)} mi</>}</span>
                           <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {job.postedDate}</span>
+                          {job.closingDate && <span className="flex items-center gap-1.5"><CalendarClock className="w-3.5 h-3.5" /> Closes {job.closingDate}</span>}
                           {job.wage && <span>{job.wage}</span>}
                         </div>
                       </div>

@@ -4,8 +4,9 @@ import { Zap, Menu, X } from 'lucide-react';
 const links = [
   { label: 'How it works', href: '#how' },
   { label: 'What you get', href: '#what' },
-  { label: 'Browse', href: '#/subscribers' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Browse Apprenticeships', href: '#/apprenticeships' },
+  { label: 'Preferences', href: '#/preferences' },
 ];
 
 export default function Nav() {
