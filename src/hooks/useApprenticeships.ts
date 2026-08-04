@@ -26,7 +26,8 @@ export interface ApprenticeshipsResult {
 
 export type SearchState = 'idle' | 'loading' | 'success' | 'error';
 
-const ENDPOINT = import.meta.env.VITE_AZURE_APPRENTICESHIPS_URL as string | undefined;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
+const ENDPOINT = API_BASE_URL ? `${API_BASE_URL}/api/apprenticeships/search` : undefined;
 
 export interface UseApprenticeshipsParams {
   postcode: string;
