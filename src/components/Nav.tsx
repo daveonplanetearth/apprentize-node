@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Zap, Menu, X } from 'lucide-react';
+import { useHasSessionToken } from '../hooks/usePreferences';
 
-const links = [
+// Marketing links only relevant to a visitor who hasn't subscribed yet.
+const marketingLinks = [
   { label: 'How it works', href: '#how' },
   { label: 'What you get', href: '#what' },
   { label: 'FAQ', href: '#faq' },
+];
+
+const accountLinks = [
   { label: 'Browse Apprenticeships', href: '#/apprenticeships' },
   { label: 'Preferences', href: '#/preferences' },
 ];
@@ -12,6 +17,8 @@ const links = [
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const isSubscribed = useHasSessionToken();
+  const links = isSubscribed ? accountLinks : [...marketingLinks, ...accountLinks];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -39,11 +46,13 @@ export default function Nav() {
             ))}
           </nav>
 
-          <div className="hidden md:block">
-            <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
-              Get free alerts
-            </a>
-          </div>
+          {!isSubscribed && (
+            <div className="hidden md:block">
+              <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
+                Get free alerts
+              </a>
+            </div>
+          )}
 
           <button
             className="md:hidden p-2 -mr-2 text-ink"
@@ -68,13 +77,15 @@ export default function Nav() {
                 {l.label}
               </a>
             ))}
-            <a
-              href="#signup"
-              onClick={() => setOpen(false)}
-              className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-5 py-3 text-base font-semibold"
-            >
-              Get free alerts
-            </a>
+            {!isSubscribed && (
+              <a
+                href="#signup"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-5 py-3 text-base font-semibold"
+              >
+                Get free alerts
+              </a>
+            )}
           </div>
         </div>
       )}

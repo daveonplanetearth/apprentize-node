@@ -4,6 +4,10 @@ import { useState, useCallback, useEffect } from 'react';
 // this frontend or the .NET one is interchangeable (they hit the same Apprentize.Api backend).
 const TOKEN_KEY = 'apz_session_token';
 
+// The native `storage` event only fires in *other* tabs, not the one that made the change —
+// this custom event lets same-tab listeners (e.g. Nav/Footer) react immediately too.
+const TOKEN_CHANGED_EVENT = 'apz-session-token-changed';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
 export function getStoredSessionToken(): string | null {
@@ -12,10 +16,29 @@ export function getStoredSessionToken(): string | null {
 
 function setStoredSessionToken(token: string) {
   localStorage.setItem(TOKEN_KEY, token);
+  window.dispatchEvent(new Event(TOKEN_CHANGED_EVENT));
 }
 
 function clearStoredSessionToken() {
   localStorage.removeItem(TOKEN_KEY);
+  window.dispatchEvent(new Event(TOKEN_CHANGED_EVENT));
+}
+
+/** Whether a session token is currently stored — reactive to same-tab and cross-tab changes. */
+export function useHasSessionToken(): boolean {
+  const [hasToken, setHasToken] = useState(() => Boolean(getStoredSessionToken()));
+
+  useEffect(() => {
+    const update = () => setHasToken(Boolean(getStoredSessionToken()));
+    window.addEventListener(TOKEN_CHANGED_EVENT, update);
+    window.addEventListener('storage', update);
+    return () => {
+      window.removeEventListener(TOKEN_CHANGED_EVENT, update);
+      window.removeEventListener('storage', update);
+    };
+  }, []);
+
+  return hasToken;
 }
 
 async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
