@@ -63,7 +63,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-paper text-ink">
-      <Nav />
+      <Nav isHome />
       <main>
         <Hero />
         <HowItWorks />
@@ -71,7 +71,7 @@ export default function App() {
         <WhatYouGet />
         <FAQ />
       </main>
-      <Footer />
+      <Footer isHome />
     </div>
   );
 }

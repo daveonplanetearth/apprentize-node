@@ -1,13 +1,19 @@
 import { Zap, Mail, ShieldCheck, Bell, ArrowRight } from 'lucide-react';
 import { useHasSessionToken } from '../hooks/usePreferences';
 
-export default function Footer() {
-  const isSubscribed = useHasSessionToken();
+interface FooterProps {
+  isHome?: boolean;
+}
+
+export default function Footer({ isHome = false }: FooterProps) {
+  // On the home page, always show the CTA even if already subscribed — the visitor may be
+  // back to sign up again with a different email.
+  const hideCta = useHasSessionToken() && !isHome;
 
   return (
     <footer className="relative border-t border-line/60">
-      {/* final CTA — not relevant to a visitor who has already subscribed */}
-      {!isSubscribed && (
+      {/* final CTA — not relevant to a visitor who has already subscribed, except on the home page */}
+      {!hideCta && (
         <div className="relative py-20 sm:py-24 overflow-hidden">
           <div className="absolute inset-0 bg-dots opacity-60 pointer-events-none" aria-hidden />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-safety/8 rounded-full blur-[100px] pointer-events-none" aria-hidden />

@@ -14,11 +14,17 @@ const accountLinks = [
   { label: 'Preferences', href: '#/preferences' },
 ];
 
-export default function Nav() {
+interface NavProps {
+  isHome?: boolean;
+}
+
+export default function Nav({ isHome = false }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const isSubscribed = useHasSessionToken();
-  const links = isSubscribed ? accountLinks : [...marketingLinks, ...accountLinks];
+  // On the home page, always show the marketing links/CTA even if already subscribed — the
+  // visitor may be back to sign up again with a different email.
+  const hideMarketing = useHasSessionToken() && !isHome;
+  const links = hideMarketing ? accountLinks : [...marketingLinks, ...accountLinks];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -46,7 +52,7 @@ export default function Nav() {
             ))}
           </nav>
 
-          {!isSubscribed && (
+          {!hideMarketing && (
             <div className="hidden md:block">
               <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
                 Get free alerts
@@ -77,7 +83,7 @@ export default function Nav() {
                 {l.label}
               </a>
             ))}
-            {!isSubscribed && (
+            {!hideMarketing && (
               <a
                 href="#signup"
                 onClick={() => setOpen(false)}
