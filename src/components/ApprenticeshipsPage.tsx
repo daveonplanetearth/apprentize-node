@@ -31,6 +31,14 @@ interface ApprenticeshipsPageProps {
   initialRadiusMiles?: number;
 }
 
+// Matches the exact strings SearchApprenticeshipsEndpoints.cs's FormatPostedDate emits
+// ("Today", "1 day ago", "N days ago") — postedDate arrives pre-formatted, not as a raw date.
+function isRecentlyPosted(postedDate: string): boolean {
+  if (postedDate === 'Today') return true;
+  const match = /^(\d+) days? ago$/.exec(postedDate);
+  return match ? Number(match[1]) <= 2 : false;
+}
+
 export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMiles }: ApprenticeshipsPageProps) {
   // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
   // Otherwise, if the visitor has a saved session (from the preferences/manage-link flow), defer
@@ -329,7 +337,12 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="font-semibold text-ink text-base truncate">{job.title}</p>
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-ink text-base truncate">{job.title}</p>
+                              {isRecentlyPosted(job.postedDate) && (
+                                <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
+                              )}
+                            </div>
                             <p className="text-sm text-ink-soft mt-0.5 flex items-center gap-1.5">
                               <Building2 className="w-3.5 h-3.5" /> {job.company}
                             </p>
