@@ -13,7 +13,9 @@ const AGE_OPTIONS: { value: AgeGroup; label: string }[] = [
   { value: '18_plus', label: '18 years or later' },
 ];
 
-const RADIUS_OPTIONS = [5, 10, 15, 20, 30, 50] as const;
+// Must match Apprentize.Api's ValidRadii — any other value causes the API to silently
+// drop a new signup (it still returns its generic neutral response).
+const RADIUS_OPTIONS = [5, 10, 15, 25] as const;
 const DEFAULT_RADIUS = 15;
 
 export default function EmailSignup({ source, className = '' }: EmailSignupProps) {
@@ -29,13 +31,14 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const consentsValid = agreeTerms && agreeAlerts;
+  const isUnder16 = ageGroup === 'under_16';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched(true);
     setConsentTouched(true);
-    if (!isValid || !consentsValid || state === 'loading') return;
-    await subscribe(email, source, ageGroup || undefined, postcode || undefined, radiusMiles);
+    if (!isValid || !consentsValid || isUnder16 || state === 'loading') return;
+    await subscribe(email, source, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles);
   };
 
   if (state === 'success') {
@@ -119,6 +122,12 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
               );
             })}
           </div>
+          {isUnder16 && (
+            <p className="mt-2.5 flex items-start gap-1.5 text-ink-soft text-sm px-1">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              Sorry — we can't sign up under-16s for alerts directly yet. Please ask a parent or guardian, or check back once you turn 16.
+            </p>
+          )}
         </fieldset>
 
         <div className="mt-3 px-1">
@@ -198,7 +207,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
 
         <button
           type="submit"
-          disabled={state === 'loading' || (touched && !isValid) || (consentTouched && !consentsValid)}
+          disabled={state === 'loading' || (touched && !isValid) || (consentTouched && !consentsValid) || isUnder16}
           className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-4 text-base transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
         >
           {state === 'loading' ? (

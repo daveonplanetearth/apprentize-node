@@ -4,28 +4,56 @@ export type SubscribeState = 'idle' | 'loading' | 'success' | 'error';
 
 export type AgeGroup = 'under_16' | '16_17' | '18_plus';
 
+// Matches Apprentize.Core.Models.AgeBand — the API only accepts these two bands
+// (SignUpConsentValidator rejects anything else, including under-16, as a silent no-op).
+const AGE_BAND_BY_GROUP: Partial<Record<AgeGroup, string>> = {
+  '16_17': '16to17',
+  '18_plus': '18plus',
+};
+
 export interface SubscribePayload {
   email: string;
   source?: string;
-  ageGroup?: AgeGroup;
+  ageBand?: string;
+  tosConsent: boolean;
+  emailAlertsConsent: boolean;
   postcode?: string;
-  radiusMiles?: number;
+  searchRadiusMiles?: number;
 }
 
 export interface UseSubscribeResult {
   state: SubscribeState;
   message: string;
-  subscribe: (email: string, source?: string, ageGroup?: AgeGroup, postcode?: string, radiusMiles?: number) => Promise<void>;
+  subscribe: (
+    email: string,
+    source: string | undefined,
+    ageGroup: AgeGroup | undefined,
+    tosConsent: boolean,
+    emailAlertsConsent: boolean,
+    postcode?: string,
+    radiusMiles?: number,
+  ) => Promise<void>;
   reset: () => void;
 }
 
-const ENDPOINT = import.meta.env.VITE_AZURE_SUBSCRIBE_URL as string | undefined;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
+const ENDPOINT = API_BASE_URL ? `${API_BASE_URL}/api/signup` : undefined;
+
+const DEFAULT_SUCCESS_MESSAGE = "You're in. Check your inbox — we'll email you the moment a match appears.";
 
 export function useSubscribe(): UseSubscribeResult {
   const [state, setState] = useState<SubscribeState>('idle');
   const [message, setMessage] = useState('');
 
-  const subscribe = useCallback(async (email: string, source?: string, ageGroup?: AgeGroup, postcode?: string, radiusMiles?: number) => {
+  const subscribe = useCallback(async (
+    email: string,
+    source: string | undefined,
+    ageGroup: AgeGroup | undefined,
+    tosConsent: boolean,
+    emailAlertsConsent: boolean,
+    postcode?: string,
+    radiusMiles?: number,
+  ) => {
     setState('loading');
     setMessage('');
 
@@ -38,9 +66,11 @@ export function useSubscribe(): UseSubscribeResult {
     const payload: SubscribePayload = {
       email,
       source,
-      ageGroup: ageGroup || undefined,
+      ageBand: ageGroup ? AGE_BAND_BY_GROUP[ageGroup] : undefined,
+      tosConsent,
+      emailAlertsConsent,
       postcode: postcode?.trim() || undefined,
-      radiusMiles,
+      searchRadiusMiles: radiusMiles,
     };
 
     try {
@@ -50,20 +80,16 @@ export function useSubscribe(): UseSubscribeResult {
         body: JSON.stringify(payload),
       });
 
-      if (res.status === 409) {
-        setState('success');
-        setMessage("You're already on the list — we'll be in touch soon.");
-        return;
-      }
-
       if (!res.ok) {
         setState('error');
         setMessage('Something went wrong. Please try again.');
         return;
       }
 
+      // The API always returns a neutral 200 (it never reveals whether an address
+      // is already registered), so any successful response is treated as success.
       setState('success');
-      setMessage("You're in. Check your inbox — we'll email you the moment a match appears.");
+      setMessage(DEFAULT_SUCCESS_MESSAGE);
     } catch {
       setState('error');
       setMessage('Something went wrong. Please try again.');
