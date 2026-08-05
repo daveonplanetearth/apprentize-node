@@ -6,9 +6,13 @@ import {
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
+import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePreferences';
 
-const RADIUS_OPTIONS = [5, 10, 15, 20, 30, 50] as const;
+// 25 is included alongside the page's own wider options so a saved preference of 25 miles
+// (the largest radius /api/preferences accepts) still matches a real <option>.
+const RADIUS_OPTIONS = [5, 10, 15, 20, 25, 30, 50] as const;
 const DEFAULT_RADIUS = 15;
+const DEFAULT_POSTCODE = 'SW1A 1AA';
 const PAGE_SIZE = 8;
 
 const SORT_BY_OPTIONS: { value: SortBy; label: string }[] = [
@@ -28,13 +32,18 @@ interface ApprenticeshipsPageProps {
 }
 
 export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMiles }: ApprenticeshipsPageProps) {
-  const [postcode, setPostcode] = useState(initialPostcode || 'SW1A 1AA');
+  // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
+  // Otherwise, if the visitor has a saved session (from the preferences/manage-link flow), defer
+  // the default search until we know whether we can pre-fill from their saved preferences.
+  const [awaitingStoredPreferences] = useState(() => !initialPostcode && Boolean(getStoredSessionToken()));
+
+  const [postcode, setPostcode] = useState(() => initialPostcode || (awaitingStoredPreferences ? '' : DEFAULT_POSTCODE));
   const [radiusMiles, setRadiusMiles] = useState<number>(initialRadiusMiles || DEFAULT_RADIUS);
   const [title, setTitle] = useState('');
   const [sortBy, setSortBy] = useState<SortBy>('distance');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [page, setPage] = useState(1);
-  const [hasSearched, setHasSearched] = useState(true);
+  const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
 
   const { state, result, error, retry } = useApprenticeships({
     postcode,
@@ -46,6 +55,29 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
     sortOrder,
     enabled: hasSearched,
   });
+
+  // If a saved session exists, silently pull the visitor's postcode/radius from /api/preferences
+  // and search with those — same idea as AvailableApprenticeships.cshtml's session-aware
+  // pre-fill, just layered on top of this page's own public search rather than replacing it.
+  useEffect(() => {
+    if (!awaitingStoredPreferences) return;
+    let cancelled = false;
+
+    (async () => {
+      const prefs = await fetchStoredPreferences();
+      if (cancelled) return;
+
+      setPostcode(prefs?.postcode || DEFAULT_POSTCODE);
+      if (prefs?.searchRadiusMiles) setRadiusMiles(prefs.searchRadiusMiles);
+      setHasSearched(true);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // Runs once on mount only — awaitingStoredPreferences is fixed for the component's lifetime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Reset to page 1 when filters change (after first search)
   useEffect(() => {
@@ -178,8 +210,15 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
 
         {/* Results */}
         <div className="mt-6">
+          {/* Idle state — waiting on a saved session's preferences */}
+          {!hasSearched && awaitingStoredPreferences && (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-6 h-6 text-ink-soft/60 animate-spin" />
+            </div>
+          )}
+
           {/* Idle state */}
-          {!hasSearched && (
+          {!hasSearched && !awaitingStoredPreferences && (
             <div className="text-center py-20">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-ink/5 mb-4">
                 <Search className="w-6 h-6 text-ink-soft/60" />

@@ -48,11 +48,13 @@ export default function App() {
   }
 
   if (path === 'preferences') {
+    const manageToken = params.get('token') ?? undefined;
+
     return (
       <div className="min-h-screen bg-paper text-ink">
         <Nav />
         <main>
-          <PreferencesPage />
+          <PreferencesPage manageToken={manageToken} />
         </main>
         <Footer />
       </div>
