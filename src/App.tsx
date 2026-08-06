@@ -8,6 +8,9 @@ import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
 import PreferencesPage from './components/PreferencesPage';
+import ConfirmPage from './components/ConfirmPage';
+import CheckInboxPage from './components/CheckInboxPage';
+import LinkExpiredPage from './components/LinkExpiredPage';
 
 function useHashRoute() {
   const [hash, setHash] = useState(() => window.location.hash.replace(/^#\/?/, ''));
@@ -55,6 +58,44 @@ export default function App() {
         <Nav />
         <main>
           <PreferencesPage manageToken={manageToken} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'confirm') {
+    const token = params.get('token') ?? undefined;
+
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <ConfirmPage token={token} />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'check-inbox') {
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <CheckInboxPage />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'link-expired') {
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <LinkExpiredPage />
         </main>
         <Footer />
       </div>

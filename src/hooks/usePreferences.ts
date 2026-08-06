@@ -14,7 +14,7 @@ export function getStoredSessionToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
-function setStoredSessionToken(token: string) {
+export function setStoredSessionToken(token: string) {
   localStorage.setItem(TOKEN_KEY, token);
   window.dispatchEvent(new Event(TOKEN_CHANGED_EVENT));
 }
