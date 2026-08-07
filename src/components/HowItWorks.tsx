@@ -1,15 +1,15 @@
-import { Settings2, Filter, Mail, ExternalLink } from 'lucide-react';
+import { Settings2, Filter, Mail } from 'lucide-react';
 
 const steps = [
   {
     icon: Settings2,
     title: 'We monitor the source',
-    body: 'Apprentize pulls from the same official Find An Apprenticeship vacancy feed every single day — no third-party scrapers, no stale data.',
+    body: 'Apprentize pulls from the same official Find An Apprenticeship vacancy feed every single day.',
   },
   {
     icon: Filter,
     title: 'We filter for your match',
-    body: 'Tell us your sector, region, and level. We only flag roles that genuinely fit — you never wade through irrelevant listings.',
+    body: 'Tell us your region and distance you are willing to travel. We only flag roles that meet your criteria — you never wade through irrelevant listings.',
   },
   {
     icon: Mail,
@@ -52,15 +52,6 @@ export default function HowItWorks() {
               )}
             </div>
           ))}
-        </div>
-
-        <div className="mt-10 flex items-center gap-2 text-sm text-ink-soft">
-          <ExternalLink className="w-4 h-4 text-teal" />
-          Data sourced from the official{' '}
-          <a href="https://www.findapprenticeship.service.gov.uk" target="_blank" rel="noopener noreferrer" className="font-semibold text-teal hover:underline">
-            Find An Apprenticeship
-          </a>{' '}
-          service — covering apprenticeships in England.
         </div>
       </div>
     </section>

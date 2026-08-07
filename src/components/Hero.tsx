@@ -34,7 +34,7 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto lg:mx-0 text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-              The UK Government Find An Apprenticeship own email alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an apprenticeship in <strong className="text-ink font-semibold">England</strong> opens — filtered by your region.
+              The UK Government Find An Apprenticeship email alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an apprenticeship in <strong className="text-ink font-semibold">England</strong> opens — filtered by your region.
             </p>
 
             <div id="signup" className="mt-8 max-w-lg mx-auto lg:mx-0 animate-fade-up" style={{ animationDelay: '0.15s', opacity: 0 }}>

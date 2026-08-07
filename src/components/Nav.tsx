@@ -9,10 +9,8 @@ const marketingLinks = [
   { label: 'FAQ', href: '#faq' },
 ];
 
-const accountLinks = [
-  { label: 'Browse Apprenticeships', href: '#/apprenticeships' },
-  { label: 'Preferences', href: '#/preferences' },
-];
+const browseLink = { label: 'Browse Apprenticeships', href: '#/apprenticeships' };
+const preferencesLink = { label: 'My Preferences', href: '#/preferences' };
 
 interface NavProps {
   isHome?: boolean;
@@ -23,7 +21,9 @@ export default function Nav({ isHome = false }: NavProps) {
   const [open, setOpen] = useState(false);
   // On the home page, always show the marketing links/CTA even if already subscribed — the
   // visitor may be back to sign up again with a different email.
-  const hideMarketing = useHasSessionToken() && !isHome;
+  const hasSessionToken = useHasSessionToken();
+  const hideMarketing = hasSessionToken && !isHome;
+  const accountLinks = hasSessionToken ? [browseLink, preferencesLink] : [browseLink];
   const links = hideMarketing ? accountLinks : [...marketingLinks, ...accountLinks];
 
   useEffect(() => {
