@@ -12,6 +12,7 @@ import ConfirmPage from './components/ConfirmPage';
 import CheckInboxPage from './components/CheckInboxPage';
 import LinkExpiredPage from './components/LinkExpiredPage';
 import PrivacyNoticePage from './components/PrivacyNoticePage';
+import TermsOfServicePage from './components/TermsOfServicePage';
 
 function useHashRoute() {
   const [hash, setHash] = useState(() => window.location.hash.replace(/^#\/?/, ''));
@@ -109,6 +110,18 @@ export default function App() {
         <Nav />
         <main>
           <PrivacyNoticePage />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'terms') {
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <TermsOfServicePage />
         </main>
         <Footer />
       </div>
