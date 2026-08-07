@@ -70,7 +70,7 @@ export default function Footer({ isHome = false }: FooterProps) {
         <div className="mx-auto max-w-6xl px-5 sm:px-6 pb-8 flex items-center justify-center gap-4 text-sm">
           <a href="#" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Terms of Service</a>
           <span className="text-line">·</span>
-          <a href="#" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Privacy Notice</a>
+          <a href="#/privacy" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Privacy Notice</a>
         </div>
       </div>
     </footer>

@@ -167,7 +167,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
             {
               checked: agreeTerms,
               set: setAgreeTerms,
-              label: <>I agree to the <a href="#" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Terms of Service</a> and <a href="#" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Privacy Notice</a>.</>,
+              label: <>I agree to the <a href="#" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Terms of Service</a> and <a href="#/privacy" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Privacy Notice</a>.</>,
               key: 'terms',
             },
             {

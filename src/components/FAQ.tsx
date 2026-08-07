@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const faqs = [
+const faqs: { q: string; a: ReactNode }[] = [
   {
     q: 'Is Apprentize really free?',
     a: 'Yes — completely. There is no paid tier and no hidden cost. You enter your email, you get alerts, and that is it. We make nothing off your data.',
   },
   {
     q: 'Where does the apprenticeship data come from?',
-    a: 'We monitor the same official Find An Apprenticeship vacancy feed operated by the UK government. This covers apprenticeships in England only — we do not currently alert on roles in Scotland, Wales, or Northern Ireland. We do not scrape third-party job boards; only the public, official source.',
+    a: (
+      <>
+        We monitor the same official{' '}
+        <a href="https://www.findapprenticeship.service.gov.uk" target="_blank" rel="noopener noreferrer" className="font-semibold text-teal hover:underline">
+          Find An Apprenticeship
+        </a>{' '}
+        vacancy feed operated by the UK government. This covers apprenticeships in England only — we do not currently alert on roles in Scotland, Wales, or Northern Ireland. We do not scrape third-party job boards; only the public, official source.
+      </>
+    ),
   },
   {
     q: 'How is this different from the official Find An Apprenticeship alert?',
@@ -28,11 +36,11 @@ const faqs = [
   },
   {
     q: 'How do I unsubscribe?',
-    a: 'Every email includes a one-click unsubscribe link. You can also reply to any alert and ask to be removed. No account to delete, no settings to find.',
+    a: 'Every email includes a one-click unsubscribe link. You can also manage your preferences, unsubscribe, or permanently delete your account anytime from My Preferences.',
   },
 ];
 
-function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
+function FaqItem({ q, a, open, onToggle }: { q: string; a: ReactNode; open: boolean; onToggle: () => void }) {
   return (
     <div className={`rounded-2xl border transition-colors ${open ? 'border-ink/30 bg-card' : 'border-line bg-card/60 hover:border-line'}`}>
       <button
