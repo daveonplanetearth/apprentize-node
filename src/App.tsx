@@ -36,6 +36,13 @@ export default function App() {
     input?.focus();
   }, [path]);
 
+  useEffect(() => {
+    if (path !== 'privacy' && path !== 'terms') return;
+    // The two-argument form respects the global `scroll-behavior: smooth` (index.css), which
+    // animates instead of jumping — force an instant scroll for a route change.
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [path]);
+
   if (path === 'apprenticeships') {
     const initialPostcode = params.get('postcode') ?? undefined;
     const initialRadiusParam = params.get('radius');
