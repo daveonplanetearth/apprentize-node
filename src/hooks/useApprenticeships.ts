@@ -12,6 +12,7 @@ export interface Apprenticeship {
   postedDate: string;
   closingDate?: string;
   url?: string;
+  numberOfPositions?: number;
 }
 
 export type SortBy = 'postedDate' | 'closingDate' | 'distance';

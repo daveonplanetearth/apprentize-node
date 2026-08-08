@@ -2,7 +2,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
   TrendingUp, Clock, ArrowUpRight, Loader2, AlertCircle, Ruler, X, Share2,
-  ArrowUpDown, CalendarClock,
+  ArrowUpDown, CalendarClock, Users,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
@@ -335,43 +335,53 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
                         <Briefcase className="w-5 h-5 text-teal" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-3">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="min-w-0">
                             <div className="flex items-center gap-2">
-                              <p className="font-semibold text-ink text-base truncate">{job.title}</p>
+                              <p className="font-semibold text-ink text-base line-clamp-2">{job.title}</p>
                               {isRecentlyPosted(job.postedDate) && (
-                                <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
+                                <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
                               )}
                             </div>
                             <p className="text-sm text-ink-soft mt-0.5 flex items-center gap-1.5">
                               <Building2 className="w-3.5 h-3.5" /> {job.company}
                             </p>
                           </div>
-                          {job.url && (
+                          <div className="flex flex-wrap items-center gap-2 shrink-0">
+                            {isRecentlyPosted(job.postedDate) && (
+                              <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
+                            )}
+                            {job.url && (
+                              <a
+                                href={job.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
+                              >
+                                View <ArrowUpRight className="w-3.5 h-3.5" />
+                              </a>
+                            )}
                             <a
-                              href={job.url}
+                              href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${job.location}${job.url ? ` ${job.url}` : ''}`)}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
+                              aria-label={`Share ${job.title} on WhatsApp`}
+                              className="inline-flex items-center gap-1 rounded-lg bg-teal/10 text-teal px-3 py-2 text-xs font-semibold hover:bg-teal hover:text-paper transition-colors"
                             >
-                              View <ArrowUpRight className="w-3.5 h-3.5" />
+                              <Share2 className="w-3.5 h-3.5" /> WhatsApp
                             </a>
-                          )}
-                          <a
-                            href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${job.location}${job.url ? ` ${job.url}` : ''}`)}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            aria-label={`Share ${job.title} on WhatsApp`}
-                            className="shrink-0 inline-flex items-center gap-1 rounded-lg bg-teal/10 text-teal px-3 py-2 text-xs font-semibold hover:bg-teal hover:text-paper transition-colors"
-                          >
-                            <Share2 className="w-3.5 h-3.5" /> WhatsApp
-                          </a>
+                          </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2.5 text-xs text-ink-soft font-mono">
                           <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> {job.level}</span>
                           <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {job.location}{typeof job.distanceMiles === 'number' && <> · {job.distanceMiles.toFixed(1)} mi</>}</span>
                           <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {job.postedDate}</span>
                           {job.closingDate && <span className="flex items-center gap-1.5"><CalendarClock className="w-3.5 h-3.5" /> Closes {job.closingDate}</span>}
+                          {typeof job.numberOfPositions === 'number' && job.numberOfPositions > 0 && (
+                            <span className="flex items-center gap-1.5">
+                              <Users className="w-3.5 h-3.5" /> {job.numberOfPositions} position{job.numberOfPositions === 1 ? '' : 's'}
+                            </span>
+                          )}
                           {job.wage && <span>{job.wage}</span>}
                         </div>
                       </div>
