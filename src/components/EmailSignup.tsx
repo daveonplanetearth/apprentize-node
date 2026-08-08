@@ -27,17 +27,23 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
   const [agreeAlerts, setAgreeAlerts] = useState(false);
   const [consentTouched, setConsentTouched] = useState(false);
   const [postcode, setPostcode] = useState('');
+  const [postcodeTouched, setPostcodeTouched] = useState(false);
+  const [ageTouched, setAgeTouched] = useState(false);
   const [radiusMiles, setRadiusMiles] = useState<number>(DEFAULT_RADIUS);
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const consentsValid = agreeTerms && agreeAlerts;
   const isUnder16 = ageGroup === 'under_16';
+  const postcodeValid = postcode.trim().length > 0;
+  const ageGroupValid = ageGroup !== '';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched(true);
     setConsentTouched(true);
-    if (!isValid || !consentsValid || isUnder16 || state === 'loading') return;
+    setPostcodeTouched(true);
+    setAgeTouched(true);
+    if (!isValid || !consentsValid || isUnder16 || !postcodeValid || !ageGroupValid || state === 'loading') return;
     await subscribe(email, source, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles);
   };
 
@@ -98,7 +104,9 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
                   className={`group relative flex items-center gap-2.5 rounded-xl border px-3.5 py-3 cursor-pointer transition-all ${
                     checked
                       ? 'border-ink bg-ink/5 ring-2 ring-ink/15'
-                      : 'border-line hover:border-ink/40 hover:bg-paper-deep/40'
+                      : ageTouched && !ageGroupValid
+                        ? 'border-safety'
+                        : 'border-line hover:border-ink/40 hover:bg-paper-deep/40'
                   } ${state === 'loading' ? 'opacity-60 pointer-events-none' : ''}`}
                 >
                   <input
@@ -106,7 +114,10 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
                     name="age-group"
                     value={opt.value}
                     checked={checked}
-                    onChange={() => setAgeGroup(opt.value)}
+                    onChange={() => {
+                      setAgeGroup(opt.value);
+                      setAgeTouched(true);
+                    }}
                     disabled={state === 'loading'}
                     className="sr-only"
                   />
@@ -128,6 +139,12 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
               Sorry — we can't sign up under-16s for alerts directly yet. Please ask a parent or guardian, or check back once you turn 16.
             </p>
           )}
+          {ageTouched && !ageGroupValid && (
+            <p className="mt-2.5 flex items-start gap-1.5 text-safety text-sm font-medium px-1">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              Please tell us your age group.
+            </p>
+          )}
         </fieldset>
 
         <div className="mt-3 px-1">
@@ -138,10 +155,14 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
                 type="text"
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
+                onBlur={() => setPostcodeTouched(true)}
                 placeholder="Postcode"
                 aria-label="Postcode"
+                aria-required="true"
                 disabled={state === 'loading'}
-                className={`${inputBase} pl-10 pr-4 py-3 text-sm border-line focus:border-ink focus:ring-ink/15 ${state === 'loading' ? 'opacity-60' : ''}`}
+                className={`${inputBase} pl-10 pr-4 py-3 text-sm ${
+                  postcodeTouched && !postcodeValid ? 'border-safety focus:ring-safety/30' : 'border-line focus:border-ink focus:ring-ink/15'
+                } ${state === 'loading' ? 'opacity-60' : ''}`}
               />
             </div>
             <div className="relative">
@@ -207,7 +228,14 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
 
         <button
           type="submit"
-          disabled={state === 'loading' || (touched && !isValid) || (consentTouched && !consentsValid) || isUnder16}
+          disabled={
+            state === 'loading' ||
+            (touched && !isValid) ||
+            (consentTouched && !consentsValid) ||
+            (postcodeTouched && !postcodeValid) ||
+            (ageTouched && !ageGroupValid) ||
+            isUnder16
+          }
           className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-4 text-base transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
         >
           {state === 'loading' ? (
@@ -230,6 +258,11 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
       {consentTouched && !consentsValid && (
         <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
           <AlertCircle className="w-4 h-4" /> Please tick both boxes to continue.
+        </p>
+      )}
+      {postcodeTouched && !postcodeValid && (
+        <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
+          <AlertCircle className="w-4 h-4" /> Please enter your postcode.
         </p>
       )}
     </div>
