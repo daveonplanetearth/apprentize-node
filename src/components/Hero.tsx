@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-safety/5 rounded-full blur-[120px] pointer-events-none" aria-hidden />
 
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
           {/* copy */}
           <div className="text-center lg:text-left">
             <div className="inline-flex items-center gap-2 rounded-full border border-safety/30 bg-safety/10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-safety animate-fade-up">
