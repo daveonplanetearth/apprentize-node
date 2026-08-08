@@ -19,7 +19,7 @@ const RADIUS_OPTIONS = [5, 10, 15, 25] as const;
 const DEFAULT_RADIUS = 15;
 
 export default function EmailSignup({ source, className = '' }: EmailSignupProps) {
-  const { state, message, subscribe } = useSubscribe();
+  const { state, message, errorField, subscribe, reset } = useSubscribe();
   const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
   const [ageGroup, setAgeGroup] = useState<AgeGroup | ''>('');
@@ -154,14 +154,19 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
               <input
                 type="text"
                 value={postcode}
-                onChange={(e) => setPostcode(e.target.value)}
+                onChange={(e) => {
+                  setPostcode(e.target.value);
+                  if (errorField === 'postcode') reset();
+                }}
                 onBlur={() => setPostcodeTouched(true)}
                 placeholder="Postcode"
                 aria-label="Postcode"
                 aria-required="true"
                 disabled={state === 'loading'}
                 className={`${inputBase} pl-10 pr-4 py-3 text-sm ${
-                  postcodeTouched && !postcodeValid ? 'border-safety focus:ring-safety/30' : 'border-line focus:border-ink focus:ring-ink/15'
+                  (postcodeTouched && !postcodeValid) || errorField === 'postcode'
+                    ? 'border-safety focus:ring-safety/30'
+                    : 'border-line focus:border-ink focus:ring-ink/15'
                 } ${state === 'loading' ? 'opacity-60' : ''}`}
               />
             </div>
@@ -245,7 +250,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
           )}
         </button>
       </form>
-      {state === 'error' && (
+      {state === 'error' && errorField !== 'postcode' && (
         <p className="mt-3 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
           <AlertCircle className="w-4 h-4" /> {message}
         </p>
@@ -263,6 +268,11 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
       {postcodeTouched && !postcodeValid && (
         <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
           <AlertCircle className="w-4 h-4" /> Please enter your postcode.
+        </p>
+      )}
+      {errorField === 'postcode' && (
+        <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
+          <AlertCircle className="w-4 h-4" /> {message}
         </p>
       )}
     </div>

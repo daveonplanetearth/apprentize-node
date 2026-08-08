@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 
 export type SubscribeState = 'idle' | 'loading' | 'success' | 'error';
 
+export type SubscribeErrorField = 'postcode' | null;
+
 export type AgeGroup = 'under_16' | '16_17' | '18_plus';
 
 // Matches Apprentize.Core.Models.AgeBand — the API only accepts these two bands
@@ -24,6 +26,7 @@ export interface SubscribePayload {
 export interface UseSubscribeResult {
   state: SubscribeState;
   message: string;
+  errorField: SubscribeErrorField;
   subscribe: (
     email: string,
     source: string | undefined,
@@ -40,10 +43,17 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 const ENDPOINT = API_BASE_URL ? `${API_BASE_URL}/api/signup` : undefined;
 
 const DEFAULT_SUCCESS_MESSAGE = "You're in. Check your inbox — we'll email you the moment a match appears.";
+const DEFAULT_ERROR_MESSAGE = 'Something went wrong. Please try again.';
+
+interface SignupErrorBody {
+  error?: string;
+  message?: string;
+}
 
 export function useSubscribe(): UseSubscribeResult {
   const [state, setState] = useState<SubscribeState>('idle');
   const [message, setMessage] = useState('');
+  const [errorField, setErrorField] = useState<SubscribeErrorField>(null);
 
   const subscribe = useCallback(async (
     email: string,
@@ -56,6 +66,7 @@ export function useSubscribe(): UseSubscribeResult {
   ) => {
     setState('loading');
     setMessage('');
+    setErrorField(null);
 
     if (!ENDPOINT) {
       setState('error');
@@ -81,8 +92,14 @@ export function useSubscribe(): UseSubscribeResult {
       });
 
       if (!res.ok) {
+        const body: SignupErrorBody | null = await res.json().catch(() => null);
         setState('error');
-        setMessage('Something went wrong. Please try again.');
+        if (body?.error === 'invalid_postcode') {
+          setErrorField('postcode');
+          setMessage(body.message ?? 'Postcode not found. Please check and try again.');
+        } else {
+          setMessage(DEFAULT_ERROR_MESSAGE);
+        }
         return;
       }
 
@@ -92,14 +109,15 @@ export function useSubscribe(): UseSubscribeResult {
       setMessage(DEFAULT_SUCCESS_MESSAGE);
     } catch {
       setState('error');
-      setMessage('Something went wrong. Please try again.');
+      setMessage(DEFAULT_ERROR_MESSAGE);
     }
   }, []);
 
   const reset = useCallback(() => {
     setState('idle');
     setMessage('');
+    setErrorField(null);
   }, []);
 
-  return { state, message, subscribe, reset };
+  return { state, message, errorField, subscribe, reset };
 }
