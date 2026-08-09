@@ -29,6 +29,8 @@ const SORT_ORDER_OPTIONS: { value: SortOrder; label: string }[] = [
 interface ApprenticeshipsPageProps {
   initialPostcode?: string;
   initialRadiusMiles?: number;
+  initialSortBy?: SortBy;
+  initialSortOrder?: SortOrder;
 }
 
 // Matches the exact strings SearchApprenticeshipsEndpoints.cs's FormatPostedDate emits
@@ -39,7 +41,9 @@ function isRecentlyPosted(postedDate: string): boolean {
   return match ? Number(match[1]) <= 2 : false;
 }
 
-export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMiles }: ApprenticeshipsPageProps) {
+export default function ApprenticeshipsPage({
+  initialPostcode, initialRadiusMiles, initialSortBy, initialSortOrder,
+}: ApprenticeshipsPageProps) {
   // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
   // Otherwise, if the visitor has a saved session (from the preferences/manage-link flow), defer
   // the default search until we know whether we can pre-fill from their saved preferences.
@@ -48,8 +52,8 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
   const [postcode, setPostcode] = useState(() => initialPostcode || (awaitingStoredPreferences ? '' : DEFAULT_POSTCODE));
   const [radiusMiles, setRadiusMiles] = useState<number>(initialRadiusMiles || DEFAULT_RADIUS);
   const [title, setTitle] = useState('');
-  const [sortBy, setSortBy] = useState<SortBy>('distance');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [sortBy, setSortBy] = useState<SortBy>(initialSortBy || 'distance');
+  const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder || 'asc');
   const [page, setPage] = useState(1);
   const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
 

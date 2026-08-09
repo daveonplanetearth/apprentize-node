@@ -7,12 +7,16 @@ import WhatYouGet from './components/WhatYouGet';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
+import type { SortBy, SortOrder } from './hooks/useApprenticeships';
 import PreferencesPage from './components/PreferencesPage';
 import ConfirmPage from './components/ConfirmPage';
 import CheckInboxPage from './components/CheckInboxPage';
 import LinkExpiredPage from './components/LinkExpiredPage';
 import PrivacyNoticePage from './components/PrivacyNoticePage';
 import TermsOfServicePage from './components/TermsOfServicePage';
+
+const SORT_BY_VALUES: SortBy[] = ['postedDate', 'closingDate', 'distance'];
+const SORT_ORDER_VALUES: SortOrder[] = ['asc', 'desc'];
 
 function useHashRoute() {
   const [hash, setHash] = useState(() => window.location.hash.replace(/^#\/?/, ''));
@@ -48,11 +52,21 @@ export default function App() {
     const initialRadiusParam = params.get('radius');
     const initialRadiusMiles = initialRadiusParam ? Number(initialRadiusParam) : undefined;
 
+    const sortByParam = params.get('sortBy');
+    const initialSortBy = SORT_BY_VALUES.includes(sortByParam as SortBy) ? (sortByParam as SortBy) : undefined;
+    const sortOrderParam = params.get('sortOrder');
+    const initialSortOrder = SORT_ORDER_VALUES.includes(sortOrderParam as SortOrder) ? (sortOrderParam as SortOrder) : undefined;
+
     return (
       <div className="min-h-screen bg-paper text-ink">
         <Nav />
         <main>
-          <ApprenticeshipsPage initialPostcode={initialPostcode} initialRadiusMiles={initialRadiusMiles} />
+          <ApprenticeshipsPage
+            initialPostcode={initialPostcode}
+            initialRadiusMiles={initialRadiusMiles}
+            initialSortBy={initialSortBy}
+            initialSortOrder={initialSortOrder}
+          />
         </main>
         <Footer />
       </div>
