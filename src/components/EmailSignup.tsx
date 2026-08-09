@@ -159,7 +159,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
                   if (errorField === 'postcode') reset();
                 }}
                 onBlur={() => setPostcodeTouched(true)}
-                placeholder="Postcode"
+                placeholder="Post code"
                 aria-label="Postcode"
                 aria-required="true"
                 disabled={state === 'loading'}
@@ -186,6 +186,9 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
               <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/60 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8l4 4 4-4" /></svg>
             </div>
           </div>
+          <p className="mt-2 text-xs text-ink-soft px-1">
+            You can enter a full postcode or just the first part (e.g. "SW1A") — a full postcode gives more accurate matches.
+          </p>
         </div>
 
         <div className="mt-3 space-y-2">

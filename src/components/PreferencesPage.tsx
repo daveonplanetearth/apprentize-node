@@ -175,11 +175,14 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
                           maxLength={8}
                           value={postcodeInput}
                           onChange={(e) => setPostcodeInput(e.target.value)}
-                          placeholder="e.g. SW1A 1AA"
+                          placeholder="e.g. SW1A 1AA or SW1A"
                           disabled={saveState === 'saving'}
                           className={`${inputBase} pl-10 pr-4 py-3 text-sm ${saveState === 'saving' ? 'opacity-60' : ''}`}
                         />
                       </div>
+                      <p className="mt-1.5 text-xs text-ink-soft">
+                        You can enter a full postcode or just the first part (e.g. "SW1A") — a full postcode gives more accurate matches.
+                      </p>
                       {postcodeError && (
                         <p role="alert" className="mt-2 flex items-center gap-1.5 text-safety text-sm font-medium">
                           <AlertCircle className="w-4 h-4 shrink-0" /> {postcodeError}

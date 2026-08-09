@@ -137,7 +137,7 @@ export default function ApprenticeshipsPage({ initialPostcode, initialRadiusMile
                   type="text"
                   value={postcode}
                   onChange={(e) => setPostcode(e.target.value)}
-                  placeholder="e.g. SW1A 1AA"
+                  placeholder="e.g. SW1A 1AA or SW1A"
                   aria-label="Postcode"
                   className="w-full rounded-xl border border-line bg-paper pl-10 pr-9 py-3 text-sm text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
                 />
