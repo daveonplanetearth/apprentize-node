@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Zap, Menu, X } from 'lucide-react';
 import { useHasSessionToken } from '../hooks/usePreferences';
 
-// Marketing links only relevant to a visitor who hasn't subscribed yet.
+// Informational links relevant to every visitor, subscribed or not.
 const marketingLinks = [
   { label: 'How it works', href: '#how' },
   { label: 'What you get', href: '#what' },
@@ -19,12 +19,12 @@ interface NavProps {
 export default function Nav({ isHome = false }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  // On the home page, always show the marketing links/CTA even if already subscribed — the
-  // visitor may be back to sign up again with a different email.
+  // On the home page, always show the CTA even if already subscribed — the visitor may be
+  // back to sign up again with a different email.
   const hasSessionToken = useHasSessionToken();
-  const hideMarketing = hasSessionToken && !isHome;
+  const hideCta = hasSessionToken && !isHome;
   const accountLinks = hasSessionToken ? [browseLink, preferencesLink] : [browseLink];
-  const links = hideMarketing ? accountLinks : [...marketingLinks, ...accountLinks];
+  const links = [...marketingLinks, ...accountLinks];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -52,13 +52,13 @@ export default function Nav({ isHome = false }: NavProps) {
             ))}
           </nav>
 
-          {!hideMarketing && (
-            <div className="hidden md:block">
-              <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
-                Get free alerts
-              </a>
-            </div>
-          )}
+          {/* Kept in the flex flow (just made invisible) when hidden, so the nav links don't
+              shift position depending on whether this CTA is shown. */}
+          <div className={`hidden md:block ${hideCta ? 'invisible' : ''}`}>
+            <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
+              Get free alerts
+            </a>
+          </div>
 
           <button
             className="md:hidden p-2 -mr-2 text-ink"
@@ -83,7 +83,7 @@ export default function Nav({ isHome = false }: NavProps) {
                 {l.label}
               </a>
             ))}
-            {!hideMarketing && (
+            {!hideCta && (
               <a
                 href="#signup"
                 onClick={() => setOpen(false)}
