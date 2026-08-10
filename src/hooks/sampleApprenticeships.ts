@@ -1,4 +1,5 @@
 import type { Apprenticeship, ApprenticeshipsResult, SortBy, SortOrder } from './useApprenticeships';
+import type { ApprenticeshipDetails } from './useApprenticeshipDetails';
 
 // Real, sortable date values behind the display strings above — hidden from the UI and
 // used only to drive client-side sorting of the sample data (ascending = earliest first,
@@ -59,4 +60,136 @@ export function sampleApprenticeships(params: {
   const items = sorted.slice(start, start + params.pageSize);
 
   return { items, page: params.page, pageSize: params.pageSize, total };
+}
+
+// Fields the /api/apprenticeship/{id} details endpoint returns that the search endpoint
+// (and so SAMPLE above) doesn't carry — kept as a side table rather than widening SAMPLE,
+// since the list view never needs them.
+const SAMPLE_DETAIL_EXTRAS: Record<string, {
+  description: string;
+  hoursPerWeek: number;
+  expectedDuration: string;
+  address: string;
+  postcode: string;
+  providerName: string;
+}> = {
+  s1: {
+    description: 'Join our small engineering team building the platform that powers Nebula Labs\' core product. You\'ll pair with senior developers on real features from day one, learn our React and .NET stack, and take part in code review, testing and deployment. Off-the-job training is one day a week towards a Level 4 Software Developer standard.',
+    hoursPerWeek: 37.5,
+    expectedDuration: '18 months',
+    address: '4 Silicon Yard, Shoreditch, London',
+    postcode: 'EC2A 3QR',
+    providerName: 'Nebula Training Partners',
+  },
+  s2: {
+    description: 'Learn traditional and modern joinery techniques alongside our workshop team, from bespoke furniture to fitted staircases. You\'ll split your time between the workshop floor and site installations, working towards a Level 3 Carpentry and Joinery qualification.',
+    hoursPerWeek: 39,
+    expectedDuration: '24 months',
+    address: 'Unit 7, Oakwood Trading Estate, Manchester',
+    postcode: 'M12 5NH',
+    providerName: 'Manchester Construction College',
+  },
+  s3: {
+    description: 'Support our care team in delivering compassionate, person-centred care to residents, including help with daily living, mobility and social activities. You\'ll be fully supported through your Level 3 Adult Care Worker apprenticeship, with a dedicated mentor throughout.',
+    hoursPerWeek: 35,
+    expectedDuration: '15 months',
+    address: 'Riverside Care Home, 22 Mill Lane, Birmingham',
+    postcode: 'B15 2TT',
+    providerName: 'Birmingham Health & Care Academy',
+  },
+  s4: {
+    description: 'Rotate through machining, assembly and quality departments at our Leeds manufacturing site, gaining hands-on engineering experience while studying towards a Level 4 Engineering Technician standard on day release.',
+    hoursPerWeek: 38,
+    expectedDuration: '36 months',
+    address: 'Atlas Manufacturing, Kirkstall Road, Leeds',
+    postcode: 'LS4 2AB',
+    providerName: 'Leeds Engineering Skills Centre',
+  },
+  s5: {
+    description: 'Get hands-on with SEO, paid social and email campaigns for a growing roster of clients. You\'ll learn analytics, content planning and campaign reporting while working towards a Level 3 Multi-Channel Marketer apprenticeship.',
+    hoursPerWeek: 37,
+    expectedDuration: '15 months',
+    address: 'Brightwave Agency, 12 Harbourside, Bristol',
+    postcode: 'BS1 5UH',
+    providerName: 'Bristol Digital Skills Hub',
+  },
+  s6: {
+    description: 'Work alongside qualified electricians on domestic and commercial installations, learning to wire, test and certify electrical systems safely. Leads to a Level 3 Installation and Maintenance Electrician qualification.',
+    hoursPerWeek: 40,
+    expectedDuration: '42 months',
+    address: 'Volts & Co, 9 Foundry Street, Sheffield',
+    postcode: 'S1 4QW',
+    providerName: 'Sheffield Trades Training',
+  },
+  s7: {
+    description: 'Support office operations across finance, HR and customer service, gaining broad administrative experience while studying towards a Level 2 Customer Service Practitioner qualification.',
+    hoursPerWeek: 35,
+    expectedDuration: '12 months',
+    address: 'Hilltop Services, 3 Exchange Court, Liverpool',
+    postcode: 'L2 2QP',
+    providerName: 'Liverpool Business College',
+  },
+  s8: {
+    description: 'Join our security operations centre to help monitor, detect and respond to threats across client networks, while studying towards a Level 4 Cyber Security Technologist apprenticeship with structured mentoring.',
+    hoursPerWeek: 37.5,
+    expectedDuration: '24 months',
+    address: 'Sentinel Defence, 5 Fenchurch Row, London',
+    postcode: 'EC3M 4AL',
+    providerName: 'London Cyber Skills Academy',
+  },
+  s9: {
+    description: 'Learn to install, service and repair domestic heating and plumbing systems alongside experienced engineers, working towards a Level 3 Plumbing and Domestic Heating Technician qualification.',
+    hoursPerWeek: 40,
+    expectedDuration: '36 months',
+    address: 'FlowRight Heating, 18 Quayside, Newcastle upon Tyne',
+    postcode: 'NE1 3DX',
+    providerName: 'Newcastle Building Skills Centre',
+  },
+  s10: {
+    description: 'Work with our analytics team to build dashboards, clean datasets and support data-driven decisions across the business, while studying towards a Level 4 Data Analyst apprenticeship.',
+    hoursPerWeek: 37.5,
+    expectedDuration: '18 months',
+    address: 'Quantum Insights, 27 Bankside, London',
+    postcode: 'SE1 9JE',
+    providerName: 'London Data Skills Institute',
+  },
+  s11: {
+    description: 'Train in our kitchen under an experienced head chef, covering food preparation, menu planning and kitchen management, while working towards a Level 2 Production Chef apprenticeship.',
+    hoursPerWeek: 40,
+    expectedDuration: '15 months',
+    address: 'The Copper Pan, 14 Old Town, Edinburgh',
+    postcode: 'EH1 1QS',
+    providerName: 'Edinburgh Hospitality College',
+  },
+  s12: {
+    description: 'Support our accounts team with bookkeeping, payroll and month-end reporting for a range of clients, while studying towards an AAT Level 3 Assistant Accountant apprenticeship.',
+    hoursPerWeek: 35,
+    expectedDuration: '18 months',
+    address: 'Ledger & Stone, 6 Deansgate, Manchester',
+    postcode: 'M3 2FN',
+    providerName: 'Manchester Finance Academy',
+  },
+};
+
+export function sampleApprenticeshipDetails(id: string): ApprenticeshipDetails | null {
+  const job = SAMPLE.find((j) => j.id === id);
+  const extra = SAMPLE_DETAIL_EXTRAS[id];
+  if (!job || !extra) return null;
+
+  return {
+    id: job.id,
+    title: job.title,
+    employerName: job.company,
+    description: extra.description,
+    wage: job.wage,
+    hoursPerWeek: extra.hoursPerWeek,
+    expectedDuration: extra.expectedDuration,
+    apprenticeshipLevel: job.level,
+    postedDate: job.postedDateValue,
+    closingDate: job.closingDateValue,
+    address: extra.address,
+    postcode: extra.postcode,
+    providerName: extra.providerName,
+    applyUrl: job.url ?? '',
+  };
 }

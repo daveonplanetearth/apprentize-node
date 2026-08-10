@@ -7,6 +7,7 @@ import WhatYouGet from './components/WhatYouGet';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
+import ApprenticeshipPage from './components/ApprenticeshipPage';
 import type { SortBy, SortOrder } from './hooks/useApprenticeships';
 import PreferencesPage from './components/PreferencesPage';
 import ConfirmPage from './components/ConfirmPage';
@@ -41,7 +42,7 @@ export default function App() {
   }, [path]);
 
   useEffect(() => {
-    if (path !== 'privacy' && path !== 'terms') return;
+    if (path !== 'privacy' && path !== 'terms' && path !== 'apprenticeship') return;
     // The two-argument form respects the global `scroll-behavior: smooth` (index.css), which
     // animates instead of jumping — force an instant scroll for a route change.
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -67,6 +68,20 @@ export default function App() {
             initialSortBy={initialSortBy}
             initialSortOrder={initialSortOrder}
           />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === 'apprenticeship') {
+    const id = params.get('id') ?? undefined;
+
+    return (
+      <div className="min-h-screen bg-paper text-ink">
+        <Nav />
+        <main>
+          <ApprenticeshipPage id={id} />
         </main>
         <Footer />
       </div>

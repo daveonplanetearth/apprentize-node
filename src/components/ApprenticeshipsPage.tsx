@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
-  TrendingUp, Clock, ArrowUpRight, Loader2, AlertCircle, Ruler, X, Share2,
+  TrendingUp, Clock, Loader2, AlertCircle, Ruler, X, Share2,
   ArrowUpDown, CalendarClock, Users,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
@@ -355,18 +355,14 @@ export default function ApprenticeshipsPage({
                             {isRecentlyPosted(job.postedDate) && (
                               <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
                             )}
-                            {job.url && (
-                              <a
-                                href={job.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
-                              >
-                                View <ArrowUpRight className="w-3.5 h-3.5" />
-                              </a>
-                            )}
                             <a
-                              href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${job.location}${job.url ? ` ${job.url}` : ''}`)}`}
+                              href={`#/apprenticeship?id=${encodeURIComponent(job.id)}`}
+                              className="inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
+                            >
+                              View
+                            </a>
+                            <a
+                              href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${window.location.origin}${window.location.pathname}#/apprenticeship?id=${job.id}`)}`}
                               target="_blank"
                               rel="noreferrer"
                               aria-label={`Share ${job.title} on WhatsApp`}
@@ -378,7 +374,7 @@ export default function ApprenticeshipsPage({
                         </div>
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2.5 text-xs text-ink-soft font-mono">
                           <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> {job.level}</span>
-                          <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {job.location}{typeof job.distanceMiles === 'number' && <> · {job.distanceMiles.toFixed(1)} mi</>}</span>
+                          <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {job.location}{typeof job.distanceMiles === 'number' && <> · {job.distanceMiles.toFixed(1)} mile{job.distanceMiles === 1 ? '' : 's'}</>}</span>
                           <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {job.postedDate}</span>
                           {job.closingDate && <span className="flex items-center gap-1.5"><CalendarClock className="w-3.5 h-3.5" /> Closes {job.closingDate}</span>}
                           {typeof job.numberOfPositions === 'number' && job.numberOfPositions > 0 && (
