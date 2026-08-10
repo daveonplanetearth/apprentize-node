@@ -1,6 +1,6 @@
 import {
   ArrowLeft, ArrowUpRight, Share2, Loader2, AlertCircle, Briefcase, Building2,
-  TrendingUp, Wallet, Clock, Clock3, CalendarClock, CalendarRange, MapPin, GraduationCap,
+  TrendingUp, Wallet, Clock, Clock3, CalendarClock, CalendarRange, MapPin,
 } from 'lucide-react';
 import { useApprenticeshipDetails } from '../hooks/useApprenticeshipDetails';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
@@ -58,6 +58,11 @@ export default function ApprenticeshipPage({
   const { state, result, error, retry } = useApprenticeshipDetails(id ?? '');
   const description = result?.description ? stripHtml(result.description) : '';
 
+  // Apply against the employer's own application link where the vacancy has one, falling back to
+  // the find-an-apprenticeship listing page (and then to the API's pre-resolved applyUrl, which is
+  // all the local dev fixtures carry).
+  const applyHref = result?.applicationUrl || result?.vacancyUrl || result?.applyUrl || '';
+
   // Reconstructs the browse page's last search/page/scroll position, so "Back to results" returns
   // to where the visitor came from rather than resetting to page 1 — falls back to a plain link
   // when there's no return state (e.g. a shared/bookmarked details link opened directly).
@@ -99,9 +104,9 @@ export default function ApprenticeshipPage({
               </div>
 
               <div className="mt-5 flex flex-wrap items-center gap-2.5">
-                {result.applyUrl && (
+                {applyHref && (
                   <a
-                    href={result.applyUrl}
+                    href={applyHref}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-xl bg-safety text-white font-semibold px-5 py-2.5 text-sm transition-all hover:bg-safety-deep active:scale-[0.98]"
@@ -166,7 +171,19 @@ export default function ApprenticeshipPage({
         {state === 'success' && result && (
           <div className="animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
             <div className="rounded-2xl border border-line bg-card p-4 sm:p-5">
-              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-ink-soft font-mono">
+              {description && (
+                <>
+                  <h2 className="font-display font-bold text-ink text-lg">About this role</h2>
+                  <p className="mt-2.5 text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{description}</p>
+                </>
+              )}
+
+              {/* The rule only separates the two halves when there's a description above it. */}
+              <div
+                className={`grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-ink-soft font-mono${
+                  description ? ' mt-5 pt-5 border-t border-line' : ''
+                }`}
+              >
                 {result.wage && (
                   <span className="flex items-center gap-2"><Wallet className="w-4 h-4 shrink-0" /> {result.wage}</span>
                 )}
@@ -187,18 +204,8 @@ export default function ApprenticeshipPage({
                     <MapPin className="w-4 h-4 shrink-0" /> {[result.address, result.postcode].filter(Boolean).join(', ')}
                   </span>
                 )}
-                {result.providerName && (
-                  <span className="flex items-center gap-2"><GraduationCap className="w-4 h-4 shrink-0" /> {result.providerName}</span>
-                )}
               </div>
             </div>
-
-            {description && (
-              <div className="mt-6">
-                <h2 className="font-display font-bold text-ink text-lg">About this role</h2>
-                <p className="mt-2.5 text-sm text-ink-soft leading-relaxed whitespace-pre-wrap">{description}</p>
-              </div>
-            )}
           </div>
         )}
       </div>

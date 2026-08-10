@@ -16,7 +16,11 @@ export interface ApprenticeshipDetails {
   address?: string;
   postcode?: string;
   providerName?: string;
+  // applyUrl is the API's own pre-resolved link; applicationUrl/vacancyUrl are the raw source
+  // URLs it also returns, so the page can prefer the employer's application link.
   applyUrl: string;
+  applicationUrl?: string;
+  vacancyUrl?: string;
 }
 
 export type ApprenticeshipDetailsState = 'idle' | 'loading' | 'success' | 'notfound' | 'error';

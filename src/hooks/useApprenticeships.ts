@@ -11,7 +11,11 @@ export interface Apprenticeship {
   distanceMiles?: number;
   postedDate: string;
   closingDate?: string;
+  // url is the API's pre-resolved link; applicationUrl/vacancyUrl are the raw source URLs it also
+  // returns, so a consumer can prefer the employer's own application link (as the details page does).
   url?: string;
+  applicationUrl?: string;
+  vacancyUrl?: string;
   numberOfPositions?: number;
 }
 
