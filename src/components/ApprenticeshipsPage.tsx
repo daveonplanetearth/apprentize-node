@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
   TrendingUp, Clock, Loader2, AlertCircle, Ruler, X, Share2,
@@ -29,8 +29,11 @@ const SORT_ORDER_OPTIONS: { value: SortOrder; label: string }[] = [
 interface ApprenticeshipsPageProps {
   initialPostcode?: string;
   initialRadiusMiles?: number;
+  initialTitle?: string;
   initialSortBy?: SortBy;
   initialSortOrder?: SortOrder;
+  initialPage?: number;
+  initialViewedId?: string;
 }
 
 // Matches the exact strings SearchApprenticeshipsEndpoints.cs's FormatPostedDate emits
@@ -42,7 +45,8 @@ function isRecentlyPosted(postedDate: string): boolean {
 }
 
 export default function ApprenticeshipsPage({
-  initialPostcode, initialRadiusMiles, initialSortBy, initialSortOrder,
+  initialPostcode, initialRadiusMiles, initialTitle, initialSortBy, initialSortOrder,
+  initialPage, initialViewedId,
 }: ApprenticeshipsPageProps) {
   // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
   // Otherwise, if the visitor has a saved session (from the preferences/manage-link flow), defer
@@ -51,10 +55,10 @@ export default function ApprenticeshipsPage({
 
   const [postcode, setPostcode] = useState(() => initialPostcode || (awaitingStoredPreferences ? '' : DEFAULT_POSTCODE));
   const [radiusMiles, setRadiusMiles] = useState<number>(initialRadiusMiles || DEFAULT_RADIUS);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(initialTitle || '');
   const [sortBy, setSortBy] = useState<SortBy>(initialSortBy || 'distance');
   const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder || 'asc');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initialPage && initialPage > 0 ? initialPage : 1);
   const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
 
   const { state, result, error, retry } = useApprenticeships({
@@ -91,10 +95,25 @@ export default function ApprenticeshipsPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reset to page 1 when filters change (after first search)
+  // Reset to page 1 when filters actually change (after first search) — compares against the
+  // previous values rather than a "first run" flag so an initialPage carried over from a "Back to
+  // results" link survives React StrictMode's double-invoked mount effect in development.
+  const prevFilters = useRef({ postcode, radiusMiles, title, sortBy, sortOrder });
   useEffect(() => {
-    if (hasSearched) setPage(1);
+    const prev = prevFilters.current;
+    const changed = prev.postcode !== postcode || prev.radiusMiles !== radiusMiles || prev.title !== title
+      || prev.sortBy !== sortBy || prev.sortOrder !== sortOrder;
+    prevFilters.current = { postcode, radiusMiles, title, sortBy, sortOrder };
+    if (changed && hasSearched) setPage(1);
   }, [postcode, radiusMiles, title, sortBy, sortOrder, hasSearched]);
+
+  // Scroll the previously-viewed listing into view once, when returning from its details page.
+  const hasScrolledToViewed = useRef(false);
+  useEffect(() => {
+    if (hasScrolledToViewed.current || !initialViewedId || state !== 'success' || !result) return;
+    hasScrolledToViewed.current = true;
+    document.getElementById(`job-${initialViewedId}`)?.scrollIntoView({ block: 'center' });
+  }, [initialViewedId, state, result]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -331,6 +350,7 @@ export default function ApprenticeshipsPage({
                 {result.items.map((job, i) => (
                   <li
                     key={job.id}
+                    id={`job-${job.id}`}
                     className="group rounded-2xl border border-line bg-card p-4 sm:p-5 hover:border-ink/30 hover:shadow-[0_8px_30px_rgba(22,35,59,0.08)] transition-all animate-fade-up"
                     style={{ animationDelay: `${Math.min(i * 0.04, 0.4)}s`, opacity: 0 }}
                   >
@@ -356,7 +376,15 @@ export default function ApprenticeshipsPage({
                               <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
                             )}
                             <a
-                              href={`#/apprenticeship?id=${encodeURIComponent(job.id)}`}
+                              href={`#/apprenticeship?${new URLSearchParams({
+                                id: job.id,
+                                postcode,
+                                radius: String(radiusMiles),
+                                title,
+                                sortBy,
+                                sortOrder,
+                                page: String(page),
+                              }).toString()}`}
                               className="inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
                             >
                               View

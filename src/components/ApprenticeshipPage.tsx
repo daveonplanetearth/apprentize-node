@@ -3,9 +3,16 @@ import {
   TrendingUp, Wallet, Clock, Clock3, CalendarClock, CalendarRange, MapPin, GraduationCap,
 } from 'lucide-react';
 import { useApprenticeshipDetails } from '../hooks/useApprenticeshipDetails';
+import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
 
 interface ApprenticeshipPageProps {
   id?: string;
+  returnPostcode?: string;
+  returnRadiusMiles?: number;
+  returnTitle?: string;
+  returnSortBy?: SortBy;
+  returnSortOrder?: SortOrder;
+  returnPage?: number;
 }
 
 // Mirrors SearchApprenticeshipsEndpoints.cs's FormatPostedDate — this endpoint returns a raw
@@ -45,9 +52,26 @@ function stripHtml(html: string): string {
   return text.replace(/\n{3,}/g, '\n\n').trim();
 }
 
-export default function ApprenticeshipPage({ id }: ApprenticeshipPageProps) {
+export default function ApprenticeshipPage({
+  id, returnPostcode, returnRadiusMiles, returnTitle, returnSortBy, returnSortOrder, returnPage,
+}: ApprenticeshipPageProps) {
   const { state, result, error, retry } = useApprenticeshipDetails(id ?? '');
   const description = result?.description ? stripHtml(result.description) : '';
+
+  // Reconstructs the browse page's last search/page/scroll position, so "Back to results" returns
+  // to where the visitor came from rather than resetting to page 1 — falls back to a plain link
+  // when there's no return state (e.g. a shared/bookmarked details link opened directly).
+  const backHref = returnPostcode
+    ? `#/apprenticeships?${new URLSearchParams({
+        postcode: returnPostcode,
+        radius: String(returnRadiusMiles ?? ''),
+        title: returnTitle ?? '',
+        sortBy: returnSortBy ?? '',
+        sortOrder: returnSortOrder ?? '',
+        page: String(returnPage ?? 1),
+        ...(id ? { viewedId: id } : {}),
+      }).toString()}`
+    : '#/apprenticeships';
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -56,7 +80,7 @@ export default function ApprenticeshipPage({ id }: ApprenticeshipPageProps) {
         <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
         <div className="relative mx-auto max-w-4xl px-5 sm:px-6">
           <a
-            href="#/apprenticeships"
+            href={backHref}
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-ink transition-colors animate-fade-up"
           >
             <ArrowLeft className="w-4 h-4" /> Back to results
@@ -117,7 +141,7 @@ export default function ApprenticeshipPage({ id }: ApprenticeshipPageProps) {
               It may have closed or been removed. Try browsing current listings instead.
             </p>
             <a
-              href="#/apprenticeships"
+              href={backHref}
               className="mt-4 inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors"
             >
               Browse apprenticeships

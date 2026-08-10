@@ -52,11 +52,16 @@ export default function App() {
     const initialPostcode = params.get('postcode') ?? undefined;
     const initialRadiusParam = params.get('radius');
     const initialRadiusMiles = initialRadiusParam ? Number(initialRadiusParam) : undefined;
+    const initialTitle = params.get('title') ?? undefined;
 
     const sortByParam = params.get('sortBy');
     const initialSortBy = SORT_BY_VALUES.includes(sortByParam as SortBy) ? (sortByParam as SortBy) : undefined;
     const sortOrderParam = params.get('sortOrder');
     const initialSortOrder = SORT_ORDER_VALUES.includes(sortOrderParam as SortOrder) ? (sortOrderParam as SortOrder) : undefined;
+
+    const initialPageParam = params.get('page');
+    const initialPage = initialPageParam ? Number(initialPageParam) : undefined;
+    const initialViewedId = params.get('viewedId') ?? undefined;
 
     return (
       <div className="min-h-screen bg-paper text-ink">
@@ -65,8 +70,11 @@ export default function App() {
           <ApprenticeshipsPage
             initialPostcode={initialPostcode}
             initialRadiusMiles={initialRadiusMiles}
+            initialTitle={initialTitle}
             initialSortBy={initialSortBy}
             initialSortOrder={initialSortOrder}
+            initialPage={initialPage}
+            initialViewedId={initialViewedId}
           />
         </main>
         <Footer />
@@ -76,12 +84,30 @@ export default function App() {
 
   if (path === 'apprenticeship') {
     const id = params.get('id') ?? undefined;
+    const returnPostcode = params.get('postcode') ?? undefined;
+    const returnRadiusParam = params.get('radius');
+    const returnRadiusMiles = returnRadiusParam ? Number(returnRadiusParam) : undefined;
+    const returnTitle = params.get('title') ?? undefined;
+    const returnSortByParam = params.get('sortBy');
+    const returnSortBy = SORT_BY_VALUES.includes(returnSortByParam as SortBy) ? (returnSortByParam as SortBy) : undefined;
+    const returnSortOrderParam = params.get('sortOrder');
+    const returnSortOrder = SORT_ORDER_VALUES.includes(returnSortOrderParam as SortOrder) ? (returnSortOrderParam as SortOrder) : undefined;
+    const returnPageParam = params.get('page');
+    const returnPage = returnPageParam ? Number(returnPageParam) : undefined;
 
     return (
       <div className="min-h-screen bg-paper text-ink">
         <Nav />
         <main>
-          <ApprenticeshipPage id={id} />
+          <ApprenticeshipPage
+            id={id}
+            returnPostcode={returnPostcode}
+            returnRadiusMiles={returnRadiusMiles}
+            returnTitle={returnTitle}
+            returnSortBy={returnSortBy}
+            returnSortOrder={returnSortOrder}
+            returnPage={returnPage}
+          />
         </main>
         <Footer />
       </div>
