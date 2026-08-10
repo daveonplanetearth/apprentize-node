@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { sampleApprenticeshipDetails } from './sampleApprenticeships';
+import { markApprenticeshipViewed } from './useViewedApprenticeships';
 
 export interface ApprenticeshipDetails {
   id: string;
@@ -38,6 +39,7 @@ export function useApprenticeshipDetails(id: string) {
       if (data) {
         setResult(data);
         setState('success');
+        markApprenticeshipViewed(id);
       } else {
         setState('notfound');
       }
@@ -63,6 +65,7 @@ export function useApprenticeshipDetails(id: string) {
       const data = (await res.json()) as ApprenticeshipDetails;
       setResult(data);
       setState('success');
+      markApprenticeshipViewed(id);
     } catch {
       setState('error');
       setError('Could not load this apprenticeship. Please try again.');

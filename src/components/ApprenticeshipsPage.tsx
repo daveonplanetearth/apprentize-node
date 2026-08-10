@@ -7,6 +7,7 @@ import {
 import { useApprenticeships } from '../hooks/useApprenticeships';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
 import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePreferences';
+import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
 
 // 25 is included alongside the page's own wider options so a saved preference of 25 miles
 // (the largest radius /api/preferences accepts) still matches a real <option>.
@@ -60,6 +61,8 @@ export default function ApprenticeshipsPage({
   const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder || 'asc');
   const [page, setPage] = useState(initialPage && initialPage > 0 ? initialPage : 1);
   const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
+
+  const viewedIds = useViewedApprenticeships();
 
   const { state, result, error, retry } = useApprenticeships({
     postcode,
@@ -347,14 +350,16 @@ export default function ApprenticeshipsPage({
               </div>
 
               <ul className="space-y-3">
-                {result.items.map((job, i) => (
+                {result.items.map((job, i) => {
+                  const viewed = viewedIds.has(job.id);
+                  return (
                   <li
                     key={job.id}
                     id={`job-${job.id}`}
                     className="group rounded-2xl border border-line bg-card p-4 sm:p-5 hover:border-ink/30 hover:shadow-[0_8px_30px_rgba(22,35,59,0.08)] transition-all animate-fade-up"
                     style={{ animationDelay: `${Math.min(i * 0.04, 0.4)}s`, opacity: 0 }}
                   >
-                    <div className="flex items-start gap-3.5">
+                    <div className={`flex items-start gap-3.5 ${viewed ? 'opacity-70' : ''}`}>
                       <div className="shrink-0 w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center">
                         <Briefcase className="w-5 h-5 text-teal" />
                       </div>
@@ -366,6 +371,9 @@ export default function ApprenticeshipsPage({
                               {isRecentlyPosted(job.postedDate) && (
                                 <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
                               )}
+                              {viewed && (
+                                <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider text-ink-soft bg-ink/5 px-1.5 py-0.5 rounded">Viewed</span>
+                              )}
                             </div>
                             <p className="text-sm text-ink-soft mt-0.5 flex items-center gap-1.5">
                               <Building2 className="w-3.5 h-3.5" /> {job.company}
@@ -374,6 +382,9 @@ export default function ApprenticeshipsPage({
                           <div className="flex flex-wrap items-center gap-2 shrink-0">
                             {isRecentlyPosted(job.postedDate) && (
                               <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
+                            )}
+                            {viewed && (
+                              <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-ink-soft bg-ink/5 px-1.5 py-0.5 rounded">Viewed</span>
                             )}
                             <a
                               href={`#/apprenticeship?${new URLSearchParams({
@@ -415,7 +426,8 @@ export default function ApprenticeshipsPage({
                       </div>
                     </div>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
 
               {/* Pagination */}
