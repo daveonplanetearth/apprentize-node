@@ -32,7 +32,7 @@ export default function Hero() {
             <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden>
               <path d="M2 8C40 3 160 3 198 8" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
             </svg>
-          </span> across England.
+          </span>
         </h1>
 
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
