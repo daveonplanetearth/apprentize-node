@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
+import DailyAlerts from './components/DailyAlerts';
 import HowItWorks from './components/HowItWorks';
 import Stats from './components/Stats';
 import WhatYouGet from './components/WhatYouGet';
@@ -233,6 +234,7 @@ export default function App() {
       <main>
         <Hero />
         <HowItWorks />
+        <DailyAlerts />
         <Stats />
         <WhatYouGet />
         <LevelsExplainer />

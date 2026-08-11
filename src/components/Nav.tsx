@@ -10,6 +10,7 @@ import { useHasSessionToken } from '../hooks/usePreferences';
 // Informational links relevant to every visitor, subscribed or not.
 const marketingLinks = [
   { label: 'How it works', href: '/#how' },
+  { label: 'Daily alerts', href: '/#alerts' },
   { label: 'What you get', href: '/#what' },
   { label: 'Levels explained', href: '/#levels' },
   { label: 'How to apply', href: '/#applying' },
@@ -62,7 +63,7 @@ export default function Nav({ isHome = false }: NavProps) {
           {/* Kept in the flex flow (just made invisible) when hidden, so the nav links don't
               shift position depending on whether this CTA is shown. */}
           <div className={`hidden md:block ${hideCta ? 'invisible' : ''}`}>
-            <a href="/#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
+            <a href="/#alerts" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
               Get free alerts
             </a>
           </div>
@@ -92,7 +93,7 @@ export default function Nav({ isHome = false }: NavProps) {
             ))}
             {!hideCta && (
               <a
-                href="/#signup"
+                href="/#alerts"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-5 py-3 text-base font-semibold"
               >
