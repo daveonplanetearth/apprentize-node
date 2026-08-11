@@ -26,7 +26,7 @@ export default function Hero() {
             </span>
             Free apprenticeship search
           </div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-teal/30 bg-teal/10 px-3.5 py-2 text-sm font-bold uppercase tracking-wide text-teal animate-fade-up translate-y-1" style={{ animationDelay: '0.02s', opacity: 0 }}>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-teal/30 bg-teal/10 px-3.5 py-2 text-sm font-bold uppercase tracking-wide text-teal animate-fade-up translate-y-2" style={{ animationDelay: '0.02s', opacity: 0 }}>
             <MapPin className="w-4 h-4" /> England only
           </div>
         </div>
