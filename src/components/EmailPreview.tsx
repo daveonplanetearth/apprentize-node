@@ -15,9 +15,6 @@ export default function EmailPreview() {
             <div className="w-3 h-3 rounded-full bg-[#FEBC2E]" />
             <div className="w-3 h-3 rounded-full bg-[#28C840]" />
           </div>
-          <div className="flex-1 text-center">
-            <span className="text-xs text-ink-soft font-mono">apprentize — daily alert</span>
-          </div>
         </div>
 
         {/* email body */}
