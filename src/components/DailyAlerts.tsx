@@ -1,6 +1,5 @@
 import { Mail, ShieldCheck, Bell } from 'lucide-react';
 import EmailSignup from './EmailSignup';
-import EmailPreview from './EmailPreview';
 
 export default function DailyAlerts() {
   return (
@@ -16,18 +15,14 @@ export default function DailyAlerts() {
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          <div id="signup" className="order-2 lg:order-1">
+        <div className="mt-14">
+          <div id="signup">
             <EmailSignup source="alerts" />
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
               <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-teal" /> No spam, ever</span>
               <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> Daily alerts only</span>
               <span className="inline-flex items-center gap-1.5"><Bell className="w-4 h-4 text-teal" /> Cancel anytime</span>
             </div>
-          </div>
-
-          <div className="relative order-1 lg:order-2 animate-fade-up">
-            <EmailPreview />
           </div>
         </div>
       </div>
