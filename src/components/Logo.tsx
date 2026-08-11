@@ -3,8 +3,6 @@ interface LogoProps {
   className?: string;
 }
 
-// A custom mark: a lightning bolt whose top edge is notched like a graduation
-// cap, merging the "fast alerts" and "apprenticeship" ideas into one glyph.
 export default function Logo({ size = 36, className = '' }: LogoProps) {
   return (
     <svg
@@ -16,24 +14,26 @@ export default function Logo({ size = 36, className = '' }: LogoProps) {
       role="img"
       aria-label="Apprentize"
     >
-      <rect width="36" height="36" rx="11" className="fill-ink" />
-      {/* graduation-cap brim notch carved into the bolt's top edge */}
       <path
-        d="M18 6.5 L11.5 19.5 H17 L14.5 29.5 L24.5 16 H19 L22 6.5 Z"
+        d="M2.5 11.5 13.5 5l11 6.5-11 6.5-11-6.5Z"
+        className="fill-ink"
+      />
+      <path
+        d="M6 13.5v6.1c0 1.8 3.4 3.6 7.5 3.6s7.5-1.8 7.5-3.6v-6.1l-7.5 4.4L6 13.5Z"
+        className="fill-ink"
+      />
+      <path d="M5.2 12.8v6.1" className="stroke-ink" strokeWidth="1.2" strokeLinecap="round" />
+      <circle cx="5.2" cy="20.2" r="1.1" className="fill-ink" />
+      <path d="m4.4 21.2-.6 3.1h2.8L6 21.2" className="fill-ink" />
+      <circle cx="27.1" cy="10.5" r="3.2" className="fill-ink" />
+      <path
+        d="M22 22.8v-7.2c0-2.1 1.5-3.7 3.5-3.7s3.7 1.6 3.7 3.7v3.6h2.9c1.3 0 2.4 1 2.4 2.3v1.3H22Z"
+        className="fill-ink"
+      />
+      <path
+        d="M25.5 16.2 27 20h5.7l2.8-5.6c.3-.6 1.1-.8 1.7-.5.6.3.8 1.1.5 1.7l-3.2 6.3c-.3.6-.9.9-1.6.9H26.6c-1.5 0-2.8-1-3.3-2.4l-1.1-3.1"
         className="fill-safety"
-        stroke="#fff"
-        strokeWidth="0.6"
-        strokeLinejoin="round"
-        strokeOpacity="0.35"
       />
-      {/* tassel */}
-      <path
-        d="M24.5 16 L27 13.5"
-        className="stroke-safety"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <circle cx="27" cy="13.5" r="1.1" className="fill-safety" />
     </svg>
   );
 }
