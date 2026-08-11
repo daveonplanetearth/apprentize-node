@@ -24,7 +24,7 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="max-w-2xl">
           <p className="text-sm font-bold uppercase tracking-widest text-safety">How it works</p>
-          <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
+          <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight">
             Three steps. Done in under a minute.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">

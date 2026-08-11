@@ -18,7 +18,8 @@
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance;
+    /* disabled: Chrome's text-wrap: balance wraps short headings onto two lines
+       where Edge keeps them on one. Removed to keep headings on a single line. */
   }
   .text-pretty {
     text-wrap: pretty;
