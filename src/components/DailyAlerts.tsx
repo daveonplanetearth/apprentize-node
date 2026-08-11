@@ -15,7 +15,7 @@ export default function DailyAlerts() {
           </p>
         </div>
 
-        <div className="mt-14">
+        <div className="mt-14 max-w-xl mx-auto">
           <div id="signup">
             <EmailSignup source="alerts" />
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
