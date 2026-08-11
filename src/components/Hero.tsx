@@ -40,7 +40,7 @@ export default function Hero() {
           </span> across England.
         </h1>
 
-        <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
+        <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
           Apprentize is where you browse every live apprenticeship vacancy near you.
         </p>
         <p className="mt-2 text-xs text-ink-soft/80 animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
