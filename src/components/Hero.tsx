@@ -41,7 +41,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-          Apprentize is where you browse every live apprenticeship vacancy near you — built for England, not the whole UK.
+          Apprentize is where you browse every live apprenticeship vacancy near you.
         </p>
 
         <form onSubmit={handleSearch} className="mt-8 max-w-lg mx-auto animate-fade-up" style={{ animationDelay: '0.15s', opacity: 0 }}>
