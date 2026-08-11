@@ -28,7 +28,7 @@ export default function Hero() {
 
         <h1 className="mt-6 font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
           Search <span className="font-semibold bg-[linear-gradient(90deg,#ff0080,#ff8c00,#ffd700,#00d26a,#00bfff,#7c3aed,#ff0080)] bg-[length:200%_auto] bg-clip-text text-transparent animate-[spectrum-shift_4s_linear_infinite]">live</span> <span className="relative whitespace-nowrap">
-            <span className="relative z-10 text-safety">apprenticeships</span>
+            <span className="relative z-10 text-safety">apprentizeships</span>
             <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden>
               <path d="M2 8C40 3 160 3 198 8" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
             </svg>
