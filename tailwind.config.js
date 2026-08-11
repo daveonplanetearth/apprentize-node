@@ -41,6 +41,10 @@ export default {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
+        'spectrum-shift': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '200% 50%' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.6s ease-out forwards',
@@ -48,6 +52,7 @@ export default {
         'pulse-ring': 'pulse-ring 2.5s ease-out infinite',
         float: 'float 4s ease-in-out infinite',
         shimmer: 'shimmer 3s linear infinite',
+        'spectrum-shift': 'spectrum-shift 4s linear infinite',
       },
     },
   },

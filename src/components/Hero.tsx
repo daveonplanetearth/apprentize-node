@@ -39,7 +39,7 @@ export default function Hero() {
           Apprentize is where you browse every live apprenticeship vacancy near you.
         </p>
         <p className="mt-2 text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
-          <span className="font-semibold bg-gradient-to-r from-safety via-teal to-safety-deep bg-clip-text text-transparent">340+</span> apprenticeships currently live
+          <span className="font-semibold bg-[linear-gradient(90deg,#ff0080,#ff8c00,#ffd700,#00d26a,#00bfff,#7c3aed,#ff0080)] bg-[length:200%_auto] bg-clip-text text-transparent animate-[spectrum-shift_4s_linear_infinite]">340+</span> apprenticeships currently live
         </p>
         <p className="mt-1 text-xs text-ink-soft/80 animate-fade-up" style={{ animationDelay: '0.14s', opacity: 0 }}>
           * only apprenticeships in England are currently available, not the whole UK
