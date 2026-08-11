@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Zap, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import Logo from './Logo';
+import Logo from './Logo';
 import { useHasSessionToken } from '../hooks/usePreferences';
 
 // Every href here is root-absolute (`/#…`, not a bare `#…`) because this nav also renders on the
@@ -46,7 +48,7 @@ export default function Nav({ isHome = false }: NavProps) {
         <div className="flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-ink flex items-center justify-center transition-transform group-hover:scale-105 group-active:scale-95">
-              <Zap className="w-5 h-5 text-safety" fill="currentColor" />
+              <Logo size={36} />
             </div>
             <span className="font-display font-bold text-xl text-ink tracking-tight">apprentize</span>
           </a>

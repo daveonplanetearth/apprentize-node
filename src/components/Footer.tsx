@@ -1,4 +1,5 @@
-import { Zap, Mail, ShieldCheck, Bell, ArrowRight } from 'lucide-react';
+import { Mail, ShieldCheck, Bell, ArrowRight } from 'lucide-react';
+import Logo from './Logo';
 import { useHasSessionToken } from '../hooks/usePreferences';
 
 interface FooterProps {
@@ -59,7 +60,7 @@ export default function Footer({ isHome = false }: FooterProps) {
         <div className="mx-auto max-w-6xl px-5 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
-              <Zap className="w-4 h-4 text-safety" fill="currentColor" />
+              <Logo size={28} />
             </div>
             <span className="font-display font-bold text-lg text-ink tracking-tight">apprentize</span>
           </div>
