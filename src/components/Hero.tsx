@@ -53,7 +53,7 @@ export default function Hero() {
                 type="text"
                 value={postcode}
                 onChange={(e) => setPostcode(e.target.value)}
-                placeholder="Enter your postcode"
+                placeholder="Enter your post code"
                 aria-label="Postcode"
                 className="w-full rounded-xl bg-transparent pl-10 pr-4 py-3.5 text-base text-ink placeholder:text-ink-soft/50 focus:outline-none"
               />
