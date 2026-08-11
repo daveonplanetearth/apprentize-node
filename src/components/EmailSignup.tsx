@@ -187,7 +187,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
             </div>
           </div>
           <p className="mt-2 text-xs text-ink-soft px-1">
-            You can enter a full postcode or just the first part (e.g. "SW1A") — a full postcode gives more accurate matches.
+            You can enter a full postcode or just the first part (e.g. "SW1A") — a full post code gives more accurate matches.
           </p>
         </div>
 
