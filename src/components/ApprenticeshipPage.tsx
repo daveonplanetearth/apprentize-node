@@ -62,6 +62,10 @@ export default function ApprenticeshipPage({
   const { state, result, error, retry } = useApprenticeshipDetails(id ?? '');
   const description = result?.description ? stripHtml(result.description) : '';
 
+  // The API returns the street address and postcode separately; joined they read as one line and
+  // make a good enough Maps query on their own (the postcode alone would drop the building).
+  const locationLabel = [result?.address, result?.postcode].filter(Boolean).join(', ');
+
   // Apply against the employer's own application link where the vacancy has one, falling back to
   // the find-an-apprenticeship listing page (and then to the API's pre-resolved applyUrl, which is
   // all the local dev fixtures carry).
@@ -205,10 +209,24 @@ export default function ApprenticeshipPage({
                 {result.closingDate && (
                   <span className="flex items-center gap-2"><CalendarClock className="w-4 h-4 shrink-0" /> Closes {formatAbsoluteDate(result.closingDate)}</span>
                 )}
-                {(result.address || result.postcode) && (
-                  <span className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 shrink-0" /> {[result.address, result.postcode].filter(Boolean).join(', ')}
-                  </span>
+                {/*
+                  Google's cross-platform Maps URL: on a phone with the app installed this
+                  deep-links straight into it, and falls back to maps.google.com everywhere else —
+                  so one href covers both without sniffing the platform.
+                */}
+                {locationLabel && (
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationLabel)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`Open ${locationLabel} in Google Maps`}
+                    className="group/map flex items-center gap-2 rounded hover:text-ink transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
+                  >
+                    <MapPin className="w-4 h-4 shrink-0" />
+                    <span className="underline decoration-dotted decoration-ink-soft/40 underline-offset-2 group-hover/map:decoration-ink">
+                      {locationLabel}
+                    </span>
+                  </a>
                 )}
               </div>
             </div>
