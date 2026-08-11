@@ -4,6 +4,8 @@ import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
 import Stats from './components/Stats';
 import WhatYouGet from './components/WhatYouGet';
+import LevelsExplainer from './components/LevelsExplainer';
+import HowToApply from './components/HowToApply';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
@@ -233,6 +235,8 @@ export default function App() {
         <HowItWorks />
         <Stats />
         <WhatYouGet />
+        <LevelsExplainer />
+        <HowToApply />
         <FAQ />
       </main>
       <Footer isHome />

@@ -11,6 +11,8 @@ import { useHasSessionToken } from '../hooks/usePreferences';
 const marketingLinks = [
   { label: 'How it works', href: '/#how' },
   { label: 'What you get', href: '/#what' },
+  { label: 'Levels explained', href: '/#levels' },
+  { label: 'How to apply', href: '/#applying' },
   { label: 'FAQ', href: '/#faq' },
 ];
 

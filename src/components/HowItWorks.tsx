@@ -14,7 +14,7 @@ const steps = [
   {
     icon: Mail,
     title: 'You get an email that day',
-    body: 'The moment a matching vacancy appears, you receive a clean, scannable email with a direct link to apply. No app, no dashboard.',
+    body: 'The day a matching vacancy appears, you receive a clean, scannable email with a direct link to apply. Or just browse live listings yourself, any time.',
   },
 ];
 
@@ -28,7 +28,7 @@ export default function HowItWorks() {
             Three steps. Done in under a minute.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            No account needed, no app to download. Set your alert once — or browse live listings anytime you feel like looking.
+            Search live listings whenever you like, or set a free daily alert once and let new roles come to you. No account needed.
           </p>
         </div>
 

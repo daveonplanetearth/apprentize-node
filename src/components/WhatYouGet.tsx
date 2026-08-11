@@ -1,10 +1,10 @@
-import { TrendingUp, MapPin, Filter, Clock, Link2, Eye, Share2 } from 'lucide-react';
+import { TrendingUp, MapPin, Search, Clock, Link2, Eye, Share2 } from 'lucide-react';
 
 const features = [
   { icon: TrendingUp, title: 'Daily checks, not weekly', body: "Find An Apprenticeship emails you weekly. We check every day — so you hear about new roles the day they open, not six days later." },
-  { icon: Filter, title: 'Sector & region filters', body: 'Pick the industry, the area, and the level you care about. We only email you when a role genuinely matches your criteria.' },
+  { icon: Search, title: 'Search by job title', body: "Looking for something specific? Search live listings by job title — \"software\", \"carpentry\", whatever you're after — on top of location filtering." },
   { icon: Eye, title: 'Clean, scannable emails', body: 'No clutter. Each alert lists the new matching roles with salary, level, and company — plus a direct link straight to the application page.' },
-  { icon: MapPin, title: 'Location-aware', body: 'Filter by city, region, or distance from your postcode. Apprenticeships near you get surfaced first.' },
+  { icon: MapPin, title: 'Location-aware', body: 'Set your postcode and how far you\'re willing to travel — apprenticeships near you get surfaced first.' },
   { icon: Share2, title: 'Share to WhatsApp', body: 'Spot a role a friend or family member would love? Share any apprenticeship straight to WhatsApp from the browse page — one tap, no copy-paste.' },
   { icon: Link2, title: 'Direct apply links', body: 'Every listing links straight to the official posting. No middleman, no redirects, no job-board paywalls.' },
   { icon: Clock, title: 'Set once, forget it', body: 'Your inbox does the work automatically. Want to look right now instead? Browse live listings anytime, no waiting required.' },
