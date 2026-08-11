@@ -32,7 +32,7 @@ export default function Footer({ isHome = false }: FooterProps) {
               Don't miss the next one.
             </h2>
             <p className="mt-4 text-lg text-ink-soft text-pretty">
-              Enter your email and Apprentize will notify you the day a matching apprenticeship in England opens — not six days later.
+              Enter your email and Apprentize will notify you the day a matching apprenticeship in England opens.
             </p>
 
             <div className="mt-8 max-w-md mx-auto">
