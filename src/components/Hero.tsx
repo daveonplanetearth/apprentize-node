@@ -70,7 +70,8 @@ export default function Hero() {
 
         <div className="mt-5 animate-fade-up" style={{ animationDelay: '0.18s', opacity: 0 }}>
           <p className="text-sm text-ink-soft">
-            Prefer to get a daily email when new roles open?{' '}
+            Prefer to get a daily email when new roles open?
+            <br />
             <a href="#alerts" className="font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors">
               Set up free alerts
             </a>
