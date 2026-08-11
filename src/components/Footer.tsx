@@ -35,8 +35,10 @@ export default function Footer({ isHome = false }: FooterProps) {
             </p>
 
             <div className="mt-8 max-w-md mx-auto">
+              {/* Root-absolute, like Nav's links — this footer also renders on the details page's
+                  shared /apprenticeship/<id> URL, where a bare `#…` would hang off that path. */}
               <a
-                href="#signup"
+                href="/#signup"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-3.5 text-base transition-all hover:bg-safety-deep active:scale-[0.98]"
               >
                 Get alerts <ArrowRight className="w-4 h-4" />
@@ -68,9 +70,9 @@ export default function Footer({ isHome = false }: FooterProps) {
         </div>
 
         <div className="mx-auto max-w-6xl px-5 sm:px-6 pb-8 flex items-center justify-center gap-4 text-sm">
-          <a href="#/terms" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Terms of Service</a>
+          <a href="/#/terms" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Terms of Service</a>
           <span className="text-line">·</span>
-          <a href="#/privacy" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Privacy Notice</a>
+          <a href="/#/privacy" className="text-ink-soft underline underline-offset-2 hover:text-safety transition-colors">Privacy Notice</a>
         </div>
       </div>
     </footer>

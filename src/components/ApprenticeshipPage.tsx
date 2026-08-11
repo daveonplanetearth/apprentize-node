@@ -39,8 +39,12 @@ function formatAbsoluteDate(iso?: string): string {
   return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
 }
 
+// The canonical, shareable form of this page — a real path rather than the `#/apprenticeship?id=`
+// route used for in-app navigation, because link previews and crawlers never see the fragment.
+// `App.tsx` resolves both; browsing from the list stays on the hash route so a card click doesn't
+// cost a full page load (and can carry the return-to-results state).
 function shareUrl(id: string): string {
-  return `${window.location.origin}${window.location.pathname}#/apprenticeship?id=${encodeURIComponent(id)}`;
+  return `${window.location.origin}/apprenticeship/${encodeURIComponent(id)}`;
 }
 
 // The findapprenticeship.service.gov.uk source data wraps descriptions in markup (e.g. <p></p>)
@@ -66,8 +70,10 @@ export default function ApprenticeshipPage({
   // Reconstructs the browse page's last search/page/scroll position, so "Back to results" returns
   // to where the visitor came from rather than resetting to page 1 — falls back to a plain link
   // when there's no return state (e.g. a shared/bookmarked details link opened directly).
+  // Root-absolute (`/#/…`) rather than fragment-only, so it still resolves when this page was
+  // opened at its shared /apprenticeship/<id> URL instead of the hash route.
   const backHref = returnPostcode
-    ? `#/apprenticeships?${new URLSearchParams({
+    ? `/#/apprenticeships?${new URLSearchParams({
         postcode: returnPostcode,
         radius: String(returnRadiusMiles ?? ''),
         title: returnTitle ?? '',
@@ -76,7 +82,7 @@ export default function ApprenticeshipPage({
         page: String(returnPage ?? 1),
         ...(id ? { viewedId: id } : {}),
       }).toString()}`
-    : '#/apprenticeships';
+    : '/#/apprenticeships';
 
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -115,7 +121,7 @@ export default function ApprenticeshipPage({
                   </a>
                 )}
                 <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${result.title} at ${result.employerName}${result.apprenticeshipLevel ? ` (${result.apprenticeshipLevel})` : ''} — ${shareUrl(result.id)}`)}`}
+                  href={`https://wa.me/?text=${encodeURIComponent(`Hi! I've found an apprenticeship you might be interested in - ${shareUrl(result.id)}`)}`}
                   target="_blank"
                   rel="noreferrer"
                   aria-label={`Share ${result.title} on WhatsApp`}

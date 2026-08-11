@@ -2,15 +2,20 @@ import { useEffect, useState } from 'react';
 import { Zap, Menu, X } from 'lucide-react';
 import { useHasSessionToken } from '../hooks/usePreferences';
 
+// Every href here is root-absolute (`/#…`, not a bare `#…`) because this nav also renders on the
+// details page's shared /apprenticeship/<id> URL, where a fragment-only link would hang the hash
+// off that path instead of the site root. From the landing page these stay same-document, so
+// anchor scrolling still works without a reload.
+
 // Informational links relevant to every visitor, subscribed or not.
 const marketingLinks = [
-  { label: 'How it works', href: '#how' },
-  { label: 'What you get', href: '#what' },
-  { label: 'FAQ', href: '#faq' },
+  { label: 'How it works', href: '/#how' },
+  { label: 'What you get', href: '/#what' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
-const browseLink = { label: 'Browse Apprenticeships', href: '#/apprenticeships' };
-const preferencesLink = { label: 'My Preferences', href: '#/preferences' };
+const browseLink = { label: 'Browse Apprenticeships', href: '/#/apprenticeships' };
+const preferencesLink = { label: 'My Preferences', href: '/#/preferences' };
 
 interface NavProps {
   isHome?: boolean;
@@ -37,7 +42,7 @@ export default function Nav({ isHome = false }: NavProps) {
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-paper/85 backdrop-blur-md border-b border-line/60' : 'bg-transparent'}`}>
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          <a href="#" className="flex items-center gap-2.5 group">
+          <a href="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-ink flex items-center justify-center transition-transform group-hover:scale-105 group-active:scale-95">
               <Zap className="w-5 h-5 text-safety" fill="currentColor" />
             </div>
@@ -55,7 +60,7 @@ export default function Nav({ isHome = false }: NavProps) {
           {/* Kept in the flex flow (just made invisible) when hidden, so the nav links don't
               shift position depending on whether this CTA is shown. */}
           <div className={`hidden md:block ${hideCta ? 'invisible' : ''}`}>
-            <a href="#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
+            <a href="/#signup" className="inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
               Get free alerts
             </a>
           </div>
@@ -85,7 +90,7 @@ export default function Nav({ isHome = false }: NavProps) {
             ))}
             {!hideCta && (
               <a
-                href="#signup"
+                href="/#signup"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-5 py-3 text-base font-semibold"
               >

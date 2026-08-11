@@ -6,6 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apprentize — Free daily apprenticeship alerts</title>
     <meta name="description" content="Find An Apprenticeship's own alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an apprenticeship in England opens — sector, region, level. Completely free." />
+
+    <!--
+      Link-preview metadata for shared URLs (WhatsApp, iMessage, Slack). This is a static SPA, so
+      every route — including a shared /apprenticeship/<id> link — is served this one document and
+      therefore this one card. Per-vacancy titles/descriptions would need the host to render the
+      tags server-side (an Azure Function or App Service route ahead of the SPA fallback).
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Apprentize" />
+    <meta property="og:title" content="Apprentize — Free daily apprenticeship alerts" />
+    <meta property="og:description" content="Browse live UK apprenticeship vacancies and get a free daily email the moment a matching one opens." />
+    <!-- No og:url — scrapers then attribute the card to the URL that was actually shared. -->
+    <meta name="twitter:card" content="summary" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />

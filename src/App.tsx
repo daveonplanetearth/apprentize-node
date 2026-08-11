@@ -19,20 +19,55 @@ import TermsOfServicePage from './components/TermsOfServicePage';
 const SORT_BY_VALUES: SortBy[] = ['postedDate', 'closingDate', 'distance'];
 const SORT_ORDER_VALUES: SortOrder[] = ['asc', 'desc'];
 
-function useHashRoute() {
-  const [hash, setHash] = useState(() => window.location.hash.replace(/^#\/?/, ''));
+// The details page has a second, path-based URL (/apprenticeship/<id>) alongside its hash route:
+// link previews (WhatsApp, iMessage, Slack) and crawlers never send the fragment to the server, so
+// a shareable link has to carry the id in the path. Both hosts rewrite unknown paths to index.html
+// (`public/web.config` for App Service, `staticwebapp.config.json` for Static Web Apps), and Vite
+// does the same in dev/preview, so the SPA still boots and the route is resolved here.
+const DETAILS_PATH = /^\/apprenticeship\/(.+?)\/?$/;
+
+function decodeSegment(segment: string): string {
+  // A hand-edited or truncated URL can leave a malformed escape, which throws.
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
+// A hash always wins over the path, so the in-app `#/...` links keep working when the visitor
+// landed on a path-based URL (e.g. "Back to results" from a shared details link).
+function readRoute(): { path: string; params: URLSearchParams } {
+  const hash = window.location.hash.replace(/^#\/?/, '');
+  if (hash) {
+    const [path, search] = hash.split('?');
+    return { path, params: new URLSearchParams(search ?? '') };
+  }
+
+  const match = DETAILS_PATH.exec(window.location.pathname);
+  if (match) {
+    return { path: 'apprenticeship', params: new URLSearchParams({ id: decodeSegment(match[1]) }) };
+  }
+
+  return { path: '', params: new URLSearchParams() };
+}
+
+function useRoute() {
+  const [route, setRoute] = useState(readRoute);
   useEffect(() => {
-    const onHash = () => setHash(window.location.hash.replace(/^#\/?/, ''));
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
+    const onChange = () => setRoute(readRoute());
+    window.addEventListener('hashchange', onChange);
+    window.addEventListener('popstate', onChange);
+    return () => {
+      window.removeEventListener('hashchange', onChange);
+      window.removeEventListener('popstate', onChange);
+    };
   }, []);
-  return hash;
+  return route;
 }
 
 export default function App() {
-  const rawRoute = useHashRoute();
-  const [path, search] = rawRoute.split('?');
-  const params = new URLSearchParams(search ?? '');
+  const { path, params } = useRoute();
 
   useEffect(() => {
     if (path !== 'signup') return;
