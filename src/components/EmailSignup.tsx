@@ -270,7 +270,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
       )}
       {postcodeTouched && !postcodeValid && (
         <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
-          <AlertCircle className="w-4 h-4" /> Please enter your postcode.
+          <AlertCircle className="w-4 h-4" /> Please enter your post code.
         </p>
       )}
       {errorField === 'postcode' && (
