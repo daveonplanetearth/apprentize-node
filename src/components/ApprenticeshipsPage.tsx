@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
-  TrendingUp, Clock, Loader2, AlertCircle, Ruler, X, Share2,
+  TrendingUp, Clock, Loader2, AlertCircle, Ruler, X,
   ArrowUpDown, CalendarClock, Users,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
@@ -352,6 +352,15 @@ export default function ApprenticeshipsPage({
               <ul className="space-y-3">
                 {result.items.map((job, i) => {
                   const viewed = viewedIds.has(job.id);
+                  const detailHref = `#/apprenticeship?${new URLSearchParams({
+                    id: job.id,
+                    postcode,
+                    radius: String(radiusMiles),
+                    title,
+                    sortBy,
+                    sortOrder,
+                    page: String(page),
+                  }).toString()}`;
                   return (
                   <li
                     key={job.id}
@@ -366,15 +375,15 @@ export default function ApprenticeshipsPage({
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                           <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="font-semibold text-ink text-base line-clamp-2">{job.title}</p>
+                            <a href={detailHref} className="group/title flex items-center gap-2 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
+                              <p className="font-semibold text-ink text-base line-clamp-2 group-hover/title:underline underline-offset-2">{job.title}</p>
                               {isRecentlyPosted(job.postedDate) && (
                                 <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider text-safety bg-safety/10 px-1.5 py-0.5 rounded">New</span>
                               )}
                               {viewed && (
                                 <span className="hidden sm:inline-flex shrink-0 text-[10px] font-bold uppercase tracking-wider text-ink-soft bg-ink/5 px-1.5 py-0.5 rounded">Viewed</span>
                               )}
-                            </div>
+                            </a>
                             <p className="text-sm text-ink-soft mt-0.5 flex items-center gap-1.5">
                               <Building2 className="w-3.5 h-3.5" /> {job.company}
                             </p>
@@ -387,27 +396,10 @@ export default function ApprenticeshipsPage({
                               <span className="sm:hidden text-[10px] font-bold uppercase tracking-wider text-ink-soft bg-ink/5 px-1.5 py-0.5 rounded">Viewed</span>
                             )}
                             <a
-                              href={`#/apprenticeship?${new URLSearchParams({
-                                id: job.id,
-                                postcode,
-                                radius: String(radiusMiles),
-                                title,
-                                sortBy,
-                                sortOrder,
-                                page: String(page),
-                              }).toString()}`}
+                              href={detailHref}
                               className="inline-flex items-center gap-1 rounded-lg bg-ink/5 text-ink px-3 py-2 text-xs font-semibold hover:bg-ink hover:text-paper transition-colors"
                             >
                               View
-                            </a>
-                            <a
-                              href={`https://wa.me/?text=${encodeURIComponent(`Apprenticeship: ${job.title} at ${job.company} (${job.level}) — ${window.location.origin}${window.location.pathname}#/apprenticeship?id=${job.id}`)}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              aria-label={`Share ${job.title} on WhatsApp`}
-                              className="inline-flex items-center gap-1 rounded-lg bg-teal/10 text-teal px-3 py-2 text-xs font-semibold hover:bg-teal hover:text-paper transition-colors"
-                            >
-                              <Share2 className="w-3.5 h-3.5" /> WhatsApp
                             </a>
                           </div>
                         </div>
