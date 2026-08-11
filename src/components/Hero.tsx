@@ -43,6 +43,9 @@ export default function Hero() {
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
           Apprentize is where you browse every live apprenticeship vacancy near you.
         </p>
+        <p className="mt-2 text-xs text-ink-soft/80 animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
+          * only apprenticeships in England are currently available, not the whole UK
+        </p>
 
         <form onSubmit={handleSearch} className="mt-8 max-w-lg mx-auto animate-fade-up" style={{ animationDelay: '0.15s', opacity: 0 }}>
           <div className="flex flex-col sm:flex-row gap-2 bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-2">
@@ -73,9 +76,6 @@ export default function Hero() {
             <a href="#alerts" className="font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors">
               Set up free alerts
             </a>
-          </p>
-          <p className="mt-1 text-xs text-ink-soft/80">
-            * only apprenticeships in England are currently available, not the whole UK
           </p>
         </div>
       </div>
