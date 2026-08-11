@@ -12,7 +12,6 @@ const marketingLinks = [
   { label: 'How it works', href: '/#how' },
   { label: 'Daily alerts', href: '/#alerts' },
   { label: 'What you get', href: '/#what' },
-  { label: 'Levels explained', href: '/#levels' },
   { label: 'How to apply', href: '/#applying' },
   { label: 'FAQ', href: '/#faq' },
 ];

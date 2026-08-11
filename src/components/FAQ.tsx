@@ -34,6 +34,26 @@ const faqs: AccordionEntry[] = [
     a: 'No. Apprentize alerts on apprenticeships in England only. The official Find An Apprenticeship feed we monitor covers English vacancies. If you are looking in Scotland, Wales, or Northern Ireland, Apprentize is not the right tool — try Apprenticeships.scot, Careers Wales, or nidirect respectively.',
   },
   {
+    q: 'What do the apprenticeship levels mean?',
+    a: 'Every listing shows a level. Here is what each one means in plain English:',
+  },
+  {
+    q: 'Intermediate (Level 2)',
+    a: "Roughly equivalent to 5 GCSE passes at grades 9–4 (A*–C). A common starting point if you're leaving school after Year 11.",
+  },
+  {
+    q: 'Advanced (Level 3)',
+    a: 'Roughly equivalent to two A-level passes. The most common apprenticeship level for 16–18 year olds.',
+  },
+  {
+    q: 'Higher (Level 4–5)',
+    a: "Roughly equivalent to a foundation degree, or the first year or two of university. Usually needs a Level 3 apprenticeship or equivalent to get onto.",
+  },
+  {
+    q: 'Degree (Level 6–7)',
+    a: "A full bachelor's or master's degree, gained on the job instead of studying full-time. Usually needs a Level 3 apprenticeship or equivalent to get onto.",
+  },
+  {
     q: 'How do I unsubscribe?',
     a: 'Every email includes a one-click unsubscribe link. You can also manage your preferences, unsubscribe, or permanently delete your account anytime from My Preferences.',
   },

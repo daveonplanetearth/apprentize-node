@@ -5,7 +5,6 @@ import DailyAlerts from './components/DailyAlerts';
 import HowItWorks from './components/HowItWorks';
 import Stats from './components/Stats';
 import WhatYouGet from './components/WhatYouGet';
-import LevelsExplainer from './components/LevelsExplainer';
 import HowToApply from './components/HowToApply';
 import FAQ from './components/FAQ';
 import Footer from './components/Footer';
@@ -237,7 +236,6 @@ export default function App() {
         <DailyAlerts />
         <Stats />
         <WhatYouGet />
-        <LevelsExplainer />
         <HowToApply />
         <FAQ />
       </main>
