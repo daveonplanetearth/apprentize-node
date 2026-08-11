@@ -3,16 +3,30 @@ interface LogoProps {
   className?: string;
 }
 
-const logoSource = '/ChatGPT_Image_Aug_11,_2026,_03_15_14_PM.png';
+const spectrumColors = ['#e6194B', '#ff8c00', '#ffd166', '#06d6a0', '#118ab2', '#7c3aed'];
 
-export default function Logo({ size = 28, className = '' }: LogoProps) {
+export default function Logo({ size = 36, className = '' }: LogoProps) {
   return (
-    <img
-      src={logoSource}
+    <svg
       width={size}
       height={size}
-      className={`object-contain ${className}`}
-      alt="Apprentize"
-    />
+      viewBox="0 0 36 36"
+      fill="none"
+      className={className}
+      role="img"
+      aria-label="Apprentize"
+    >
+      {spectrumColors.map((color, index) => (
+        <rect
+          key={color}
+          x="3"
+          y={3 + index * 5}
+          width="30"
+          height="4"
+          rx="1.5"
+          fill={color}
+        />
+      ))}
+    </svg>
   );
 }
