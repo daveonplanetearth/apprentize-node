@@ -14,25 +14,31 @@ export default function Logo({ size = 36, className = '' }: LogoProps) {
       role="img"
       aria-label="Apprentize"
     >
+      {/* Mortarboard (graduation cap) */}
       <path
-        d="M2.5 11.5 13.5 5l11 6.5-11 6.5-11-6.5Z"
+        d="M18 4 4 10l14 6 14-6-14-6Z"
         className="fill-ink"
       />
       <path
-        d="M6 13.5v6.1c0 1.8 3.4 3.6 7.5 3.6s7.5-1.8 7.5-3.6v-6.1l-7.5 4.4L6 13.5Z"
+        d="M10 12.5v5c0 1.6 3.6 2.9 8 2.9s8-1.3 8-2.9v-5l-8 3.4-8-3.4Z"
         className="fill-ink"
       />
-      <path d="M5.2 12.8v6.1" className="stroke-ink" strokeWidth="1.2" strokeLinecap="round" />
-      <circle cx="5.2" cy="20.2" r="1.1" className="fill-ink" />
-      <path d="m4.4 21.2-.6 3.1h2.8L6 21.2" className="fill-ink" />
-      <circle cx="27.1" cy="10.5" r="3.2" className="fill-ink" />
+      {/* Tassel */}
       <path
-        d="M22 22.8v-7.2c0-2.1 1.5-3.7 3.5-3.7s3.7 1.6 3.7 3.7v3.6h2.9c1.3 0 2.4 1 2.4 2.3v1.3H22Z"
-        className="fill-ink"
+        d="M30 10v6"
+        className="stroke-ink"
+        strokeWidth="1.4"
+        strokeLinecap="round"
       />
+      <circle cx="30" cy="17.5" r="1.3" className="fill-safety" />
+
+      {/* Young person — head */}
+      <circle cx="18" cy="24.5" r="3.4" className="fill-ink" />
+
+      {/* Shoulders / upper body */}
       <path
-        d="M25.5 16.2 27 20h5.7l2.8-5.6c.3-.6 1.1-.8 1.7-.5.6.3.8 1.1.5 1.7l-3.2 6.3c-.3.6-.9.9-1.6.9H26.6c-1.5 0-2.8-1-3.3-2.4l-1.1-3.1"
-        className="fill-safety"
+        d="M11.5 33.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"
+        className="fill-ink"
       />
     </svg>
   );
