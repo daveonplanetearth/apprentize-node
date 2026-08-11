@@ -75,7 +75,7 @@ export default function Hero() {
             </a>
           </p>
           <p className="mt-1 text-xs text-ink-soft/80">
-            * only apprenticeships in England are currently available, not the whole UK.
+            * only apprenticeships in England are currently available, not the whole UK
           </p>
         </div>
       </div>
