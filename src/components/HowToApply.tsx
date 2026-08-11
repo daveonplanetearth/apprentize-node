@@ -26,7 +26,7 @@ export default function HowToApply() {
         <div className="text-center">
           <p className="text-sm font-bold uppercase tracking-widest text-safety">Applying</p>
           <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
-            How applying actually works.
+            How applying to an apprenticeship works.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
             Apprentize helps you find the role. Here's exactly what happens once you click apply.
