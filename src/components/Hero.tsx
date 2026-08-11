@@ -36,7 +36,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
-          Apprentize is where you browse every live apprenticeship vacancy near you.
+          Apprentize is where you browse every live apprenticeship vacancy near you*.
         </p>
         <p className="mt-2 text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
           <span className="font-semibold text-safety">340+</span> apprenticeships currently live
