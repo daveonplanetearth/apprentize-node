@@ -59,8 +59,8 @@ export default function Footer({ isHome = false }: FooterProps) {
       <div className="border-t border-line/60">
         <div className="mx-auto max-w-6xl px-5 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-ink flex items-center justify-center">
-              <Logo size={28} />
+            <div className="w-12 h-8 flex items-center justify-center">
+              <Logo size={48} />
             </div>
             <span className="font-display font-bold text-lg text-ink tracking-tight">apprentize</span>
           </div>

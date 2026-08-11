@@ -46,8 +46,8 @@ export default function Nav({ isHome = false }: NavProps) {
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-ink flex items-center justify-center transition-transform group-hover:scale-105 group-active:scale-95">
-              <Logo size={36} />
+            <div className="w-12 h-8 flex items-center justify-center transition-transform group-hover:scale-105 group-active:scale-95">
+              <Logo size={48} />
             </div>
             <span className="font-display font-bold text-xl text-ink tracking-tight">apprentize</span>
           </a>
