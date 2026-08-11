@@ -18,17 +18,12 @@ export default function Hero() {
       <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-safety/5 rounded-full blur-[120px] pointer-events-none" aria-hidden />
 
       <div className="relative mx-auto max-w-3xl px-5 sm:px-6 text-center">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-safety/30 bg-safety/10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-safety animate-fade-up">
-            <span className="relative flex w-2 h-2">
-              <span className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
-              <span className="relative rounded-full w-2 h-2 bg-safety" />
-            </span>
-            Free apprenticeship search
-          </div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-teal/30 bg-teal/10 px-3.5 py-2 text-sm font-bold uppercase tracking-wide text-teal animate-fade-up translate-y-2" style={{ animationDelay: '0.02s', opacity: 0 }}>
-            <MapPin className="w-4 h-4" /> England only
-          </div>
+        <div className="inline-flex items-center gap-2 rounded-full border border-safety/30 bg-safety/10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-safety animate-fade-up">
+          <span className="relative flex w-2 h-2">
+            <span className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
+            <span className="relative rounded-full w-2 h-2 bg-safety" />
+          </span>
+          Free apprenticeship search
         </div>
 
         <h1 className="mt-6 font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight text-balance animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
