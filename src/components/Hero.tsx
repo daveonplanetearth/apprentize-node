@@ -67,12 +67,17 @@ export default function Hero() {
           </div>
         </form>
 
-        <p className="mt-5 text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.18s', opacity: 0 }}>
-          Prefer to get a daily email when new roles open?{' '}
-          <a href="#alerts" className="font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors">
-            Set up free alerts
-          </a>
-        </p>
+        <div className="mt-5 animate-fade-up" style={{ animationDelay: '0.18s', opacity: 0 }}>
+          <p className="text-sm text-ink-soft">
+            Prefer to get a daily email when new roles open?{' '}
+            <a href="#alerts" className="font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors">
+              Set up free alerts
+            </a>
+          </p>
+          <p className="mt-1 text-xs text-ink-soft/80">
+            Only apprenticeships in England are currently available, not the whole UK.
+          </p>
+        </div>
       </div>
     </section>
   );
