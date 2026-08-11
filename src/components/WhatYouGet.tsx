@@ -20,7 +20,7 @@ export default function WhatYouGet() {
             Everything the weekly alert misses.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            The official service is great — but it only notifies you once a week. Apprentize fills the gap.
+            The official Find an Apprenticeship service is great — but it only notifies you once a week. Apprentize fills the gap.
           </p>
         </div>
 
