@@ -11,7 +11,7 @@ export default function DailyAlerts() {
             Let new roles come to you.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            Set your region and travel distance once. The day a matching apprenticeship opens, we email you a clean, scannable alert with a direct link to apply.
+            Set your region and travel distance. The day a matching apprenticeship opens, we email you a clean, scannable alert with a direct link to apply.
           </p>
         </div>
 
