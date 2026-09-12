@@ -1,4 +1,6 @@
-const LAST_UPDATED = '7 August 2026';
+// Keep in step with Apprentize.Api's AppConstants.CurrentPrivacyVersion, which records the
+// version each new subscriber signed up under.
+const LAST_UPDATED = '12 September 2026';
 
 interface SectionProps {
   id: string;
@@ -59,12 +61,17 @@ export default function PrivacyNoticePage() {
             </Section>
 
             <Section id="what-we-collect" title="2. What personal data we collect">
-              <p>Browsing apprenticeship listings at <span className="font-mono text-sm">#/apprenticeships</span> doesn't require signing up — any postcode you type in there is used only to run that search and isn't stored unless you also subscribe.</p>
+              <p>Browsing apprenticeship listings at <span className="font-mono text-sm">#/apprenticeships</span> doesn't require signing up — any postcode you type in there, and any areas or courses you filter by, are used only to run that search and aren't stored unless you also subscribe.</p>
               <p>When you sign up for alerts, we collect:</p>
               <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
                 <li><strong className="text-ink">Email address</strong> — required, so we can send you alerts and manage your subscription.</li>
                 <li><strong className="text-ink">Age band</strong> (16–17 or 18+) — required. We do not accept sign-ups from anyone who tells us they are under 16 (see Section 9).</li>
-                <li><strong className="text-ink">Postcode and search radius</strong> (5, 10, 15 or 25 miles) — optional, used to match alerts to your area.</li>
+                <li><strong className="text-ink">Postcode and search radius</strong> (5, 10, 15 or 25 miles) — required, used to match alerts to your area.</li>
+                <li>
+                  <strong className="text-ink">Your interests</strong> — optional. The apprenticeship areas (for example
+                  "Digital") and specific courses you choose, at signup or later in My Preferences. If you choose none,
+                  you hear about every apprenticeship in your area.
+                </li>
                 <li><strong className="text-ink">Signup source</strong> — a label recording which part of the page you signed up from, for our own internal purposes.</li>
                 <li><strong className="text-ink">Consent records</strong> — whether you agreed to our Terms of Service/this notice and to receiving alert emails, and when.</li>
               </ul>
@@ -76,9 +83,11 @@ export default function PrivacyNoticePage() {
 
             <Section id="how-we-use-it" title="3. How we use your data and our lawful basis">
               <p>
-                We use your data solely to operate the alerts service: matching apprenticeship vacancies against
-                your criteria, sending you alert and account-related emails, and letting you manage or cancel your
-                subscription.
+                We use your data to operate the alerts service: matching apprenticeship vacancies against your
+                area and interests, sending you alert and account-related emails, and letting you manage or cancel
+                your subscription. If you've chosen interests, we use them to decide which vacancies to email you
+                about, and to filter the listings you see when you browse while signed in — you can always choose
+                to see everything in your area instead.
               </p>
               <p>
                 Our lawful basis is your <strong className="text-ink">consent</strong> (UK GDPR Article 6(1)(a)), given
@@ -86,7 +95,17 @@ export default function PrivacyNoticePage() {
                 specifically for receiving alert emails, as required by the Privacy and Electronic Communications
                 Regulations (PECR). You can withdraw consent at any time (Section 7).
               </p>
-              <p>We do not use your data for automated decision-making or profiling that produces legal or similarly significant effects, and we do not sell your data or share it with third parties for their own marketing.</p>
+              <p>
+                <strong className="text-ink">Anonymous statistics.</strong> We count how many subscribers are interested
+                in each apprenticeship area, broken down by postcode district (the first half of a postcode, such as
+                "B15"). We may share these counts with training providers and employers who want to sponsor
+                content on Apprentize, and use them to price that sponsorship. The counts contain no names, email
+                addresses, full postcodes or anything else that identifies you, and we don't report any group smaller
+                than 10 subscribers, so a count can't be traced back to an individual. Producing these counts relies on
+                our <strong className="text-ink">legitimate interests</strong> (UK GDPR Article 6(1)(f)) in funding the
+                free service; you can object at any time (Section 10).
+              </p>
+              <p>We do not use your data for automated decision-making or profiling that produces legal or similarly significant effects. We do not sell your data or share it with third parties for their own marketing, we don't show you advertising, and no advertiser or sponsor ever receives your personal data.</p>
             </Section>
 
             <Section id="confirming" title="4. Confirming your subscription">
@@ -120,6 +139,7 @@ export default function PrivacyNoticePage() {
                 <li><strong className="text-ink">Active subscribers</strong> — kept for as long as your subscription is active.</li>
                 <li><strong className="text-ink">After you unsubscribe</strong> — kept for up to 30 days (to prevent accidental re-subscription), then deleted.</li>
                 <li><strong className="text-ink">After you delete your account</strong> — removed immediately.</li>
+                <li><strong className="text-ink">Your interests</strong> — kept with your account and deleted with it. If you change or clear them, the old choices are removed straight away.</li>
               </ul>
               <p>
                 You can unsubscribe or permanently delete your account at any time from{' '}
@@ -161,7 +181,7 @@ export default function PrivacyNoticePage() {
                 <li>Access the personal data we hold about you.</li>
                 <li>Have inaccurate data corrected.</li>
                 <li>Have your data erased.</li>
-                <li>Restrict or object to our processing of your data.</li>
+                <li>Restrict or object to our processing of your data — including being counted in the anonymous statistics described in Section 3.</li>
                 <li>Receive your data in a portable format.</li>
                 <li>Withdraw consent at any time, without affecting processing carried out before you withdrew it.</li>
               </ul>
@@ -170,7 +190,7 @@ export default function PrivacyNoticePage() {
                 <a href="#/preferences" className="font-semibold text-teal hover:text-teal-soft transition-colors">
                   My Preferences
                 </a>{' '}
-                — update your postcode and radius, unsubscribe from alerts, or permanently delete your account.
+                — update your postcode, radius and interests, unsubscribe from alerts, or permanently delete your account.
                 For anything else, or if you no longer have access to your preferences link, email{' '}
                 <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
                   privacy@experiencedmachines.com
