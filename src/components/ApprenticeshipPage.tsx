@@ -13,6 +13,9 @@ interface ApprenticeshipPageProps {
   returnSortBy?: SortBy;
   returnSortOrder?: SortOrder;
   returnPage?: number;
+  /** The list's route/course filter, as the comma-separated values it came in the URL with. */
+  returnRoutes?: string;
+  returnCourses?: string;
 }
 
 // Mirrors SearchApprenticeshipsEndpoints.cs's FormatPostedDate — this endpoint returns a raw
@@ -58,6 +61,7 @@ function stripHtml(html: string): string {
 
 export default function ApprenticeshipPage({
   id, returnPostcode, returnRadiusMiles, returnTitle, returnSortBy, returnSortOrder, returnPage,
+  returnRoutes, returnCourses,
 }: ApprenticeshipPageProps) {
   const { state, result, error, retry } = useApprenticeshipDetails(id ?? '');
   const description = result?.description ? stripHtml(result.description) : '';
@@ -84,6 +88,8 @@ export default function ApprenticeshipPage({
         sortBy: returnSortBy ?? '',
         sortOrder: returnSortOrder ?? '',
         page: String(returnPage ?? 1),
+        ...(returnRoutes ? { routes: returnRoutes } : {}),
+        ...(returnCourses ? { courses: returnCourses } : {}),
         ...(id ? { viewedId: id } : {}),
       }).toString()}`
     : '/#/apprenticeships';

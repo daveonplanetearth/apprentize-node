@@ -70,10 +70,13 @@ const INTEREST_ERRORS = new Set([
 export interface StoredPreferences {
   postcode: string;
   searchRadiusMiles?: number;
+  interests: InterestSelection;
+  /** Details of the chosen courses, so a page can name them (withdrawn ones included). */
+  chosenCourses: CourseInfo[];
 }
 
 /**
- * One-shot lookup of the caller's saved postcode/radius via a session token already in
+ * One-shot lookup of the caller's saved postcode/radius/interests via a session token already in
  * localStorage (no manage-token exchange, no redirect side effects) — for pages like
  * ApprenticeshipsPage that want to silently pre-fill for a signed-in visitor and fall back to
  * anonymous behavior otherwise. Returns null if there's no stored token, the API isn't
@@ -89,7 +92,16 @@ export async function fetchStoredPreferences(): Promise<StoredPreferences | null
     const data = await res.json();
     if (!data.postcode) return null;
 
-    return { postcode: data.postcode, searchRadiusMiles: data.searchRadiusMiles };
+    const chosenCourses: CourseInfo[] = data.interests?.courses ?? [];
+    return {
+      postcode: data.postcode,
+      searchRadiusMiles: data.searchRadiusMiles,
+      interests: {
+        routeIds: data.interests?.routeIds ?? [],
+        larsCodes: chosenCourses.map((c) => c.larsCode),
+      },
+      chosenCourses,
+    };
   } catch {
     return null;
   }

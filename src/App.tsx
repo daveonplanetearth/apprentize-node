@@ -28,6 +28,12 @@ const SORT_ORDER_VALUES: SortOrder[] = ['asc', 'desc'];
 // does the same in dev/preview, so the SPA still boots and the route is resolved here.
 const DETAILS_PATH = /^\/apprenticeship\/(.+?)\/?$/;
 
+/** "4,7" → [4, 7]. Anything that isn't a positive whole number is dropped, as the API does. */
+function parseIds(value: string | null): number[] {
+  if (!value) return [];
+  return [...new Set(value.split(',').map((s) => Number(s.trim())).filter((n) => Number.isInteger(n) && n > 0))];
+}
+
 function decodeSegment(segment: string): string {
   // A hand-edited or truncated URL can leave a malformed escape, which throws.
   try {
@@ -99,6 +105,7 @@ export default function App() {
     const initialPageParam = params.get('page');
     const initialPage = initialPageParam ? Number(initialPageParam) : undefined;
     const initialViewedId = params.get('viewedId') ?? undefined;
+    const initialInterests = { routeIds: parseIds(params.get('routes')), larsCodes: parseIds(params.get('courses')) };
 
     return (
       <div className="min-h-screen bg-paper text-ink">
@@ -112,6 +119,7 @@ export default function App() {
             initialSortOrder={initialSortOrder}
             initialPage={initialPage}
             initialViewedId={initialViewedId}
+            initialInterests={initialInterests}
           />
         </main>
         <Footer />
@@ -131,6 +139,8 @@ export default function App() {
     const returnSortOrder = SORT_ORDER_VALUES.includes(returnSortOrderParam as SortOrder) ? (returnSortOrderParam as SortOrder) : undefined;
     const returnPageParam = params.get('page');
     const returnPage = returnPageParam ? Number(returnPageParam) : undefined;
+    const returnRoutes = params.get('routes') ?? undefined;
+    const returnCourses = params.get('courses') ?? undefined;
 
     return (
       <div className="min-h-screen bg-paper text-ink">
@@ -144,6 +154,8 @@ export default function App() {
             returnSortBy={returnSortBy}
             returnSortOrder={returnSortOrder}
             returnPage={returnPage}
+            returnRoutes={returnRoutes}
+            returnCourses={returnCourses}
           />
         </main>
         <Footer />

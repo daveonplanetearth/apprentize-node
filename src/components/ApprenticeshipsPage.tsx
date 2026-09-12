@@ -2,12 +2,14 @@ import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
   TrendingUp, Clock, Loader2, AlertCircle, Ruler, X,
-  ArrowUpDown, CalendarClock, Users,
+  ArrowUpDown, CalendarClock, Users, SlidersHorizontal, ChevronDown,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
 import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePreferences';
 import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
+import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type RouteOption } from '../hooks/useCourses';
+import InterestPicker from './InterestPicker';
 
 // 25 is included alongside the page's own wider options so a saved preference of 25 miles
 // (the largest radius /api/preferences accepts) still matches a real <option>.
@@ -35,6 +37,27 @@ interface ApprenticeshipsPageProps {
   initialSortOrder?: SortOrder;
   initialPage?: number;
   initialViewedId?: string;
+  /** Route/course filter from the URL — e.g. an alert email's link, filtered like the email. */
+  initialInterests?: InterestSelection;
+}
+
+function hasInterests(i: InterestSelection): boolean {
+  return i.routeIds.length > 0 || i.larsCodes.length > 0;
+}
+
+/** Human names for a filter: route names, then course names (without DfE's "(level N)"). */
+function describeInterests(i: InterestSelection, routes: RouteOption[], chosenCourses: CourseInfo[]): string[] {
+  const courseName = (code: number) => {
+    for (const r of routes) {
+      const c = r.courses.find((x) => x.larsCode === code);
+      if (c) return c.title;
+    }
+    return chosenCourses.find((c) => c.larsCode === code)?.title ?? `Course ${code}`;
+  };
+  return [
+    ...i.routeIds.map((id) => routes.find((r) => r.id === id)?.name ?? `Area ${id}`),
+    ...i.larsCodes.map((code) => courseName(code).replace(/\s*\(level\s+\d\)\s*$/i, '')),
+  ];
 }
 
 // Matches the exact strings SearchApprenticeshipsEndpoints.cs's FormatPostedDate emits
@@ -47,7 +70,7 @@ function isRecentlyPosted(postedDate: string): boolean {
 
 export default function ApprenticeshipsPage({
   initialPostcode, initialRadiusMiles, initialTitle, initialSortBy, initialSortOrder,
-  initialPage, initialViewedId,
+  initialPage, initialViewedId, initialInterests = NO_INTERESTS,
 }: ApprenticeshipsPageProps) {
   // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
   // Otherwise, if the visitor has a saved session (from the preferences/manage-link flow), defer
@@ -61,6 +84,13 @@ export default function ApprenticeshipsPage({
   const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder || 'asc');
   const [page, setPage] = useState(initialPage && initialPage > 0 ? initialPage : 1);
   const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
+  const [interests, setInterests] = useState<InterestSelection>(initialInterests);
+  // Set when the filter came from the visitor's own saved interests, so the page can say so.
+  const [interestsAreSaved, setInterestsAreSaved] = useState(false);
+  const [chosenCourses, setChosenCourses] = useState<CourseInfo[]>([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const { state: routesState, routes } = useCourses();
+  const filtered = hasInterests(interests);
 
   const viewedIds = useViewedApprenticeships();
 
@@ -72,12 +102,16 @@ export default function ApprenticeshipsPage({
     pageSize: PAGE_SIZE,
     sortBy,
     sortOrder,
+    routeIds: interests.routeIds,
+    larsCodes: interests.larsCodes,
     enabled: hasSearched,
   });
 
   // If a saved session exists, silently pull the visitor's postcode/radius from /api/preferences
   // and search with those — same idea as AvailableApprenticeships.cshtml's session-aware
   // pre-fill, just layered on top of this page's own public search rather than replacing it.
+  // Their saved interests come too, so a subscriber's view matches their alerts by default; "Show
+  // all" below widens it without touching what they saved.
   useEffect(() => {
     if (!awaitingStoredPreferences) return;
     let cancelled = false;
@@ -88,6 +122,11 @@ export default function ApprenticeshipsPage({
 
       setPostcode(prefs?.postcode || DEFAULT_POSTCODE);
       if (prefs?.searchRadiusMiles) setRadiusMiles(prefs.searchRadiusMiles);
+      if (prefs && !hasInterests(initialInterests) && hasInterests(prefs.interests)) {
+        setInterests(prefs.interests);
+        setChosenCourses(prefs.chosenCourses);
+        setInterestsAreSaved(true);
+      }
       setHasSearched(true);
     })();
 
@@ -101,14 +140,39 @@ export default function ApprenticeshipsPage({
   // Reset to page 1 when filters actually change (after first search) — compares against the
   // previous values rather than a "first run" flag so an initialPage carried over from a "Back to
   // results" link survives React StrictMode's double-invoked mount effect in development.
-  const prevFilters = useRef({ postcode, radiusMiles, title, sortBy, sortOrder });
+  const interestsKey = `${interests.routeIds.join(',')}|${interests.larsCodes.join(',')}`;
+  const prevFilters = useRef({ postcode, radiusMiles, title, sortBy, sortOrder, interestsKey });
   useEffect(() => {
     const prev = prevFilters.current;
     const changed = prev.postcode !== postcode || prev.radiusMiles !== radiusMiles || prev.title !== title
-      || prev.sortBy !== sortBy || prev.sortOrder !== sortOrder;
-    prevFilters.current = { postcode, radiusMiles, title, sortBy, sortOrder };
+      || prev.sortBy !== sortBy || prev.sortOrder !== sortOrder || prev.interestsKey !== interestsKey;
+    prevFilters.current = { postcode, radiusMiles, title, sortBy, sortOrder, interestsKey };
     if (changed && hasSearched) setPage(1);
-  }, [postcode, radiusMiles, title, sortBy, sortOrder, hasSearched]);
+  }, [postcode, radiusMiles, title, sortBy, sortOrder, interestsKey, hasSearched]);
+
+  // Keep the address bar in step with the search, so a refresh or a shared link shows the same
+  // results — filter included. replaceState fires no hashchange, so this doesn't re-route.
+  useEffect(() => {
+    if (!hasSearched || !postcode.trim()) return;
+    const params = new URLSearchParams({
+      postcode: postcode.trim(),
+      radius: String(radiusMiles),
+      sortBy,
+      sortOrder,
+      page: String(page),
+    });
+    if (title.trim()) params.set('title', title.trim());
+    if (interests.routeIds.length) params.set('routes', interests.routeIds.join(','));
+    if (interests.larsCodes.length) params.set('courses', interests.larsCodes.join(','));
+    window.history.replaceState(null, '', `#/apprenticeships?${params.toString()}`);
+  }, [hasSearched, postcode, radiusMiles, title, sortBy, sortOrder, page, interests]);
+
+  const showAll = () => {
+    setInterests(NO_INTERESTS);
+    setInterestsAreSaved(false);
+  };
+
+  const interestLabels = filtered ? describeInterests(interests, routes, chosenCourses) : [];
 
   // Scroll the previously-viewed listing into view once, when returning from its details page.
   const hasScrolledToViewed = useRef(false);
@@ -240,7 +304,58 @@ export default function ApprenticeshipsPage({
               </button>
             </div>
           </div>
+
+          {/* Area/course filter — same rule as the alerts, and no cap here */}
+          <div className="mt-4 border-t border-line pt-3">
+            <button
+              type="button"
+              onClick={() => setFilterOpen((o) => !o)}
+              aria-expanded={filterOpen}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-ink hover:text-teal transition-colors"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              Filter by area or course
+              {filtered && (
+                <span className="rounded-full bg-safety/10 px-2 py-0.5 text-xs font-bold text-safety">
+                  {interests.routeIds.length + interests.larsCodes.length}
+                </span>
+              )}
+              <ChevronDown className={`w-4 h-4 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {filterOpen && (
+              <div className="mt-3">
+                <InterestPicker
+                  routes={routes}
+                  routesState={routesState}
+                  value={interests}
+                  onChange={(next) => {
+                    setInterests(next);
+                    setInterestsAreSaved(false);
+                  }}
+                  chosenCourses={chosenCourses}
+                  max={null}
+                  unavailableMessage="We couldn't load the list of apprenticeship areas right now, so results aren't filtered by area."
+                />
+              </div>
+            )}
+          </div>
         </form>
+
+        {filtered && (
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-teal/20 bg-teal/5 px-4 py-3 text-sm">
+            <span className="text-ink-soft">
+              {interestsAreSaved ? 'Showing your interests:' : 'Showing:'}{' '}
+              <span className="font-semibold text-ink">{interestLabels.join(', ')}</span>
+            </span>
+            <button
+              type="button"
+              onClick={showAll}
+              className="font-semibold text-teal hover:text-teal-soft underline underline-offset-2"
+            >
+              Show all apprenticeships in this area
+            </button>
+          </div>
+        )}
 
         {/* Results */}
         <div className="mt-6">
@@ -303,8 +418,19 @@ export default function ApprenticeshipsPage({
               </div>
               <p className="font-display font-bold text-ink text-lg">No apprenticeships found</p>
               <p className="text-ink-soft text-sm mt-1.5 max-w-sm mx-auto">
-                Try widening your radius or removing the title filter.
+                {filtered
+                  ? 'Nothing in the areas or courses you chose right now. Try widening your radius, or show everything in this area.'
+                  : 'Try widening your radius or removing the title filter.'}
               </p>
+              {filtered && (
+                <button
+                  type="button"
+                  onClick={showAll}
+                  className="mt-4 inline-flex items-center gap-2 rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors"
+                >
+                  Show all apprenticeships in this area
+                </button>
+              )}
             </div>
           )}
 
@@ -315,6 +441,7 @@ export default function ApprenticeshipsPage({
                 <p className="text-sm text-ink-soft">
                   <span className="font-semibold text-ink">{result.total}</span> apprenticeship{result.total === 1 ? '' : 's'} within <span className="font-semibold text-ink">{radiusMiles} miles</span> of <span className="font-semibold text-ink">{postcode}</span>
                   {title.trim() && <> matching <span className="font-semibold text-ink">"{title.trim()}"</span></>}
+                  {filtered && <> in your chosen areas</>}
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
                   <div className="relative">
@@ -360,6 +487,8 @@ export default function ApprenticeshipsPage({
                     sortBy,
                     sortOrder,
                     page: String(page),
+                    ...(interests.routeIds.length ? { routes: interests.routeIds.join(',') } : {}),
+                    ...(interests.larsCodes.length ? { courses: interests.larsCodes.join(',') } : {}),
                   }).toString()}`;
                   return (
                   <li

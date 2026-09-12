@@ -42,13 +42,21 @@ export interface UseApprenticeshipsParams {
   pageSize: number;
   sortBy?: SortBy;
   sortOrder?: SortOrder;
+  /** Only these routes/courses, by the same rule as the alerts. Empty means no filter. */
+  routeIds?: number[];
+  larsCodes?: number[];
   enabled?: boolean;
 }
 
+const NO_IDS: number[] = [];
+
 export function useApprenticeships({
   postcode, radiusMiles, title, page, pageSize,
-  sortBy = 'distance', sortOrder = 'asc', enabled = true,
+  sortBy = 'distance', sortOrder = 'asc', routeIds = NO_IDS, larsCodes = NO_IDS, enabled = true,
 }: UseApprenticeshipsParams) {
+  // Joined so the search callback depends on the ids' values, not on array identity.
+  const routes = routeIds.join(',');
+  const courses = larsCodes.join(',');
   const [state, setState] = useState<SearchState>('idle');
   const [result, setResult] = useState<ApprenticeshipsResult | null>(null);
   const [error, setError] = useState<string>('');
@@ -77,6 +85,8 @@ export function useApprenticeships({
       sortOrder,
     });
     if (title.trim()) params.set('title', title.trim());
+    if (routes) params.set('routes', routes);
+    if (courses) params.set('courses', courses);
 
     try {
       const res = await fetch(`${ENDPOINT}?${params.toString()}`, {
@@ -95,7 +105,7 @@ export function useApprenticeships({
       setState('error');
       setError('Could not load apprenticeships. Please try again.');
     }
-  }, [postcode, radiusMiles, title, page, pageSize, sortBy, sortOrder, enabled]);
+  }, [postcode, radiusMiles, title, page, pageSize, sortBy, sortOrder, routes, courses, enabled]);
 
   useEffect(() => {
     search();
