@@ -1,8 +1,11 @@
 import { useState, FormEvent } from 'react';
 import { MapPin, Search } from 'lucide-react';
+import { liveCountLabel, useLiveCount } from '../hooks/useLiveCount';
 
 export default function Hero() {
   const [postcode, setPostcode] = useState('');
+  const liveCount = useLiveCount();
+  const live = liveCount === null ? null : liveCountLabel(liveCount);
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
@@ -38,8 +41,14 @@ export default function Hero() {
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
           Apprentize is where you browse every live apprenticeship vacancy near you*
         </p>
-        <p className="mt-2 text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
-          <span className="font-semibold text-safety">340+</span> apprenticeships currently live
+        {/* The real count from the last vacancy sync. The line keeps its height while the count
+            loads, or when there's none fit to show, so the page doesn't jump. */}
+        <p className="mt-2 min-h-[1.25rem] text-sm text-ink-soft animate-fade-up" style={{ animationDelay: '0.12s', opacity: 0 }}>
+          {live && (
+            <>
+              <span className="font-semibold text-safety">{live.figure}</span> {live.noun} currently live
+            </>
+          )}
         </p>
         <p className="mt-1 text-xs text-ink-soft/80 animate-fade-up" style={{ animationDelay: '0.14s', opacity: 0 }}>
           * only apprenticeships in England are currently available, not the whole UK
