@@ -92,6 +92,7 @@ export function usePreferences(manageToken?: string) {
   const [state, setState] = useState<LoadState>('loading');
   const [postcode, setPostcode] = useState('');
   const [searchRadiusMiles, setSearchRadiusMiles] = useState(15);
+  const [routeIds, setRouteIds] = useState<number[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,6 +126,7 @@ export function usePreferences(manageToken?: string) {
         if (data.sessionToken) setStoredSessionToken(data.sessionToken);
         if (data.postcode) setPostcode(data.postcode);
         if (data.searchRadiusMiles) setSearchRadiusMiles(data.searchRadiusMiles);
+        setRouteIds(data.interests?.routeIds ?? []);
         setState('ready');
       } catch {
         if (!cancelled) setState('unauthorized');
@@ -136,17 +138,31 @@ export function usePreferences(manageToken?: string) {
     };
   }, [manageToken]);
 
-  const save = useCallback(async (nextPostcode: string, nextRadiusMiles: number): Promise<SaveResult> => {
+  /**
+   * Saves the postcode and radius, and the chosen routes when `nextRouteIds` is given. Leaving it
+   * out (e.g. because the route list failed to load) keeps the saved routes as they are — the API
+   * only replaces interests it is sent.
+   */
+  const save = useCallback(async (
+    nextPostcode: string,
+    nextRadiusMiles: number,
+    nextRouteIds?: number[],
+  ): Promise<SaveResult> => {
     try {
       const res = await apiFetch('/api/preferences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ postcode: nextPostcode, searchRadiusMiles: nextRadiusMiles }),
+        body: JSON.stringify({
+          postcode: nextPostcode,
+          searchRadiusMiles: nextRadiusMiles,
+          ...(nextRouteIds && { interests: { routeIds: nextRouteIds } }),
+        }),
       });
 
       if (res.ok) {
         setPostcode(nextPostcode);
         setSearchRadiusMiles(nextRadiusMiles);
+        if (nextRouteIds) setRouteIds(nextRouteIds);
         return { ok: true };
       }
 
@@ -206,5 +222,5 @@ export function usePreferences(manageToken?: string) {
     clearStoredSessionToken();
   }, []);
 
-  return { state, postcode, searchRadiusMiles, save, unsubscribe, deleteAccount, logout, logoutAll };
+  return { state, postcode, searchRadiusMiles, routeIds, save, unsubscribe, deleteAccount, logout, logoutAll };
 }

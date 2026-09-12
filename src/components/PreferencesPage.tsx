@@ -1,6 +1,8 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { Settings, MapPin, Loader2, AlertCircle, Check, BellOff, Trash2, LogOut, Laptop } from 'lucide-react';
 import { usePreferences } from '../hooks/usePreferences';
+import { useCourses } from '../hooks/useCourses';
+import RouteInterestPicker from './RouteInterestPicker';
 
 const RADIUS_OPTIONS = [5, 10, 15, 25] as const;
 
@@ -12,12 +14,14 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 type View = 'prefs' | 'unsubscribed';
 
 export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
-  const { state, postcode, searchRadiusMiles, save, unsubscribe, deleteAccount, logout, logoutAll } =
+  const { state, postcode, searchRadiusMiles, routeIds, save, unsubscribe, deleteAccount, logout, logoutAll } =
     usePreferences(manageToken);
+  const { state: routesState, routes } = useCourses();
 
   const [view, setView] = useState<View>('prefs');
   const [postcodeInput, setPostcodeInput] = useState('');
   const [radiusInput, setRadiusInput] = useState<number>(15);
+  const [routeIdsInput, setRouteIdsInput] = useState<number[]>([]);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [postcodeError, setPostcodeError] = useState<string | null>(null);
 
@@ -39,8 +43,9 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
     if (state === 'ready') {
       setPostcodeInput(postcode);
       setRadiusInput(searchRadiusMiles);
+      setRouteIdsInput(routeIds);
     }
-  }, [state, postcode, searchRadiusMiles]);
+  }, [state, postcode, searchRadiusMiles, routeIds]);
 
   useEffect(() => {
     if (saveState !== 'saved') return;
@@ -59,7 +64,13 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
     setPostcodeError(null);
     setSaveState('saving');
 
-    const result = await save(postcodeInput.trim(), radiusInput);
+    // Only send routes the subscriber could actually see and edit: if the list failed to load,
+    // leaving them out keeps what is saved rather than wiping it.
+    const result = await save(
+      postcodeInput.trim(),
+      radiusInput,
+      routesState === 'ready' ? routeIdsInput : undefined,
+    );
 
     if (result.ok) {
       setSaveState('saved');
@@ -205,24 +216,35 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
                       </select>
                     </div>
                   </div>
-
-                  <button
-                    type="submit"
-                    disabled={saveState === 'saving' || !postcodeInput.trim()}
-                    className="mt-4 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-6 py-3 text-sm transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
-                  >
-                    {saveState === 'saving' ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
-                    ) : (
-                      'Save preferences'
-                    )}
-                  </button>
-                  {saveState === 'saved' && (
-                    <p role="status" className="mt-3 flex items-center gap-1.5 text-teal text-sm font-semibold">
-                      <Check className="w-4 h-4" strokeWidth={3} /> Preferences saved
-                    </p>
-                  )}
                 </fieldset>
+
+                <fieldset className="mt-6">
+                  <legend className="text-sm font-semibold text-ink mb-3">What are you interested in?</legend>
+                  <RouteInterestPicker
+                    routes={routes}
+                    routesState={routesState}
+                    selectedRouteIds={routeIdsInput}
+                    onChange={setRouteIdsInput}
+                    disabled={saveState === 'saving'}
+                  />
+                </fieldset>
+
+                <button
+                  type="submit"
+                  disabled={saveState === 'saving' || !postcodeInput.trim()}
+                  className="mt-6 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-6 py-3 text-sm transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+                >
+                  {saveState === 'saving' ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</>
+                  ) : (
+                    'Save preferences'
+                  )}
+                </button>
+                {saveState === 'saved' && (
+                  <p role="status" className="mt-3 flex items-center gap-1.5 text-teal text-sm font-semibold">
+                    <Check className="w-4 h-4" strokeWidth={3} /> Preferences saved
+                  </p>
+                )}
               </form>
 
               <div className="bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-5 sm:p-6">
