@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { sampleApprenticeshipDetails } from './sampleApprenticeships';
 import { markApprenticeshipViewed } from './useViewedApprenticeships';
+import { analyticsHeaders } from './analytics';
 
 export interface ApprenticeshipDetails {
   id: string;
@@ -55,7 +56,7 @@ export function useApprenticeshipDetails(id: string) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/apprenticeship/${encodeURIComponent(id)}`, {
         method: 'GET',
-        headers: { Accept: 'application/json' },
+        headers: { Accept: 'application/json', ...analyticsHeaders() },
       });
       if (res.status === 404) {
         setState('notfound');

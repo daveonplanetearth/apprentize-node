@@ -10,6 +10,10 @@ import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePrefe
 import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
 import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type RouteOption } from '../hooks/useCourses';
 import InterestPicker from './InterestPicker';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
+
+// How long typing in the postcode or job-title box must pause before the page searches.
+const TYPING_PAUSE_MS = 500;
 
 // 25 is included alongside the page's own wider options so a saved preference of 25 miles
 // (the largest radius /api/preferences accepts) still matches a real <option>.
@@ -94,10 +98,15 @@ export default function ApprenticeshipsPage({
 
   const viewedIds = useViewedApprenticeships();
 
+  // Typed fields search once typing pauses, not on every keystroke: one search instead of one per
+  // character, for the API, the postcode lookup and the usage statistics alike.
+  const [searchPostcode, settlePostcode] = useDebouncedValue(postcode, TYPING_PAUSE_MS);
+  const [searchTitle, settleTitle] = useDebouncedValue(title, TYPING_PAUSE_MS);
+
   const { state, result, error, retry } = useApprenticeships({
-    postcode,
+    postcode: searchPostcode,
     radiusMiles,
-    title,
+    title: searchTitle,
     page,
     pageSize: PAGE_SIZE,
     sortBy,
@@ -120,7 +129,10 @@ export default function ApprenticeshipsPage({
       const prefs = await fetchStoredPreferences();
       if (cancelled) return;
 
-      setPostcode(prefs?.postcode || DEFAULT_POSTCODE);
+      // Filled in by the page, not typed, so there's nothing to wait for.
+      const prefilledPostcode = prefs?.postcode || DEFAULT_POSTCODE;
+      setPostcode(prefilledPostcode);
+      settlePostcode(prefilledPostcode);
       if (prefs?.searchRadiusMiles) setRadiusMiles(prefs.searchRadiusMiles);
       if (prefs && !hasInterests(initialInterests) && hasInterests(prefs.interests)) {
         setInterests(prefs.interests);
@@ -187,7 +199,14 @@ export default function ApprenticeshipsPage({
     if (!postcode.trim()) return;
     setHasSearched(true);
     setPage(1);
-    retry();
+    // Pressing Search doesn't wait for the typing pause. If the settled values change, that
+    // change runs the search; if they were already settled, search again explicitly.
+    if (postcode === searchPostcode && title === searchTitle) {
+      retry();
+    } else {
+      settlePostcode(postcode);
+      settleTitle(title);
+    }
   };
 
   const totalPages = result ? Math.max(1, Math.ceil(result.total / result.pageSize)) : 1;

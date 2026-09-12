@@ -4,6 +4,7 @@ import {
 } from 'lucide-react';
 import { useApprenticeshipDetails } from '../hooks/useApprenticeshipDetails';
 import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
+import { recordApplyClick } from '../hooks/analytics';
 
 interface ApprenticeshipPageProps {
   id?: string;
@@ -125,6 +126,7 @@ export default function ApprenticeshipPage({
                     href={applyHref}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => recordApplyClick(result.id)}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-safety text-white font-semibold px-5 py-2.5 text-sm transition-all hover:bg-safety-deep active:scale-[0.98]"
                   >
                     Apply now <ArrowUpRight className="w-4 h-4" />

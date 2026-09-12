@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { sampleApprenticeships } from './sampleApprenticeships';
+import { analyticsHeaders } from './analytics';
 
 export interface Apprenticeship {
   id: string;
@@ -91,7 +92,7 @@ export function useApprenticeships({
     try {
       const res = await fetch(`${ENDPOINT}?${params.toString()}`, {
         method: 'GET',
-        headers: { 'Accept': 'application/json' },
+        headers: { 'Accept': 'application/json', ...analyticsHeaders() },
       });
       if (!res.ok) {
         setState('error');

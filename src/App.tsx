@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
 import ApprenticeshipPage from './components/ApprenticeshipPage';
 import type { SortBy, SortOrder } from './hooks/useApprenticeships';
+import { applyAnalyticsSwitch } from './hooks/analytics';
 import PreferencesPage from './components/PreferencesPage';
 import ConfirmPage from './components/ConfirmPage';
 import CheckInboxPage from './components/CheckInboxPage';
@@ -76,6 +77,20 @@ function useRoute() {
 
 export default function App() {
   const { path, params } = useRoute();
+
+  // The "don't count me" link (#/?analytics=off, or =on to undo), offered in the privacy notice. A
+  // one-off action, so a plain confirmation is enough.
+  useEffect(() => {
+    const changed = applyAnalyticsSwitch(params);
+    if (!changed) return;
+    // Take the switch back out of the address bar, so a refresh doesn't ask again.
+    const rest = new URLSearchParams(params);
+    rest.delete('analytics');
+    window.history.replaceState(null, '', `#/${path}${rest.size ? `?${rest.toString()}` : ''}`);
+    window.alert(changed === 'off'
+      ? 'This browser will no longer be counted in Apprentize usage statistics.'
+      : 'This browser will be counted in Apprentize usage statistics again.');
+  }, [params, path]);
 
   useEffect(() => {
     if (path !== 'signup') return;

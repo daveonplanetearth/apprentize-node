@@ -61,7 +61,19 @@ export default function PrivacyNoticePage() {
             </Section>
 
             <Section id="what-we-collect" title="2. What personal data we collect">
-              <p>Browsing apprenticeship listings at <span className="font-mono text-sm">#/apprenticeships</span> doesn't require signing up — any postcode you type in there, and any areas or courses you filter by, are used only to run that search and aren't stored unless you also subscribe.</p>
+              <p>Browsing apprenticeship listings at <span className="font-mono text-sm">#/apprenticeships</span> doesn't require signing up. Whether or not you're signed up, we keep anonymous statistics about how the site is used:</p>
+              <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
+                <li>
+                  <strong className="text-ink">Anonymous usage statistics</strong> — the searches made (the postcode
+                  district only, such as "B15", never the full postcode; the radius; any search words; the areas or
+                  courses filtered by; and how many results came back), which vacancies are viewed, and when "Apply
+                  now" is clicked. To estimate how many people use the site each day, your IP address and browser
+                  details are turned into a code using a random value that changes every day and is then deleted.
+                  We never store your IP address or browser details, the code can't be turned back into them, and
+                  codes can't be linked from one day to the next. None of this is linked to your account, and no
+                  cookies are used.
+                </li>
+              </ul>
               <p>When you sign up for alerts, we collect:</p>
               <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
                 <li><strong className="text-ink">Email address</strong> — required, so we can send you alerts and manage your subscription.</li>
@@ -104,6 +116,15 @@ export default function PrivacyNoticePage() {
                 our <strong className="text-ink">legitimate interests</strong> (UK GDPR Article 6(1)(f)) in funding the
                 free service; you can object at any time (Section 10).
               </p>
+              <p>
+                <strong className="text-ink">Usage statistics</strong> (Section 2) help us understand how Apprentize is
+                used and improve it. We may share totals from them with training providers and employers, such as how
+                often their vacancies were viewed or how many searches there were in an area. We share totals only,
+                and no breakdown by area reports fewer than 10. This also relies on our{' '}
+                <strong className="text-ink">legitimate interests</strong> in running and funding the service. If your
+                browser sends a Global Privacy Control signal, we don't count it. You can also switch counting off
+                for your browser at any time (Section 10).
+              </p>
               <p>We do not use your data for automated decision-making or profiling that produces legal or similarly significant effects. We do not sell your data or share it with third parties for their own marketing, we don't show you advertising, and no advertiser or sponsor ever receives your personal data.</p>
             </Section>
 
@@ -139,6 +160,7 @@ export default function PrivacyNoticePage() {
                 <li><strong className="text-ink">After you unsubscribe</strong> — kept for up to 30 days (to prevent accidental re-subscription), then deleted.</li>
                 <li><strong className="text-ink">After you delete your account</strong> — removed immediately.</li>
                 <li><strong className="text-ink">Your interests</strong> — kept with your account and deleted with it. If you change or clear them, the old choices are removed straight away.</li>
+                <li><strong className="text-ink">Anonymous usage statistics</strong> — individual searches, views and clicks are deleted after 13 months. After that we keep only daily totals, which describe no one. Each day's random value is deleted once the day is over.</li>
               </ul>
               <p>
                 You can unsubscribe or permanently delete your account at any time from{' '}
@@ -162,7 +184,12 @@ export default function PrivacyNoticePage() {
                   removed when you log out, unsubscribe, or delete your account.
                 </li>
                 <li>The Google Fonts requests described in Section 5.</li>
+                <li>
+                  If you use the link in Section 10 to stop your browser being counted in usage statistics, a
+                  marker in your browser's local storage that remembers that choice.
+                </li>
               </ul>
+              <p>Usage statistics (Section 2) are recorded by our server without cookies or anything else stored in your browser.</p>
             </Section>
 
             <Section id="under-16" title="9. Age requirement">
@@ -180,7 +207,20 @@ export default function PrivacyNoticePage() {
                 <li>Access the personal data we hold about you.</li>
                 <li>Have inaccurate data corrected.</li>
                 <li>Have your data erased.</li>
-                <li>Restrict or object to our processing of your data — including being counted in the anonymous statistics described in Section 3.</li>
+                <li>
+                  Restrict or object to our processing of your data — including being counted in the anonymous
+                  statistics described in Sections 2 and 3. To stop your browser being counted in usage statistics,
+                  open{' '}
+                  <a href="#/privacy?analytics=off" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                    this link
+                  </a>{' '}
+                  (to undo it,{' '}
+                  <a href="#/privacy?analytics=on" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                    this one
+                  </a>
+                  ). Because those statistics can't be traced back to you, we can't find or remove what was already
+                  recorded, but nothing more will be.
+                </li>
                 <li>Receive your data in a portable format.</li>
                 <li>Withdraw consent at any time, without affecting processing carried out before you withdrew it.</li>
               </ul>
