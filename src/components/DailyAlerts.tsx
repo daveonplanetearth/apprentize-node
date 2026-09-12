@@ -17,7 +17,7 @@ export default function DailyAlerts() {
 
         <div className="mt-14 max-w-xl">
           <div id="signup">
-            <EmailSignup source="alerts" />
+            <EmailSignup />
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-soft">
               <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-teal" /> No spam, ever</span>
               <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> Daily alerts only</span>

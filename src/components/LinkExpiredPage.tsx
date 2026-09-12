@@ -13,7 +13,7 @@ export default function LinkExpiredPage() {
 
     // Neutral like link-expired.js: fire the resend and always land on check-inbox, regardless
     // of outcome, so this never reveals whether an address is registered.
-    await subscribe(email.trim(), undefined, undefined, false, false);
+    await subscribe(email.trim(), undefined, false, false);
     window.location.hash = '/check-inbox';
   };
 

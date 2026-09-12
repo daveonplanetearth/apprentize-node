@@ -5,7 +5,6 @@ import { useCourses } from '../hooks/useCourses';
 import InterestPicker from './InterestPicker';
 
 interface EmailSignupProps {
-  source: string;
   className?: string;
 }
 
@@ -20,7 +19,7 @@ const AGE_OPTIONS: { value: AgeGroup; label: string }[] = [
 const RADIUS_OPTIONS = [5, 10, 15, 25] as const;
 const DEFAULT_RADIUS = 15;
 
-export default function EmailSignup({ source, className = '' }: EmailSignupProps) {
+export default function EmailSignup({ className = '' }: EmailSignupProps) {
   const { state, message, errorField, subscribe, reset } = useSubscribe();
   const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
@@ -50,7 +49,7 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
     if (!isValid || !consentsValid || isUnder16 || !postcodeValid || !ageGroupValid || state === 'loading') return;
     // Routes are only sent when the list actually loaded — otherwise there was nothing to choose.
     await subscribe(
-      email, source, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles,
+      email, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles,
       routesState === 'ready' ? routeIds : undefined,
     );
   };

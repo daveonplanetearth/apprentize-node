@@ -15,7 +15,6 @@ const AGE_BAND_BY_GROUP: Partial<Record<AgeGroup, string>> = {
 
 export interface SubscribePayload {
   email: string;
-  source?: string;
   ageBand?: string;
   tosConsent: boolean;
   emailAlertsConsent: boolean;
@@ -30,7 +29,6 @@ export interface UseSubscribeResult {
   errorField: SubscribeErrorField;
   subscribe: (
     email: string,
-    source: string | undefined,
     ageGroup: AgeGroup | undefined,
     tosConsent: boolean,
     emailAlertsConsent: boolean,
@@ -63,7 +61,6 @@ export function useSubscribe(): UseSubscribeResult {
 
   const subscribe = useCallback(async (
     email: string,
-    source: string | undefined,
     ageGroup: AgeGroup | undefined,
     tosConsent: boolean,
     emailAlertsConsent: boolean,
@@ -83,7 +80,6 @@ export function useSubscribe(): UseSubscribeResult {
 
     const payload: SubscribePayload = {
       email,
-      source,
       ageBand: ageGroup ? AGE_BAND_BY_GROUP[ageGroup] : undefined,
       tosConsent,
       emailAlertsConsent,

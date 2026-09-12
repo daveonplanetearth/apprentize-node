@@ -72,7 +72,6 @@ export default function PrivacyNoticePage() {
                   "Digital") and specific courses you choose, at signup or later in My Preferences. If you choose none,
                   you hear about every apprenticeship in your area.
                 </li>
-                <li><strong className="text-ink">Signup source</strong> — a label recording which part of the page you signed up from, for our own internal purposes.</li>
                 <li><strong className="text-ink">Consent records</strong> — whether you agreed to our Terms of Service/this notice and to receiving alert emails, and when.</li>
               </ul>
               <p>
