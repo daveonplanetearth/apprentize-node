@@ -226,6 +226,7 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
                     selectedRouteIds={routeIdsInput}
                     onChange={setRouteIdsInput}
                     disabled={saveState === 'saving'}
+                    unavailableMessage="We couldn't load the list of apprenticeship areas right now. Your current choices are unchanged."
                   />
                 </fieldset>
 

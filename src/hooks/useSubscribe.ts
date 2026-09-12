@@ -21,6 +21,7 @@ export interface SubscribePayload {
   emailAlertsConsent: boolean;
   postcode?: string;
   searchRadiusMiles?: number;
+  interests?: { routeIds: number[] };
 }
 
 export interface UseSubscribeResult {
@@ -35,6 +36,7 @@ export interface UseSubscribeResult {
     emailAlertsConsent: boolean,
     postcode?: string,
     radiusMiles?: number,
+    routeIds?: number[],
   ) => Promise<void>;
   reset: () => void;
 }
@@ -50,6 +52,10 @@ interface SignupErrorBody {
   message?: string;
 }
 
+// Errors about the chosen routes. Safe to show as-is: the API answers these before it looks the
+// email address up, so they say nothing about whether it is registered.
+const INTEREST_ERRORS = new Set(['too_many_interests', 'duplicate_interests', 'invalid_interests', 'unknown_interest']);
+
 export function useSubscribe(): UseSubscribeResult {
   const [state, setState] = useState<SubscribeState>('idle');
   const [message, setMessage] = useState('');
@@ -63,6 +69,7 @@ export function useSubscribe(): UseSubscribeResult {
     emailAlertsConsent: boolean,
     postcode?: string,
     radiusMiles?: number,
+    routeIds?: number[],
   ) => {
     setState('loading');
     setMessage('');
@@ -82,6 +89,7 @@ export function useSubscribe(): UseSubscribeResult {
       emailAlertsConsent,
       postcode: postcode?.trim() || undefined,
       searchRadiusMiles: radiusMiles,
+      interests: routeIds ? { routeIds } : undefined,
     };
 
     try {
@@ -97,6 +105,8 @@ export function useSubscribe(): UseSubscribeResult {
         if (body?.error === 'invalid_postcode') {
           setErrorField('postcode');
           setMessage(body.message ?? 'Postcode not found. Please check and try again.');
+        } else if (body?.error && INTEREST_ERRORS.has(body.error) && body.message) {
+          setMessage(body.message);
         } else {
           setMessage(DEFAULT_ERROR_MESSAGE);
         }

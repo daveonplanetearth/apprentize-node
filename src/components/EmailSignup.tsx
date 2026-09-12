@@ -1,6 +1,8 @@
 import { useState, FormEvent } from 'react';
 import { ArrowRight, Check, Loader2, AlertCircle, Mail, MapPin } from 'lucide-react';
 import { useSubscribe, AgeGroup } from '../hooks/useSubscribe';
+import { useCourses } from '../hooks/useCourses';
+import RouteInterestPicker from './RouteInterestPicker';
 
 interface EmailSignupProps {
   source: string;
@@ -30,6 +32,8 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
   const [postcodeTouched, setPostcodeTouched] = useState(false);
   const [ageTouched, setAgeTouched] = useState(false);
   const [radiusMiles, setRadiusMiles] = useState<number>(DEFAULT_RADIUS);
+  const [routeIds, setRouteIds] = useState<number[]>([]);
+  const { state: routesState, routes } = useCourses();
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const consentsValid = agreeTerms && agreeAlerts;
@@ -44,7 +48,11 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
     setPostcodeTouched(true);
     setAgeTouched(true);
     if (!isValid || !consentsValid || isUnder16 || !postcodeValid || !ageGroupValid || state === 'loading') return;
-    await subscribe(email, source, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles);
+    // Routes are only sent when the list actually loaded — otherwise there was nothing to choose.
+    await subscribe(
+      email, source, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles,
+      routesState === 'ready' ? routeIds : undefined,
+    );
   };
 
   if (state === 'success') {
@@ -190,6 +198,20 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
             You can enter a full postcode or just the first part (e.g. "SW1A") — a full post code gives more accurate matches.
           </p>
         </div>
+
+        <fieldset className="mt-3 px-2 pt-1">
+          <legend className="text-sm font-semibold text-ink mb-2">
+            What are you interested in? <span className="font-normal text-ink-soft">(optional)</span>
+          </legend>
+          <RouteInterestPicker
+            routes={routes}
+            routesState={routesState}
+            selectedRouteIds={routeIds}
+            onChange={setRouteIds}
+            disabled={state === 'loading'}
+            unavailableMessage="We couldn't load the list of apprenticeship areas right now. You'll hear about every apprenticeship in your area, and you can narrow it down later from your preferences."
+          />
+        </fieldset>
 
         <div className="mt-3 space-y-2">
           {[

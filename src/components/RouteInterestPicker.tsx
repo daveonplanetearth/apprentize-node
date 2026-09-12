@@ -9,6 +9,8 @@ interface RouteInterestPickerProps {
   selectedRouteIds: number[];
   onChange: (routeIds: number[]) => void;
   disabled?: boolean;
+  /** Shown when the route list fails to load — callers say what that means for the user. */
+  unavailableMessage?: string;
 }
 
 /**
@@ -21,6 +23,7 @@ export default function RouteInterestPicker({
   selectedRouteIds,
   onChange,
   disabled = false,
+  unavailableMessage = "We couldn't load the list of apprenticeship areas right now.",
 }: RouteInterestPickerProps) {
   const atCap = selectedRouteIds.length >= MAX_INTERESTS;
 
@@ -44,7 +47,7 @@ export default function RouteInterestPicker({
     return (
       <p role="alert" className="flex items-center gap-1.5 py-2 text-sm text-ink-soft">
         <AlertCircle className="w-4 h-4 shrink-0" />
-        We couldn't load the list of apprenticeship areas right now. Your current choices are unchanged.
+        {unavailableMessage}
       </p>
     );
   }
