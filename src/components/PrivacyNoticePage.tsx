@@ -134,7 +134,7 @@ export default function PrivacyNoticePage() {
 
             <Section id="retention" title="7. How long we keep your data">
               <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
-                <li><strong className="text-ink">Unconfirmed sign-ups</strong> — deleted automatically after 30 days if the confirmation link is never used.</li>
+                <li><strong className="text-ink">Unconfirmed sign-ups</strong> — deleted automatically 30 days after we last sent you a confirmation link, if it's never used.</li>
                 <li><strong className="text-ink">Active subscribers</strong> — kept for as long as your subscription is active.</li>
                 <li><strong className="text-ink">After you unsubscribe</strong> — kept for up to 30 days (to prevent accidental re-subscription), then deleted.</li>
                 <li><strong className="text-ink">After you delete your account</strong> — removed immediately.</li>
