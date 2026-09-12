@@ -2,7 +2,7 @@ import { useState, FormEvent } from 'react';
 import { ArrowRight, Check, Loader2, AlertCircle, Mail, MapPin } from 'lucide-react';
 import { useSubscribe, AgeGroup } from '../hooks/useSubscribe';
 import { useCourses } from '../hooks/useCourses';
-import RouteInterestPicker from './RouteInterestPicker';
+import InterestPicker from './InterestPicker';
 
 interface EmailSignupProps {
   source: string;
@@ -203,11 +203,12 @@ export default function EmailSignup({ source, className = '' }: EmailSignupProps
           <legend className="text-sm font-semibold text-ink mb-2">
             What are you interested in? <span className="font-normal text-ink-soft">(optional)</span>
           </legend>
-          <RouteInterestPicker
+          <InterestPicker
             routes={routes}
             routesState={routesState}
-            selectedRouteIds={routeIds}
-            onChange={setRouteIds}
+            value={{ routeIds, larsCodes: [] }}
+            onChange={(next) => setRouteIds(next.routeIds)}
+            allowCourses={false}
             disabled={state === 'loading'}
             unavailableMessage="We couldn't load the list of apprenticeship areas right now. You'll hear about every apprenticeship in your area, and you can narrow it down later from your preferences."
           />

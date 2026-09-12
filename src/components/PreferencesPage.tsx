@@ -1,8 +1,8 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { Settings, MapPin, Loader2, AlertCircle, Check, BellOff, Trash2, LogOut, Laptop } from 'lucide-react';
 import { usePreferences } from '../hooks/usePreferences';
-import { useCourses } from '../hooks/useCourses';
-import RouteInterestPicker from './RouteInterestPicker';
+import { NO_INTERESTS, useCourses, type InterestSelection } from '../hooks/useCourses';
+import InterestPicker from './InterestPicker';
 
 const RADIUS_OPTIONS = [5, 10, 15, 25] as const;
 
@@ -14,16 +14,19 @@ type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 type View = 'prefs' | 'unsubscribed';
 
 export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
-  const { state, postcode, searchRadiusMiles, routeIds, save, unsubscribe, deleteAccount, logout, logoutAll } =
-    usePreferences(manageToken);
+  const {
+    state, postcode, searchRadiusMiles, interests, chosenCourses,
+    save, unsubscribe, deleteAccount, logout, logoutAll,
+  } = usePreferences(manageToken);
   const { state: routesState, routes } = useCourses();
 
   const [view, setView] = useState<View>('prefs');
   const [postcodeInput, setPostcodeInput] = useState('');
   const [radiusInput, setRadiusInput] = useState<number>(15);
-  const [routeIdsInput, setRouteIdsInput] = useState<number[]>([]);
+  const [interestsInput, setInterestsInput] = useState<InterestSelection>(NO_INTERESTS);
   const [saveState, setSaveState] = useState<SaveState>('idle');
   const [postcodeError, setPostcodeError] = useState<string | null>(null);
+  const [interestsError, setInterestsError] = useState<string | null>(null);
 
   const [unsubscribeBusy, setUnsubscribeBusy] = useState(false);
   const [deleteBusy, setDeleteBusy] = useState(false);
@@ -43,9 +46,9 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
     if (state === 'ready') {
       setPostcodeInput(postcode);
       setRadiusInput(searchRadiusMiles);
-      setRouteIdsInput(routeIds);
+      setInterestsInput(interests);
     }
-  }, [state, postcode, searchRadiusMiles, routeIds]);
+  }, [state, postcode, searchRadiusMiles, interests]);
 
   useEffect(() => {
     if (saveState !== 'saved') return;
@@ -62,21 +65,24 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
     setPostcodeError(null);
+    setInterestsError(null);
     setSaveState('saving');
 
-    // Only send routes the subscriber could actually see and edit: if the list failed to load,
+    // Only send interests the subscriber could actually see and edit: if the list failed to load,
     // leaving them out keeps what is saved rather than wiping it.
     const result = await save(
       postcodeInput.trim(),
       radiusInput,
-      routesState === 'ready' ? routeIdsInput : undefined,
+      routesState === 'ready' ? interestsInput : undefined,
     );
 
     if (result.ok) {
       setSaveState('saved');
     } else {
       setSaveState('error');
-      setPostcodeError(result.message ?? 'Something went wrong. Please try again.');
+      const message = result.message ?? 'Something went wrong. Please try again.';
+      if (result.field === 'interests') setInterestsError(message);
+      else setPostcodeError(message);
     }
   };
 
@@ -220,14 +226,26 @@ export default function PreferencesPage({ manageToken }: PreferencesPageProps) {
 
                 <fieldset className="mt-6">
                   <legend className="text-sm font-semibold text-ink mb-3">What are you interested in?</legend>
-                  <RouteInterestPicker
+                  <p className="-mt-1 mb-3 text-xs text-ink-soft">
+                    Pick whole areas, or open one to narrow it down to specific courses.
+                  </p>
+                  <InterestPicker
                     routes={routes}
                     routesState={routesState}
-                    selectedRouteIds={routeIdsInput}
-                    onChange={setRouteIdsInput}
+                    value={interestsInput}
+                    onChange={(next) => {
+                      setInterestsInput(next);
+                      setInterestsError(null);
+                    }}
+                    chosenCourses={chosenCourses}
                     disabled={saveState === 'saving'}
                     unavailableMessage="We couldn't load the list of apprenticeship areas right now. Your current choices are unchanged."
                   />
+                  {interestsError && (
+                    <p role="alert" className="mt-2 flex items-center gap-1.5 text-safety text-sm font-medium">
+                      <AlertCircle className="w-4 h-4 shrink-0" /> {interestsError}
+                    </p>
+                  )}
                 </fieldset>
 
                 <button

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { NO_INTERESTS, type CourseInfo, type InterestSelection } from './useCourses';
 
 // Matches Apprentize.Web's wwwroot/js/api-client.js — same key, so a session token minted by
 // this frontend or the .NET one is interchangeable (they hit the same Apprentize.Api backend).
@@ -58,7 +59,13 @@ export type LoadState = 'loading' | 'ready' | 'unauthorized';
 export interface SaveResult {
   ok: boolean;
   message?: string;
+  /** Which part of the form the error is about, so the page can show it in the right place. */
+  field?: 'postcode' | 'interests';
 }
+
+const INTEREST_ERRORS = new Set([
+  'too_many_interests', 'duplicate_interests', 'invalid_interests', 'unknown_interest', 'overlapping_interests',
+]);
 
 export interface StoredPreferences {
   postcode: string;
@@ -92,7 +99,9 @@ export function usePreferences(manageToken?: string) {
   const [state, setState] = useState<LoadState>('loading');
   const [postcode, setPostcode] = useState('');
   const [searchRadiusMiles, setSearchRadiusMiles] = useState(15);
-  const [routeIds, setRouteIds] = useState<number[]>([]);
+  const [interests, setInterests] = useState<InterestSelection>(NO_INTERESTS);
+  // Details of the chosen courses, so withdrawn ones (absent from /api/courses) can still be shown.
+  const [chosenCourses, setChosenCourses] = useState<CourseInfo[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,7 +135,12 @@ export function usePreferences(manageToken?: string) {
         if (data.sessionToken) setStoredSessionToken(data.sessionToken);
         if (data.postcode) setPostcode(data.postcode);
         if (data.searchRadiusMiles) setSearchRadiusMiles(data.searchRadiusMiles);
-        setRouteIds(data.interests?.routeIds ?? []);
+        const courses: CourseInfo[] = data.interests?.courses ?? [];
+        setInterests({
+          routeIds: data.interests?.routeIds ?? [],
+          larsCodes: courses.map((c) => c.larsCode),
+        });
+        setChosenCourses(courses);
         setState('ready');
       } catch {
         if (!cancelled) setState('unauthorized');
@@ -139,14 +153,14 @@ export function usePreferences(manageToken?: string) {
   }, [manageToken]);
 
   /**
-   * Saves the postcode and radius, and the chosen routes when `nextRouteIds` is given. Leaving it
-   * out (e.g. because the route list failed to load) keeps the saved routes as they are — the API
-   * only replaces interests it is sent.
+   * Saves the postcode and radius, and the chosen interests when `nextInterests` is given. Leaving
+   * it out (e.g. because the route list failed to load) keeps the saved interests as they are —
+   * the API only replaces interests it is sent.
    */
   const save = useCallback(async (
     nextPostcode: string,
     nextRadiusMiles: number,
-    nextRouteIds?: number[],
+    nextInterests?: InterestSelection,
   ): Promise<SaveResult> => {
     try {
       const res = await apiFetch('/api/preferences', {
@@ -155,14 +169,14 @@ export function usePreferences(manageToken?: string) {
         body: JSON.stringify({
           postcode: nextPostcode,
           searchRadiusMiles: nextRadiusMiles,
-          ...(nextRouteIds && { interests: { routeIds: nextRouteIds } }),
+          ...(nextInterests && { interests: nextInterests }),
         }),
       });
 
       if (res.ok) {
         setPostcode(nextPostcode);
         setSearchRadiusMiles(nextRadiusMiles);
-        if (nextRouteIds) setRouteIds(nextRouteIds);
+        if (nextInterests) setInterests(nextInterests);
         return { ok: true };
       }
 
@@ -172,7 +186,11 @@ export function usePreferences(manageToken?: string) {
       }
 
       const data = await res.json().catch(() => null);
-      return { ok: false, message: data?.message ?? 'Something went wrong. Please try again.' };
+      return {
+        ok: false,
+        message: data?.message ?? 'Something went wrong. Please try again.',
+        field: INTEREST_ERRORS.has(data?.error) ? 'interests' : 'postcode',
+      };
     } catch {
       return { ok: false, message: 'Something went wrong. Please try again.' };
     }
@@ -222,5 +240,8 @@ export function usePreferences(manageToken?: string) {
     clearStoredSessionToken();
   }, []);
 
-  return { state, postcode, searchRadiusMiles, routeIds, save, unsubscribe, deleteAccount, logout, logoutAll };
+  return {
+    state, postcode, searchRadiusMiles, interests, chosenCourses,
+    save, unsubscribe, deleteAccount, logout, logoutAll,
+  };
 }

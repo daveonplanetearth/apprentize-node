@@ -16,6 +16,26 @@ export interface RouteOption {
 
 export type CoursesState = 'loading' | 'ready' | 'error';
 
+/** Must match Apprentize.Core's InterestSelectionValidator.MaxItems. */
+export const MAX_INTERESTS = 5;
+
+/** What a subscriber wants alerts about: whole routes, and specific courses by LARS code. */
+export interface InterestSelection {
+  routeIds: number[];
+  larsCodes: number[];
+}
+
+export const NO_INTERESTS: InterestSelection = { routeIds: [], larsCodes: [] };
+
+/** A course as the pickers show it. `isActive` is false once DfE withdraws it. */
+export interface CourseInfo {
+  larsCode: number;
+  title: string;
+  level: number | null;
+  routeId: number | null;
+  isActive: boolean;
+}
+
 // One request per page load, shared by every component that asks. The list only changes when
 // the twice-daily sync changes it, and the API marks it cacheable for an hour anyway.
 let routesPromise: Promise<RouteOption[]> | null = null;
