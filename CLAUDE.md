@@ -16,6 +16,8 @@ Apprentize is a single-page marketing/product site (no-auth) where visitors sign
 
 There is no test suite/framework configured in this repo.
 
+**Deploying**: pushing to `main` deploys. `.github/workflows/azure-static-web-apps-black-mushroom-083766703.yml` builds the site and uploads `dist/` to the `apprentize-node` Azure Static Web App (custom domain `www.apprentize.co.uk`); PRs against `main` get a temporary preview environment. SPA routing on the host comes from `public/staticwebapp.config.json` — `public/web.config` is an IIS leftover the Static Web App ignores.
+
 ## Architecture
 
 **Routing**: No router library. `App.tsx` implements hash-based routing itself via a `useHashRoute` hook that reads `window.location.hash`. Routes are the landing page (default), `#/apprenticeships` (the live-listings browse page, `ApprenticeshipsPage.tsx`), which accepts `postcode` and `radius` query params (e.g. `#/apprenticeships?postcode=SW1A%201AA&radius=15`), and `#/preferences` (`PreferencesPage.tsx`), which accepts a `token` query param carrying the one-time manage token from an emailed link (e.g. `#/preferences?token=...`).

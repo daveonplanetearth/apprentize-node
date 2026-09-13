@@ -24,9 +24,10 @@ const SORT_ORDER_VALUES: SortOrder[] = ['asc', 'desc'];
 
 // The details page has a second, path-based URL (/apprenticeship/<id>) alongside its hash route:
 // link previews (WhatsApp, iMessage, Slack) and crawlers never send the fragment to the server, so
-// a shareable link has to carry the id in the path. Both hosts rewrite unknown paths to index.html
-// (`public/web.config` for App Service, `staticwebapp.config.json` for Static Web Apps), and Vite
-// does the same in dev/preview, so the SPA still boots and the route is resolved here.
+// a shareable link has to carry the id in the path. The Static Web App rewrites unknown paths to
+// index.html (`public/staticwebapp.config.json`; `public/web.config` does the same for an App
+// Service host), and Vite does the same in dev/preview, so the SPA still boots and the route is
+// resolved here.
 const DETAILS_PATH = /^\/apprenticeship\/(.+?)\/?$/;
 
 /** "4,7" → [4, 7]. Anything that isn't a positive whole number is dropped, as the API does. */
