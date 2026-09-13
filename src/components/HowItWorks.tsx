@@ -28,7 +28,7 @@ export default function HowItWorks() {
             Three steps. Done in under a minute.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            Search live listings whenever you like, or set a free daily alert once and let new roles come to you. No account needed.
+            Search live listings whenever you like, or set a free daily alert once and let new roles come to you.
           </p>
         </div>
 

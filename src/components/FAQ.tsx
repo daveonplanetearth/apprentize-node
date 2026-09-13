@@ -3,7 +3,7 @@ import Accordion, { AccordionEntry } from './Accordion';
 const faqs: AccordionEntry[] = [
   {
     q: 'Is Apprentize really free?',
-    a: 'Yes — completely. There is no paid tier and no hidden cost. You enter your email, you get alerts, and that is it. We make nothing off your data.',
+    a: "Yes. Searching live apprenticeships and getting daily email alerts is free — there's no card to enter and no hidden cost, and we'll never sell your data. If we ever add optional paid extras, the alerts you've signed up for stay free.",
   },
   {
     q: 'Where does the apprenticeship data come from?',

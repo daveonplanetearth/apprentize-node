@@ -2,7 +2,7 @@ const stats = [
   { value: 'Daily', label: 'Checks against the official feed' },
   { value: 'England', label: 'Apprenticeships covered' },
   { value: '60s', label: 'To set up your alert' },
-  { value: 'Free', label: 'Now and always' },
+  { value: 'Free', label: 'For job seekers' },
 ];
 
 export default function Stats() {
