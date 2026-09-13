@@ -21,6 +21,9 @@
     <!-- No og:url — scrapers then attribute the card to the URL that was actually shared. -->
     <meta name="twitter:card" content="summary" />
 
+    <!-- The hero's live count calls the API as soon as the app mounts; open that connection while
+         the bundle is still downloading. Vite fills in the URL from .env / .env.production. -->
+    <link rel="preconnect" href="%VITE_API_BASE_URL%" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet" />
