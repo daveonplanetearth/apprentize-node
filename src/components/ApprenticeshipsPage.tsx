@@ -236,11 +236,11 @@ export default function ApprenticeshipsPage({
         <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
         <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
         <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
-          <p className="text-sm font-bold uppercase tracking-widest text-safety animate-fade-up">Browse live listings</p>
-          <h1 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
+          <p className="text-sm font-bold uppercase tracking-widest text-safety">Browse live listings</p>
+          <h1 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
             Apprenticeships near you
           </h1>
-          <p className="mt-4 text-lg text-ink-soft leading-relaxed max-w-2xl text-pretty animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
+          <p className="mt-4 text-lg text-ink-soft leading-relaxed max-w-2xl text-pretty">
             Search live apprenticeship vacancies by postcode, radius and job title. Results update as you refine your search.
           </p>
         </div>
@@ -250,7 +250,7 @@ export default function ApprenticeshipsPage({
         {/* Filter bar */}
         <form
           onSubmit={handleSubmit}
-          className="bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-4 sm:p-5 animate-fade-up"
+          className="bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-4 sm:p-5"
         >
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Postcode */}
@@ -535,7 +535,7 @@ export default function ApprenticeshipsPage({
               </div>
 
               <ul className="space-y-3">
-                {result.items.map((job, i) => {
+                {result.items.map((job) => {
                   const viewed = viewedIds.has(job.id);
                   const detailHref = `#/apprenticeship?${new URLSearchParams({
                     id: job.id,
@@ -552,8 +552,7 @@ export default function ApprenticeshipsPage({
                   <li
                     key={job.id}
                     id={`job-${job.id}`}
-                    className="group rounded-2xl border border-line bg-card p-4 sm:p-5 hover:border-ink/30 hover:shadow-[0_8px_30px_rgba(22,35,59,0.08)] transition-all animate-fade-up"
-                    style={{ animationDelay: `${Math.min(i * 0.04, 0.4)}s`, opacity: 0 }}
+                    className="group rounded-2xl border border-line bg-card p-4 sm:p-5 hover:border-ink/30 hover:shadow-[0_8px_30px_rgba(22,35,59,0.08)] transition-all"
                   >
                     <div className={`flex items-start gap-3.5 ${viewed ? 'opacity-70' : ''}`}>
                       <div className="shrink-0 w-10 h-10 rounded-lg bg-teal/10 flex items-center justify-center">

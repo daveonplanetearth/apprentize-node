@@ -21,10 +21,6 @@ export default {
         line: '#DCD8F2',
       },
       keyframes: {
-        'fade-up': {
-          '0%': { opacity: '0', transform: 'translateY(16px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
         'slide-in': {
           '0%': { opacity: '0', transform: 'translateY(12px) scale(0.98)' },
           '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
@@ -47,7 +43,6 @@ export default {
         },
       },
       animation: {
-        'fade-up': 'fade-up 0.6s ease-out forwards',
         'slide-in': 'slide-in 0.5s ease-out forwards',
         'pulse-ring': 'pulse-ring 2.5s ease-out infinite',
         float: 'float 4s ease-in-out infinite',

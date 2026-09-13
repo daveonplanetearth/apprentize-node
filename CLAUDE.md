@@ -35,7 +35,7 @@ The real backend is a separate .NET project ("Apprentize.Api", not in this repo)
 
 **State/data fetching pattern**: Both API-backed hooks follow the same shape — a `state: 'idle' | 'loading' | 'success' | 'error'` union, a typed result, an error message string, and an exposed retry/subscribe callback. Follow this pattern for new data-fetching hooks rather than introducing a data-fetching library.
 
-**Styling**: Tailwind only, with a custom theme in `tailwind.config.js` — brand colors (`ink`, `paper`, `safety`, `teal`, plus `-soft`/`-deep` variants) and custom fonts (`display` = Bricolage Grotesque, `sans` = Inter, `mono` = JetBrains Mono) and animation keyframes (`fade-up`, `slide-in`, `pulse-ring`, `float`, `shimmer`) used throughout components. Reuse these tokens rather than introducing arbitrary colors/fonts.
+**Styling**: Tailwind only, with a custom theme in `tailwind.config.js` — brand colors (`ink`, `paper`, `safety`, `teal`, plus `-soft`/`-deep` variants) and custom fonts (`display` = Bricolage Grotesque, `sans` = Inter, `mono` = JetBrains Mono) and animation keyframes (`slide-in`, `pulse-ring`, `float`, `shimmer`) used throughout components. Reuse these tokens rather than introducing arbitrary colors/fonts.
 
 **Icons**: `lucide-react` only, per `.bolt/prompt` — do not add another icon or UI component library unless the user explicitly asks for it.
 

@@ -103,13 +103,13 @@ export default function ApprenticeshipPage({
         <div className="relative mx-auto max-w-4xl px-5 sm:px-6">
           <a
             href={backHref}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-ink transition-colors animate-fade-up"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-soft hover:text-ink transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> Back to results
           </a>
 
           {state === 'success' && result && (
-            <div className="mt-4 animate-fade-up" style={{ animationDelay: '0.05s', opacity: 0 }}>
+            <div className="mt-4">
               <h1 className="font-display font-extrabold text-ink text-3xl sm:text-4xl tracking-tight text-balance">
                 {result.title}
               </h1>
@@ -187,7 +187,7 @@ export default function ApprenticeshipPage({
         )}
 
         {state === 'success' && result && (
-          <div className="animate-fade-up" style={{ animationDelay: '0.1s', opacity: 0 }}>
+          <div>
             <div className="rounded-2xl border border-line bg-card p-4 sm:p-5">
               {description && (
                 <>
