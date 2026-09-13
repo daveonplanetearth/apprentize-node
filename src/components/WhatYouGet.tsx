@@ -2,7 +2,7 @@ import { TrendingUp, MapPin, Search, Link2, Eye, Share2 } from 'lucide-react';
 
 const features = [
   { icon: TrendingUp, title: 'Daily checks, not weekly', body: "Find An Apprenticeship emails you weekly. We check every day — so you hear about new roles the day they open, not six days later." },
-  { icon: Search, title: 'Search by job title', body: "Looking for something specific? Search live listings by job title — \"software\", \"carpentry\", whatever you're after — on top of location filtering." },
+  { icon: Search, title: 'Search by areas and courses', body: 'Only interested in certain kinds of work? Pick whole apprenticeship areas like "Digital" or "Construction", or narrow it down to specific courses — your alerts and search results only show what matches.' },
   { icon: Eye, title: 'Clean, scannable emails', body: 'No clutter. Each alert lists the new matching roles with salary, level, and company — plus a direct link straight to the application page.' },
   { icon: MapPin, title: 'Location-aware', body: 'Set your postcode and how far you\'re willing to travel — apprenticeships near you get surfaced first.' },
   { icon: Share2, title: 'Share to WhatsApp', body: 'Spot a role a friend or family member would love? Share any apprenticeship straight to WhatsApp from the browse page — one tap, no copy-paste.' },
