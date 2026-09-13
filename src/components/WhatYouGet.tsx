@@ -11,10 +11,10 @@ const features = [
 
 export default function WhatYouGet() {
   return (
-    <section id="what" className="relative py-20 sm:py-28 bg-paper-deep/40 border-t border-line/60">
+    <section id="what" className="relative py-20 sm:py-28 bg-paper-deep/30 border-t border-line/60">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="max-w-2xl">
-          <p className="text-sm font-bold uppercase tracking-widest text-safety">What you get</p>
+          <p className="inline-flex rounded-full glossy-pill px-3 py-1 text-sm font-bold uppercase tracking-widest text-safety">What you get</p>
           <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
             Everything the weekly alert misses.
           </h2>
@@ -27,9 +27,9 @@ export default function WhatYouGet() {
           {features.map((f) => (
             <div
               key={f.title}
-              className="group rounded-2xl bg-card border border-line p-6 transition-all hover:border-ink/25 hover:shadow-[0_8px_30px_rgba(22,35,59,0.06)] hover:-translate-y-0.5"
+              className="group bubble-card p-6 transition-all duration-300"
             >
-              <div className="w-10 h-10 rounded-lg bg-safety/10 flex items-center justify-center transition-transform group-hover:scale-110">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-safety/20 to-safety/5 flex items-center justify-center transition-transform group-hover:scale-110 shadow-[inset_0_1px_0_white]">
                 <f.icon className="w-5 h-5 text-safety" />
               </div>
               <h3 className="mt-4 font-display font-bold text-ink text-lg">{f.title}</h3>

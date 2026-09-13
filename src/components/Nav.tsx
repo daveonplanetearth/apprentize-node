@@ -42,7 +42,7 @@ export default function Nav({ isHome = false }: NavProps) {
   }, []);
 
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-paper/85 backdrop-blur-md border-b border-line/60' : 'bg-transparent'}`}>
+    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-paper/85 backdrop-blur-md border-b border-line/60 shadow-[0_8px_24px_rgba(76,29,149,0.08)]' : 'bg-transparent'}`}>
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         {/* Deliberately not `justify-between`: that distributes free space *between* children, so
             the nav's position depended on whether the CTA was rendered — hiding it (e.g. on
@@ -66,7 +66,7 @@ export default function Nav({ isHome = false }: NavProps) {
               lengthening one, or adding an eighth link, will overflow before it visibly wraps. */}
           <nav className="hidden lg:flex items-center gap-0.5">
             {links.map((l) => (
-              <a key={l.href} href={l.href} className="whitespace-nowrap px-2.5 py-2 text-sm font-medium text-ink-soft hover:text-ink transition-colors rounded-lg hover:bg-ink/5">
+              <a key={l.href} href={l.href} className="whitespace-nowrap px-3 py-2 text-sm font-medium text-ink-soft hover:text-ink transition-colors rounded-full hover:bg-white/70">
                 {l.label}
               </a>
             ))}
@@ -78,7 +78,7 @@ export default function Nav({ isHome = false }: NavProps) {
               push the widest state back toward the wrap threshold. */}
           {!hideCta && (
             <div className="hidden lg:block ml-auto">
-              <a href="/#alerts" className="inline-flex items-center gap-2 whitespace-nowrap rounded-lg bg-ink text-paper px-5 py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors active:scale-[0.98]">
+              <a href="/#alerts" className="inline-flex items-center gap-2 whitespace-nowrap rounded-full glossy-button text-white px-5 py-2.5 text-sm font-semibold transition-all active:scale-[0.98]">
                 Get free alerts
               </a>
             </div>
@@ -111,7 +111,7 @@ export default function Nav({ isHome = false }: NavProps) {
               <a
                 href="/#alerts"
                 onClick={() => setOpen(false)}
-                className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-ink text-paper px-5 py-3 text-base font-semibold"
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full glossy-button text-white px-5 py-3 text-base font-semibold"
               >
                 Get free alerts
               </a>

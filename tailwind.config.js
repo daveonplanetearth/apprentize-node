@@ -11,14 +11,14 @@ export default {
       colors: {
         ink: '#16233B',
         'ink-soft': '#4B5768',
-        paper: '#F5F3ED',
-        'paper-deep': '#EBE8DF',
+        paper: '#F7F5FF',
+        'paper-deep': '#EDEAFF',
         card: '#FFFFFF',
         safety: '#FF5A1F',
         'safety-deep': '#D8480F',
-        teal: '#1C6E63',
-        'teal-soft': '#2E8B7E',
-        line: '#D8D2BF',
+        teal: '#08BFAE',
+        'teal-soft': '#00D9C5',
+        line: '#DCD8F2',
       },
       keyframes: {
         'fade-up': {

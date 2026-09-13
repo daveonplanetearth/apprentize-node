@@ -66,7 +66,7 @@ export default function FAQ() {
     <section id="faq" className="relative py-20 sm:py-28 border-t border-line/60">
       <div className="mx-auto max-w-3xl px-5 sm:px-6">
         <div className="text-center">
-          <p className="text-sm font-bold uppercase tracking-widest text-safety">FAQ</p>
+          <p className="inline-flex rounded-full glossy-pill px-3 py-1 text-sm font-bold uppercase tracking-widest text-safety">FAQ</p>
           <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
             Questions, answered.
           </h2>

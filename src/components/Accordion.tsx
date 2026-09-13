@@ -8,7 +8,7 @@ export interface AccordionEntry {
 
 function AccordionItem({ q, a, open, onToggle }: { q: string; a: ReactNode; open: boolean; onToggle: () => void }) {
   return (
-    <div className={`rounded-2xl border transition-colors ${open ? 'border-ink/30 bg-card' : 'border-line bg-card/60 hover:border-line'}`}>
+    <div className={`rounded-3xl border transition-all duration-300 ${open ? 'border-teal/30 bg-white shadow-[0_12px_30px_rgba(76,29,149,0.1)]' : 'border-line/70 bg-white/70 hover:bg-white hover:shadow-[0_8px_24px_rgba(76,29,149,0.08)]'}`}>
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 px-5 sm:px-6 py-5 text-left"
