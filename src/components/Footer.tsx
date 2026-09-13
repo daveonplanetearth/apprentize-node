@@ -20,7 +20,7 @@ export default function Footer({ isHome = false }: FooterProps) {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-safety/8 rounded-full blur-[100px] pointer-events-none" aria-hidden />
 
           <div className="relative mx-auto max-w-2xl px-5 sm:px-6 text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-line bg-card px-3.5 py-1.5 text-xs font-semibold text-ink-soft">
+            <div className="inline-flex items-center gap-2 rounded-full glossy-pill px-3.5 py-1.5 text-xs font-semibold text-ink-soft">
               <span className="relative flex w-2 h-2">
                 <span className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
                 <span className="relative rounded-full w-2 h-2 bg-safety" />
@@ -40,7 +40,7 @@ export default function Footer({ isHome = false }: FooterProps) {
                   shared /apprenticeship/<id> URL, where a bare `#…` would hang off that path. */}
               <a
                 href="/#signup"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-3.5 text-base transition-all hover:bg-safety-deep active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-2 rounded-full glossy-button text-white font-semibold px-7 py-3.5 text-base transition-all active:scale-[0.98]"
               >
                 Get alerts <ArrowRight className="w-4 h-4" />
               </a>
@@ -48,6 +48,8 @@ export default function Footer({ isHome = false }: FooterProps) {
 
             <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-ink-soft">
               <span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-teal" /> No spam</span>
+              <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> Daily alerts only</span>
+              <span className="inline-flex items-center gap-1.5"><Bell className="w-4 h-4 text-teal" /> Cancel anytime</span>
               <span className="inline-flex items-center gap-1.5"><Mail className="w-4 h-4 text-teal" /> Daily alerts only</span>
               <span className="inline-flex items-center gap-1.5"><Bell className="w-4 h-4 text-teal" /> Cancel anytime</span>
             </div>

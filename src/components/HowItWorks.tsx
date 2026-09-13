@@ -36,10 +36,10 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={step.title}
-              className="group relative rounded-2xl bg-card border border-line p-6 transition-all hover:border-ink/30 hover:shadow-[0_12px_40px_rgba(22,35,59,0.08)]"
+              className="group relative bubble-card p-6 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-xl bg-ink flex items-center justify-center transition-transform group-hover:scale-105">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-ink to-[#4c1d95] flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg">
                   <step.icon className="w-5 h-5 text-safety" />
                 </div>
                 <span className="font-mono text-sm text-ink-soft font-semibold">0{i + 1}</span>
@@ -48,7 +48,7 @@ export default function HowItWorks() {
               <p className="mt-2 text-ink-soft leading-relaxed text-[15px]">{step.body}</p>
 
               {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 -right-3 w-6 h-px bg-line" aria-hidden />
+                <div className="hidden md:block absolute top-12 -right-3 w-6 h-1 rounded-full bg-teal" aria-hidden />
               )}
             </div>
           ))}

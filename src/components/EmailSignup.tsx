@@ -60,8 +60,8 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
       : '#/apprenticeships';
 
     return (
-      <div className={`rounded-2xl bg-teal/5 border border-teal/20 p-5 flex items-start gap-3 animate-slide-in ${className}`}>
-        <div className="shrink-0 w-8 h-8 rounded-full bg-teal flex items-center justify-center">
+      <div className={`bubble-card bg-teal/5 p-5 flex items-start gap-3 animate-slide-in ${className}`}>
+        <div className="shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-teal to-teal-soft flex items-center justify-center shadow-lg">
           <Check className="w-5 h-5 text-white" strokeWidth={3} />
         </div>
         <div className="flex-1">
@@ -82,7 +82,7 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
 
   return (
     <div className={className}>
-      <form onSubmit={handleSubmit} className="bg-card rounded-2xl border border-line shadow-[0_8px_30px_rgba(22,35,59,0.08)] p-2 sm:p-3">
+      <form onSubmit={handleSubmit} className="bubble-card p-2 sm:p-3">
         <div className="relative">
           <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-ink-soft/60" />
           <input
@@ -266,7 +266,7 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
             (ageTouched && !ageGroupValid) ||
             isUnder16
           }
-          className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-safety text-white font-semibold px-7 py-4 text-base transition-all hover:bg-safety-deep disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+          className="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-full glossy-button text-white font-semibold px-7 py-4 text-base transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
         >
           {state === 'loading' ? (
             <><Loader2 className="w-5 h-5 animate-spin" /> Subscribing…</>
