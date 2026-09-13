@@ -1,17 +1,36 @@
-import { useState, FormEvent } from 'react';
-import { MapPin, Search } from 'lucide-react';
+import { useState, useRef, FormEvent } from 'react';
+import { AlertCircle, Loader2, LocateFixed, MapPin, Search } from 'lucide-react';
 import { liveCountLabel, useLiveCount } from '../hooks/useLiveCount';
+import { canUseMyLocation, useMyLocation } from '../hooks/useMyLocation';
+
+function searchPostcode(postcode: string) {
+  window.location.hash = `/apprenticeships?postcode=${encodeURIComponent(postcode)}`;
+}
 
 export default function Hero() {
   const [postcode, setPostcode] = useState('');
+  const postcodeInput = useRef<HTMLInputElement>(null);
   const liveCount = useLiveCount();
   const live = liveCount === null ? null : liveCountLabel(liveCount);
+  const myLocation = useMyLocation();
+  const locating = myLocation.state === 'loading';
 
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     const trimmed = postcode.trim();
     if (!trimmed) return;
-    window.location.hash = `/apprenticeships?postcode=${encodeURIComponent(trimmed)}`;
+    searchPostcode(trimmed);
+  };
+
+  // One tap: find the nearest postcode, show it in the box, and go straight to the results.
+  const handleUseMyLocation = async () => {
+    const found = await myLocation.locate();
+    if (found) {
+      setPostcode(found);
+      searchPostcode(found);
+    } else {
+      postcodeInput.current?.focus();
+    }
   };
 
   return (
@@ -59,9 +78,13 @@ export default function Hero() {
             <div className="relative flex-1">
               <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/60 pointer-events-none" />
               <input
+                ref={postcodeInput}
                 type="text"
                 value={postcode}
-                onChange={(e) => setPostcode(e.target.value)}
+                onChange={(e) => {
+                  setPostcode(e.target.value);
+                  if (myLocation.state === 'error') myLocation.reset();
+                }}
                 placeholder="Enter your post code"
                 aria-label="Postcode"
                 className="w-full rounded-xl bg-transparent pl-10 pr-4 py-3.5 text-base text-ink placeholder:text-ink-soft/50 focus:outline-none"
@@ -75,6 +98,25 @@ export default function Hero() {
               <Search className="w-4 h-4" /> Search
             </button>
           </div>
+          {canUseMyLocation && (
+            <div className="mt-3 flex flex-col items-center gap-2">
+              <button
+                type="button"
+                onClick={handleUseMyLocation}
+                disabled={locating}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors disabled:no-underline disabled:text-ink-soft disabled:cursor-wait"
+              >
+                {locating
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Finding you…</>
+                  : <><LocateFixed className="w-4 h-4" /> Use my location</>}
+              </button>
+              {myLocation.state === 'error' && (
+                <p role="alert" className="inline-flex items-center gap-1.5 text-sm font-medium text-safety">
+                  <AlertCircle className="w-4 h-4 shrink-0" /> {myLocation.error}
+                </p>
+              )}
+            </div>
+          )}
         </form>
 
         <div className="mt-5 animate-fade-up" style={{ animationDelay: '0.18s', opacity: 0 }}>

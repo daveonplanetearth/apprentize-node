@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
-  TrendingUp, Clock, Loader2, AlertCircle, Ruler, X,
+  TrendingUp, Clock, Loader2, AlertCircle, Ruler, X, LocateFixed,
   ArrowUpDown, CalendarClock, Users, SlidersHorizontal, ChevronDown,
 } from 'lucide-react';
 import { useApprenticeships } from '../hooks/useApprenticeships';
@@ -11,6 +11,7 @@ import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
 import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type RouteOption } from '../hooks/useCourses';
 import InterestPicker from './InterestPicker';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { canUseMyLocation, useMyLocation } from '../hooks/useMyLocation';
 
 // How long typing in the postcode or job-title box must pause before the page searches.
 const TYPING_PAUSE_MS = 500;
@@ -97,6 +98,9 @@ export default function ApprenticeshipsPage({
   const filtered = hasInterests(interests);
 
   const viewedIds = useViewedApprenticeships();
+  const myLocation = useMyLocation();
+  const locating = myLocation.state === 'loading';
+  const postcodeInput = useRef<HTMLInputElement>(null);
 
   // Typed fields search once typing pauses, not on every keystroke: one search instead of one per
   // character, for the API, the postcode lookup and the usage statistics alike.
@@ -194,6 +198,18 @@ export default function ApprenticeshipsPage({
     document.getElementById(`job-${initialViewedId}`)?.scrollIntoView({ block: 'center' });
   }, [initialViewedId, state, result]);
 
+  // The nearest postcode goes in the box and searches straight away, like a typed one that's done.
+  const handleUseMyLocation = async () => {
+    const found = await myLocation.locate();
+    if (found) {
+      setPostcode(found);
+      settlePostcode(found);
+      setHasSearched(true);
+    } else {
+      postcodeInput.current?.focus();
+    }
+  };
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!postcode.trim()) return;
@@ -243,24 +259,47 @@ export default function ApprenticeshipsPage({
               <div className="relative">
                 <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/60 pointer-events-none" />
                 <input
+                  ref={postcodeInput}
                   type="text"
                   value={postcode}
-                  onChange={(e) => setPostcode(e.target.value)}
+                  onChange={(e) => {
+                    setPostcode(e.target.value);
+                    if (myLocation.state === 'error') myLocation.reset();
+                  }}
                   placeholder="e.g. SW1A 1AA or SW1A"
                   aria-label="Postcode"
-                  className="w-full rounded-xl border border-line bg-paper pl-10 pr-9 py-3 text-sm text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
+                  className={`w-full rounded-xl border border-line bg-paper pl-10 ${canUseMyLocation ? 'pr-16' : 'pr-9'} py-3 text-sm text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15`}
                 />
-                {postcode && (
-                  <button
-                    type="button"
-                    onClick={() => setPostcode('')}
-                    aria-label="Clear postcode"
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-ink-soft/50 hover:text-ink p-0.5"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  {postcode && (
+                    <button
+                      type="button"
+                      onClick={() => setPostcode('')}
+                      aria-label="Clear postcode"
+                      className="text-ink-soft/50 hover:text-ink p-0.5"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                  {canUseMyLocation && (
+                    <button
+                      type="button"
+                      onClick={handleUseMyLocation}
+                      disabled={locating}
+                      aria-label={locating ? 'Finding your location' : 'Use my location'}
+                      title="Use my location"
+                      className="text-ink-soft/70 hover:text-safety p-0.5 disabled:cursor-wait"
+                    >
+                      {locating ? <Loader2 className="w-4 h-4 animate-spin" /> : <LocateFixed className="w-4 h-4" />}
+                    </button>
+                  )}
+                </div>
               </div>
+              {myLocation.state === 'error' && (
+                <p role="alert" className="mt-1.5 flex items-center gap-1.5 px-1 text-xs font-medium text-safety">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {myLocation.error}
+                </p>
+              )}
             </div>
 
             {/* Radius */}

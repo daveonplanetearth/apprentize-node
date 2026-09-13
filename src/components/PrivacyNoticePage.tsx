@@ -1,6 +1,6 @@
 // Keep in step with Apprentize.Api's AppConstants.CurrentPrivacyVersion, which records the
 // version each new subscriber signed up under.
-const LAST_UPDATED = '12 September 2026';
+const LAST_UPDATED = '13 September 2026';
 
 interface SectionProps {
   id: string;
@@ -73,6 +73,12 @@ export default function PrivacyNoticePage() {
                   codes can't be linked from one day to the next. None of this is linked to your account, and no
                   cookies are used.
                 </li>
+                <li>
+                  <strong className="text-ink">Your location</strong> — only if you tap <em>Use my location</em>. Your
+                  browser asks your permission first. We use your location once, to find the nearest postcode, and
+                  then search with that postcode like any other. We don't store your location or record it in our
+                  statistics.
+                </li>
               </ul>
               <p>When you sign up for alerts, we collect:</p>
               <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
@@ -142,6 +148,11 @@ export default function PrivacyNoticePage() {
               <ul className="list-disc pl-5 space-y-1.5 marker:text-teal">
                 <li><strong className="text-ink">Microsoft Azure</strong> — hosts our application and database.</li>
                 <li><strong className="text-ink">Azure Communication Services</strong> — sends confirmation and alert emails on our behalf.</li>
+                <li>
+                  <strong className="text-ink">postcodes.io</strong> — finds where a postcode is, and the nearest postcode
+                  when you use <em>Use my location</em>. Our server sends it only the postcode or location being looked
+                  up, never your IP address, email or anything else that identifies you.
+                </li>
                 <li><strong className="text-ink">Google Fonts</strong> — this site loads typefaces from Google's servers, which means your browser's IP address is visible to Google when a page loads. Google does not receive your email, postcode, or any other subscriber data from us.</li>
               </ul>
             </Section>
@@ -149,7 +160,9 @@ export default function PrivacyNoticePage() {
             <Section id="where-stored" title="6. Where your data is stored">
               <p>
                 Our hosting and database infrastructure runs in a UK Azure region. Your data is not transferred
-                outside the UK by us or our processors listed above.
+                outside the UK by us or our processors listed above, with one exception: postcodes.io runs on
+                Cloudflare's global network, so a postcode or location we look up there may be processed outside
+                the UK. It never comes with anything that identifies you.
               </p>
             </Section>
 
