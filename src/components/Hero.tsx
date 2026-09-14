@@ -2,6 +2,7 @@ import { useState, useRef, FormEvent } from 'react';
 import { AlertCircle, Loader2, LocateFixed, MapPin, Search } from 'lucide-react';
 import { liveCountLabel, useLiveCount } from '../hooks/useLiveCount';
 import { canUseMyLocation, useMyLocation } from '../hooks/useMyLocation';
+import { isPostcodeShaped, POSTCODE_FORMAT_ERROR } from '../hooks/postcode';
 
 function searchPostcode(postcode: string) {
   window.location.hash = `/apprenticeships?postcode=${encodeURIComponent(postcode)}`;
@@ -9,6 +10,9 @@ function searchPostcode(postcode: string) {
 
 export default function Hero() {
   const [postcode, setPostcode] = useState('');
+  // Only the shape is checked here. A well-formed postcode that doesn't exist goes on to the
+  // browse page, which says so next to a box that already holds it, ready to fix.
+  const [formatError, setFormatError] = useState(false);
   const postcodeInput = useRef<HTMLInputElement>(null);
   const liveCount = useLiveCount();
   const live = liveCount === null ? null : liveCountLabel(liveCount);
@@ -19,6 +23,10 @@ export default function Hero() {
     e.preventDefault();
     const trimmed = postcode.trim();
     if (!trimmed) return;
+    if (!isPostcodeShaped(trimmed)) {
+      setFormatError(true);
+      return;
+    }
     searchPostcode(trimmed);
   };
 
@@ -27,6 +35,7 @@ export default function Hero() {
     const found = await myLocation.locate();
     if (found) {
       setPostcode(found);
+      setFormatError(false);
       searchPostcode(found);
     } else {
       postcodeInput.current?.focus();
@@ -83,10 +92,13 @@ export default function Hero() {
                 value={postcode}
                 onChange={(e) => {
                   setPostcode(e.target.value);
+                  setFormatError(false);
                   if (myLocation.state === 'error') myLocation.reset();
                 }}
                 placeholder="Enter your post code"
                 aria-label="Postcode"
+                aria-invalid={formatError || undefined}
+                aria-describedby={formatError ? 'hero-postcode-error' : undefined}
                 className="w-full rounded-xl bg-transparent pl-10 pr-4 py-3.5 text-base text-ink placeholder:text-ink-soft/50 focus:outline-none"
               />
             </div>
@@ -98,6 +110,11 @@ export default function Hero() {
               <Search className="w-4 h-4" /> Search
             </button>
           </div>
+          {formatError && (
+            <p id="hero-postcode-error" role="alert" className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-safety">
+              <AlertCircle className="w-4 h-4 shrink-0" /> {POSTCODE_FORMAT_ERROR}
+            </p>
+          )}
           {canUseMyLocation && (
             <div className="mt-3 flex flex-col items-center gap-2">
               <button

@@ -12,6 +12,7 @@ import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type
 import InterestPicker from './InterestPicker';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { canUseMyLocation, useMyLocation } from '../hooks/useMyLocation';
+import { isPostcodeShaped, POSTCODE_FORMAT_ERROR, samePostcode } from '../hooks/postcode';
 
 // How long typing in the postcode or job-title box must pause before the page searches.
 const TYPING_PAUSE_MS = 500;
@@ -107,8 +108,23 @@ export default function ApprenticeshipsPage({
   const [searchPostcode, settlePostcode] = useDebouncedValue(postcode, TYPING_PAUSE_MS);
   const [searchTitle, settleTitle] = useDebouncedValue(title, TYPING_PAUSE_MS);
 
-  const { state, result, error, retry } = useApprenticeships({
-    postcode: searchPostcode,
+  // The postcode actually searched: the last settled one shaped like a postcode. Retyping passes
+  // through shapes that aren't (e.g. "M1 1"), and those pauses keep the previous results rather
+  // than asking the API about half a postcode. Adjusted during render, so no render ever pairs a
+  // new postcode with the old one's results.
+  const [queriedPostcode, setQueriedPostcode] = useState(() =>
+    isPostcodeShaped(searchPostcode) ? searchPostcode : '');
+  if (isPostcodeShaped(searchPostcode) && searchPostcode !== queriedPostcode) {
+    setQueriedPostcode(searchPostcode);
+  }
+
+  // "That doesn't look like a postcode": shown once the visitor is done with the box (Search,
+  // Enter, leaving the field) or straight away for one that came in the URL, and gone as soon as
+  // they edit it — never mid-word.
+  const [formatError, setFormatError] = useState(() => Boolean(initialPostcode) && !isPostcodeShaped(initialPostcode ?? ''));
+
+  const { state, result, error, errorKind, retry } = useApprenticeships({
+    postcode: queriedPostcode,
     radiusMiles,
     title: searchTitle,
     page,
@@ -156,22 +172,23 @@ export default function ApprenticeshipsPage({
   // Reset to page 1 when filters actually change (after first search) — compares against the
   // previous values rather than a "first run" flag so an initialPage carried over from a "Back to
   // results" link survives React StrictMode's double-invoked mount effect in development.
+  // The searched postcode, not the box: a half-typed one mustn't send the current results to page 1.
   const interestsKey = `${interests.routeIds.join(',')}|${interests.larsCodes.join(',')}`;
-  const prevFilters = useRef({ postcode, radiusMiles, title, sortBy, sortOrder, interestsKey });
+  const prevFilters = useRef({ queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey });
   useEffect(() => {
     const prev = prevFilters.current;
-    const changed = prev.postcode !== postcode || prev.radiusMiles !== radiusMiles || prev.title !== title
+    const changed = prev.queriedPostcode !== queriedPostcode || prev.radiusMiles !== radiusMiles || prev.title !== title
       || prev.sortBy !== sortBy || prev.sortOrder !== sortOrder || prev.interestsKey !== interestsKey;
-    prevFilters.current = { postcode, radiusMiles, title, sortBy, sortOrder, interestsKey };
+    prevFilters.current = { queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey };
     if (changed && hasSearched) setPage(1);
-  }, [postcode, radiusMiles, title, sortBy, sortOrder, interestsKey, hasSearched]);
+  }, [queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey, hasSearched]);
 
   // Keep the address bar in step with the search, so a refresh or a shared link shows the same
   // results — filter included. replaceState fires no hashchange, so this doesn't re-route.
   useEffect(() => {
-    if (!hasSearched || !postcode.trim()) return;
+    if (!hasSearched || !queriedPostcode.trim()) return;
     const params = new URLSearchParams({
-      postcode: postcode.trim(),
+      postcode: queriedPostcode.trim(),
       radius: String(radiusMiles),
       sortBy,
       sortOrder,
@@ -181,7 +198,7 @@ export default function ApprenticeshipsPage({
     if (interests.routeIds.length) params.set('routes', interests.routeIds.join(','));
     if (interests.larsCodes.length) params.set('courses', interests.larsCodes.join(','));
     window.history.replaceState(null, '', `#/apprenticeships?${params.toString()}`);
-  }, [hasSearched, postcode, radiusMiles, title, sortBy, sortOrder, page, interests]);
+  }, [hasSearched, queriedPostcode, radiusMiles, title, sortBy, sortOrder, page, interests]);
 
   const showAll = () => {
     setInterests(NO_INTERESTS);
@@ -198,11 +215,18 @@ export default function ApprenticeshipsPage({
     document.getElementById(`job-${initialViewedId}`)?.scrollIntoView({ block: 'center' });
   }, [initialViewedId, state, result]);
 
+  // Every edit to the box — typing, clearing, "Use my location" — takes back a format error.
+  const changePostcode = (next: string) => {
+    setPostcode(next);
+    setFormatError(false);
+    if (myLocation.state === 'error') myLocation.reset();
+  };
+
   // The nearest postcode goes in the box and searches straight away, like a typed one that's done.
   const handleUseMyLocation = async () => {
     const found = await myLocation.locate();
     if (found) {
-      setPostcode(found);
+      changePostcode(found);
       settlePostcode(found);
       setHasSearched(true);
     } else {
@@ -213,6 +237,10 @@ export default function ApprenticeshipsPage({
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!postcode.trim()) return;
+    if (!isPostcodeShaped(postcode)) {
+      setFormatError(true);
+      return;
+    }
     setHasSearched(true);
     setPage(1);
     // Pressing Search doesn't wait for the typing pause. If the settled values change, that
@@ -224,6 +252,16 @@ export default function ApprenticeshipsPage({
       settleTitle(title);
     }
   };
+
+  // A postcode problem is the visitor's to fix, so it sits under the field — the API's "not found"
+  // only while the box still holds the postcode it was about. Either way the results area asks them
+  // to check it rather than offering a retry that would fail the same way.
+  const postcodeNotFound = state === 'error' && errorKind === 'invalid_postcode';
+  const postcodeError = formatError
+    ? POSTCODE_FORMAT_ERROR
+    : postcodeNotFound && samePostcode(postcode, queriedPostcode) ? error : '';
+  const checkPostcode = formatError || postcodeNotFound;
+  const showResults = hasSearched && !checkPostcode;
 
   const totalPages = result ? Math.max(1, Math.ceil(result.total / result.pageSize)) : 1;
   const canPrev = page > 1;
@@ -262,19 +300,23 @@ export default function ApprenticeshipsPage({
                   ref={postcodeInput}
                   type="text"
                   value={postcode}
-                  onChange={(e) => {
-                    setPostcode(e.target.value);
-                    if (myLocation.state === 'error') myLocation.reset();
+                  onChange={(e) => changePostcode(e.target.value)}
+                  onBlur={(e) => {
+                    // Moving to the clear or "Use my location" button isn't being done with the box.
+                    if (e.currentTarget.parentElement?.contains(e.relatedTarget)) return;
+                    if (postcode.trim() && !isPostcodeShaped(postcode)) setFormatError(true);
                   }}
                   placeholder="e.g. SW1A 1AA or SW1A"
                   aria-label="Postcode"
-                  className={`w-full rounded-xl border border-line bg-paper pl-10 ${canUseMyLocation ? 'pr-16' : 'pr-9'} py-3 text-sm text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15`}
+                  aria-invalid={postcodeError ? true : undefined}
+                  aria-describedby={postcodeError ? 'postcode-error' : undefined}
+                  className={`w-full rounded-xl border ${postcodeError ? 'border-safety' : 'border-line'} bg-paper pl-10 ${canUseMyLocation ? 'pr-16' : 'pr-9'} py-3 text-sm text-ink placeholder:text-ink-soft/50 transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15`}
                 />
                 <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
                   {postcode && (
                     <button
                       type="button"
-                      onClick={() => setPostcode('')}
+                      onClick={() => changePostcode('')}
                       aria-label="Clear postcode"
                       className="text-ink-soft/50 hover:text-ink p-0.5"
                     >
@@ -295,6 +337,11 @@ export default function ApprenticeshipsPage({
                   )}
                 </div>
               </div>
+              {postcodeError && (
+                <p id="postcode-error" role="alert" className="mt-1.5 flex items-center gap-1.5 px-1 text-xs font-medium text-safety">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {postcodeError}
+                </p>
+              )}
               {myLocation.state === 'error' && (
                 <p role="alert" className="mt-1.5 flex items-center gap-1.5 px-1 text-xs font-medium text-safety">
                   <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {myLocation.error}
@@ -435,8 +482,21 @@ export default function ApprenticeshipsPage({
             </div>
           )}
 
+          {/* Postcode problem — fixed in the box above, not by retrying */}
+          {hasSearched && checkPostcode && (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-ink/5 mb-4">
+                <MapPin className="w-6 h-6 text-ink-soft/60" />
+              </div>
+              <p className="font-display font-bold text-ink text-lg">Check your postcode</p>
+              <p className="text-ink-soft text-sm mt-1.5 max-w-sm mx-auto">
+                Enter a full postcode like SW1A 1AA, or just the first part like SW1A, and we'll show apprenticeships near it.
+              </p>
+            </div>
+          )}
+
           {/* Loading state */}
-          {hasSearched && state === 'loading' && (
+          {showResults && state === 'loading' && (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="rounded-2xl border border-line bg-card p-4 animate-pulse" style={{ animationDelay: `${i * 0.05}s` }}>
@@ -454,7 +514,7 @@ export default function ApprenticeshipsPage({
           )}
 
           {/* Error state */}
-          {hasSearched && state === 'error' && (
+          {showResults && state === 'error' && (
             <div className="rounded-2xl bg-safety/5 border border-safety/20 p-6 text-center">
               <AlertCircle className="w-8 h-8 text-safety mx-auto mb-3" />
               <p className="font-display font-bold text-ink text-lg">Something went wrong</p>
@@ -469,7 +529,7 @@ export default function ApprenticeshipsPage({
           )}
 
           {/* Success — empty */}
-          {hasSearched && state === 'success' && result && result.items.length === 0 && (
+          {showResults && state === 'success' && result && result.items.length === 0 && (
             <div className="text-center py-20">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-ink/5 mb-4">
                 <Briefcase className="w-6 h-6 text-ink-soft/60" />
@@ -493,11 +553,11 @@ export default function ApprenticeshipsPage({
           )}
 
           {/* Success — results */}
-          {hasSearched && state === 'success' && result && result.items.length > 0 && (
+          {showResults && state === 'success' && result && result.items.length > 0 && (
             <>
               <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
                 <p className="text-sm text-ink-soft">
-                  <span className="font-semibold text-ink">{result.total}</span> apprenticeship{result.total === 1 ? '' : 's'} within <span className="font-semibold text-ink">{radiusMiles} miles</span> of <span className="font-semibold text-ink">{postcode}</span>
+                  <span className="font-semibold text-ink">{result.total}</span> apprenticeship{result.total === 1 ? '' : 's'} within <span className="font-semibold text-ink">{radiusMiles} miles</span> of <span className="font-semibold text-ink">{queriedPostcode}</span>
                   {title.trim() && <> matching <span className="font-semibold text-ink">"{title.trim()}"</span></>}
                   {filtered && <> in your chosen areas</>}
                 </p>
@@ -539,7 +599,7 @@ export default function ApprenticeshipsPage({
                   const viewed = viewedIds.has(job.id);
                   const detailHref = `#/apprenticeship?${new URLSearchParams({
                     id: job.id,
-                    postcode,
+                    postcode: queriedPostcode,
                     radius: String(radiusMiles),
                     title,
                     sortBy,

@@ -101,6 +101,10 @@ export function useSubscribe(): UseSubscribeResult {
         if (body?.error === 'invalid_postcode') {
           setErrorField('postcode');
           setMessage(body.message ?? 'Postcode not found. Please check and try again.');
+        } else if (body?.error === 'postcode_lookup_unavailable') {
+          // postcodes.io is down: the postcode may be fine, but it's the field the retry concerns.
+          setErrorField('postcode');
+          setMessage(body.message ?? "We can't check postcodes right now. Please try again in a moment.");
         } else if (body?.error && INTEREST_ERRORS.has(body.error) && body.message) {
           setMessage(body.message);
         } else {

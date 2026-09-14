@@ -32,6 +32,14 @@ export interface ApprenticeshipsResult {
 
 export type SearchState = 'idle' | 'loading' | 'success' | 'error';
 
+/**
+ * Why a search failed: the postcode doesn't exist (fix the postcode — retrying won't help), the
+ * API couldn't check it right now (retry), or anything else.
+ */
+export type SearchErrorKind = 'invalid_postcode' | 'postcode_lookup_unavailable' | 'other';
+
+const DEFAULT_ERROR = 'Could not load apprenticeships. Please try again.';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 const ENDPOINT = API_BASE_URL ? `${API_BASE_URL}/api/apprenticeships/search` : undefined;
 
@@ -61,8 +69,15 @@ export function useApprenticeships({
   const [state, setState] = useState<SearchState>('idle');
   const [result, setResult] = useState<ApprenticeshipsResult | null>(null);
   const [error, setError] = useState<string>('');
+  const [errorKind, setErrorKind] = useState<SearchErrorKind | null>(null);
 
   const search = useCallback(async () => {
+    const fail = (kind: SearchErrorKind, message: string) => {
+      setState('error');
+      setErrorKind(kind);
+      setError(message);
+    };
+
     if (!enabled) return;
     if (!postcode.trim()) {
       setState('idle');
@@ -77,6 +92,7 @@ export function useApprenticeships({
     }
     setState('loading');
     setError('');
+    setErrorKind(null);
     const params = new URLSearchParams({
       postcode: postcode.trim(),
       radius: String(radiusMiles),
@@ -95,16 +111,20 @@ export function useApprenticeships({
         headers: { 'Accept': 'application/json', ...analyticsHeaders() },
       });
       if (!res.ok) {
-        setState('error');
-        setError('Could not load apprenticeships. Please try again.');
+        // The API words its postcode errors itself, as it does for signup and preferences.
+        const body: { error?: string; message?: string } | null = await res.json().catch(() => null);
+        if (body?.error === 'invalid_postcode' || body?.error === 'postcode_lookup_unavailable') {
+          fail(body.error, body.message ?? DEFAULT_ERROR);
+        } else {
+          fail('other', DEFAULT_ERROR);
+        }
         return;
       }
       const data = (await res.json()) as ApprenticeshipsResult;
       setResult(data);
       setState('success');
     } catch {
-      setState('error');
-      setError('Could not load apprenticeships. Please try again.');
+      fail('other', DEFAULT_ERROR);
     }
   }, [postcode, radiusMiles, title, page, pageSize, sortBy, sortOrder, routes, courses, enabled]);
 
@@ -112,5 +132,5 @@ export function useApprenticeships({
     search();
   }, [search]);
 
-  return { state, result, error, retry: search };
+  return { state, result, error, errorKind, retry: search };
 }
