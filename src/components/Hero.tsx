@@ -74,7 +74,7 @@ export default function Hero() {
         <p className="mt-2 min-h-[1.25rem] text-sm text-ink-soft">
           {live && (
             <>
-              <span className="font-semibold text-safety">{live.figure}</span> {live.noun} currently live
+              <span className="font-semibold text-safety">{live.figure}</span> {live.noun} to apply for right now
             </>
           )}
         </p>

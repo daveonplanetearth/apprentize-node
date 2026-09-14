@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
 /**
- * The number of apprenticeships Apprentize can show right now, as counted at the last vacancy sync
- * (GET /api/stats). Null while loading, and stays null if there's no count fit to show — the API
+ * The number of apprenticeship places (positions, not vacancies) across the apprenticeships
+ * Apprentize can show right now, as totalled at the last vacancy sync (GET /api/stats). Null while loading, and stays null if there's no count fit to show — the API
  * withholds one that's gone stale — or it can't be fetched. Never a made-up fallback.
  */
 export function useLiveCount(): number | null {
@@ -39,6 +39,6 @@ export function useLiveCount(): number | null {
  */
 export function liveCountLabel(count: number): { figure: string; noun: string } | null {
   if (!Number.isInteger(count) || count <= 0) return null;
-  if (count < 10) return { figure: String(count), noun: count === 1 ? 'apprenticeship' : 'apprenticeships' };
-  return { figure: `${(Math.floor(count / 10) * 10).toLocaleString('en-GB')}+`, noun: 'apprenticeships' };
+  if (count < 10) return { figure: String(count), noun: count === 1 ? 'place' : 'places' };
+  return { figure: `${(Math.floor(count / 10) * 10).toLocaleString('en-GB')}+`, noun: 'places' };
 }

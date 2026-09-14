@@ -46,10 +46,6 @@ export default function HowItWorks() {
               </div>
               <h3 className="mt-4 font-display font-bold text-ink text-xl">{step.title}</h3>
               <p className="mt-2 text-ink-soft leading-relaxed text-[15px]">{step.body}</p>
-
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-12 -right-3 w-6 h-1 rounded-full bg-teal" aria-hidden />
-              )}
             </div>
           ))}
         </div>
