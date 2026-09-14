@@ -1,6 +1,6 @@
 // Keep in step with Apprentize.Api's AppConstants.CurrentPrivacyVersion, which records the
 // version each new subscriber signed up under.
-const LAST_UPDATED = '13 September 2026';
+const LAST_UPDATED = '14 September 2026';
 
 interface SectionProps {
   id: string;
@@ -90,7 +90,7 @@ export default function PrivacyNoticePage() {
                   "Digital") and specific courses you choose, at signup or later in My Preferences. If you choose none,
                   you hear about every apprenticeship in your area.
                 </li>
-                <li><strong className="text-ink">Consent records</strong> — whether you agreed to our Terms of Service/this notice and to receiving alert emails, and when.</li>
+                <li><strong className="text-ink">Sign-up records</strong> — that you agreed to our Terms of Service and this notice (and which versions), and when you confirmed your subscription.</li>
               </ul>
               <p>
                 If you later manage your preferences, we also hold a <span className="font-mono text-sm">session token</span> in
@@ -107,10 +107,12 @@ export default function PrivacyNoticePage() {
                 to see everything in your area instead.
               </p>
               <p>
-                Our lawful basis is your <strong className="text-ink">consent</strong> (UK GDPR Article 6(1)(a)), given
-                when you tick the two consent boxes at signup — one for our Terms of Service and this notice, one
-                specifically for receiving alert emails, as required by the Privacy and Electronic Communications
-                Regulations (PECR). You can withdraw consent at any time (Section 7).
+                Our lawful basis is that this processing is <strong className="text-ink">necessary to provide the
+                service you asked for</strong> (UK GDPR Article 6(1)(b)): you sign up for alerts, agree to our Terms of
+                Service, and confirm your email address, and we can't send you alerts without using your email
+                address, area and interests to do it. Alert emails contain only apprenticeship vacancies matching
+                your preferences, plus links to manage or cancel your subscription — never advertising or sponsored
+                content. You can stop them at any time by unsubscribing or deleting your account (Section 7).
               </p>
               <p>
                 <strong className="text-ink">Anonymous statistics.</strong> We count how many subscribers are interested
@@ -138,7 +140,7 @@ export default function PrivacyNoticePage() {
               <p>
                 We use a double opt-in process: after you sign up, we email you a confirmation link. Alerts only
                 start once you click it. This protects against someone signing up an email address that isn't
-                theirs, and gives you a clear record of when you consented.
+                theirs, and gives us a clear record of when you asked for alerts.
               </p>
               <p>Confirmation links expire after 30 minutes; you can request a new one if yours has expired.</p>
             </Section>
@@ -235,7 +237,7 @@ export default function PrivacyNoticePage() {
                   recorded, but nothing more will be.
                 </li>
                 <li>Receive your data in a portable format.</li>
-                <li>Withdraw consent at any time, without affecting processing carried out before you withdrew it.</li>
+                <li>Stop receiving alerts at any time, by unsubscribing.</li>
               </ul>
               <p>
                 You can exercise most of these yourself, immediately, from{' '}

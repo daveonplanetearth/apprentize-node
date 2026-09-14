@@ -17,7 +17,6 @@ export interface SubscribePayload {
   email: string;
   ageBand?: string;
   tosConsent: boolean;
-  emailAlertsConsent: boolean;
   postcode?: string;
   searchRadiusMiles?: number;
   interests?: { routeIds: number[] };
@@ -31,7 +30,6 @@ export interface UseSubscribeResult {
     email: string,
     ageGroup: AgeGroup | undefined,
     tosConsent: boolean,
-    emailAlertsConsent: boolean,
     postcode?: string,
     radiusMiles?: number,
     routeIds?: number[],
@@ -63,7 +61,6 @@ export function useSubscribe(): UseSubscribeResult {
     email: string,
     ageGroup: AgeGroup | undefined,
     tosConsent: boolean,
-    emailAlertsConsent: boolean,
     postcode?: string,
     radiusMiles?: number,
     routeIds?: number[],
@@ -82,7 +79,6 @@ export function useSubscribe(): UseSubscribeResult {
       email,
       ageBand: ageGroup ? AGE_BAND_BY_GROUP[ageGroup] : undefined,
       tosConsent,
-      emailAlertsConsent,
       postcode: postcode?.trim() || undefined,
       searchRadiusMiles: radiusMiles,
       interests: routeIds ? { routeIds } : undefined,

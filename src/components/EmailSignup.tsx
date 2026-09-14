@@ -25,8 +25,7 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
   const [touched, setTouched] = useState(false);
   const [ageGroup, setAgeGroup] = useState<AgeGroup | ''>('');
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [agreeAlerts, setAgreeAlerts] = useState(false);
-  const [consentTouched, setConsentTouched] = useState(false);
+  const [termsTouched, setTermsTouched] = useState(false);
   const [postcode, setPostcode] = useState('');
   const [postcodeTouched, setPostcodeTouched] = useState(false);
   const [ageTouched, setAgeTouched] = useState(false);
@@ -35,7 +34,6 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
   const { state: routesState, routes } = useCourses();
 
   const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const consentsValid = agreeTerms && agreeAlerts;
   const isUnder16 = ageGroup === 'under_16';
   const postcodeValid = postcode.trim().length > 0;
   const ageGroupValid = ageGroup !== '';
@@ -43,13 +41,13 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setTouched(true);
-    setConsentTouched(true);
+    setTermsTouched(true);
     setPostcodeTouched(true);
     setAgeTouched(true);
-    if (!isValid || !consentsValid || isUnder16 || !postcodeValid || !ageGroupValid || state === 'loading') return;
+    if (!isValid || !agreeTerms || isUnder16 || !postcodeValid || !ageGroupValid || state === 'loading') return;
     // Routes are only sent when the list actually loaded — otherwise there was nothing to choose.
     await subscribe(
-      email, ageGroup || undefined, agreeTerms, agreeAlerts, postcode || undefined, radiusMiles,
+      email, ageGroup || undefined, agreeTerms, postcode || undefined, radiusMiles,
       routesState === 'ready' ? routeIds : undefined,
     );
   };
@@ -213,47 +211,32 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
           />
         </fieldset>
 
-        <div className="mt-3 space-y-2">
-          {[
-            {
-              checked: agreeTerms,
-              set: setAgreeTerms,
-              label: <>I agree to the <a href="#/terms" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Terms of Service</a> and <a href="#/privacy" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Privacy Notice</a>.</>,
-              key: 'terms',
-            },
-            {
-              checked: agreeAlerts,
-              set: setAgreeAlerts,
-              label: <>I consent to receiving apprenticeship alert emails.</>,
-              key: 'alerts',
-            },
-          ].map((box) => {
-            const invalid = consentTouched && !box.checked;
-            return (
-              <label
-                key={box.key}
-                className={`group flex items-start gap-2.5 rounded-xl border px-3.5 py-3 cursor-pointer transition-all ${
-                  box.checked ? 'border-ink/40 bg-ink/[0.03]' : 'border-line hover:border-ink/40 hover:bg-paper-deep/40'
-                } ${invalid ? '!border-safety bg-safety/5' : ''} ${state === 'loading' ? 'opacity-60 pointer-events-none' : ''}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={box.checked}
-                  onChange={(e) => box.set(e.target.checked)}
-                  disabled={state === 'loading'}
-                  className="sr-only"
-                />
-                <span
-                  className={`shrink-0 mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
-                    box.checked ? 'border-ink bg-ink' : 'border-line group-hover:border-ink/50'
-                  } ${invalid ? '!border-safety' : ''}`}
-                >
-                  {box.checked && <Check className="w-3.5 h-3.5 text-safety" strokeWidth={3} />}
-                </span>
-                <span className="text-sm text-ink-soft leading-snug">{box.label}</span>
-              </label>
-            );
-          })}
+        {/* No separate alert-emails consent: the alerts are the service being signed up for, so
+            the lawful basis is contract, not consent (privacy notice §3). */}
+        <div className="mt-3">
+          <label
+            className={`group flex items-start gap-2.5 rounded-xl border px-3.5 py-3 cursor-pointer transition-all ${
+              agreeTerms ? 'border-ink/40 bg-ink/[0.03]' : 'border-line hover:border-ink/40 hover:bg-paper-deep/40'
+            } ${termsTouched && !agreeTerms ? '!border-safety bg-safety/5' : ''} ${state === 'loading' ? 'opacity-60 pointer-events-none' : ''}`}
+          >
+            <input
+              type="checkbox"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+              disabled={state === 'loading'}
+              className="sr-only"
+            />
+            <span
+              className={`shrink-0 mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
+                agreeTerms ? 'border-ink bg-ink' : 'border-line group-hover:border-ink/50'
+              } ${termsTouched && !agreeTerms ? '!border-safety' : ''}`}
+            >
+              {agreeTerms && <Check className="w-3.5 h-3.5 text-safety" strokeWidth={3} />}
+            </span>
+            <span className="text-sm text-ink-soft leading-snug">
+              I agree to the <a href="#/terms" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Terms of Service</a> and <a href="#/privacy" className="font-semibold text-ink underline underline-offset-2 hover:text-safety">Privacy Notice</a>.
+            </span>
+          </label>
         </div>
 
         <button
@@ -261,7 +244,7 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
           disabled={
             state === 'loading' ||
             (touched && !isValid) ||
-            (consentTouched && !consentsValid) ||
+            (termsTouched && !agreeTerms) ||
             (postcodeTouched && !postcodeValid) ||
             (ageTouched && !ageGroupValid) ||
             isUnder16
@@ -285,9 +268,9 @@ export default function EmailSignup({ className = '' }: EmailSignupProps) {
           <AlertCircle className="w-4 h-4" /> Please enter a valid email address.
         </p>
       )}
-      {consentTouched && !consentsValid && (
+      {termsTouched && !agreeTerms && (
         <p className="mt-2.5 flex items-center gap-1.5 text-safety text-sm font-medium pl-2">
-          <AlertCircle className="w-4 h-4" /> Please tick both boxes to continue.
+          <AlertCircle className="w-4 h-4" /> Please agree to the Terms of Service and Privacy Notice to continue.
         </p>
       )}
       {postcodeTouched && !postcodeValid && (
