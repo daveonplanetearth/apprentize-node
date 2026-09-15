@@ -6,7 +6,7 @@ export default {
       fontFamily: {
         display: ['"Bricolage Grotesque"', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       colors: {
         ink: '#16233B',
