@@ -3,16 +3,16 @@ import {
   TrendingUp, Wallet, Clock, Clock3, CalendarClock, CalendarRange, MapPin,
 } from 'lucide-react';
 import { useApprenticeshipDetails } from '../hooks/useApprenticeshipDetails';
-import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
+import { SORT_PARAMS, type SortChoice } from '../hooks/useApprenticeships';
 import { recordApplyClick } from '../hooks/analytics';
+import { closingSoonLabel, daysUntil } from '../hooks/closingDate';
 
 interface ApprenticeshipPageProps {
   id?: string;
   returnPostcode?: string;
   returnRadiusMiles?: number;
   returnTitle?: string;
-  returnSortBy?: SortBy;
-  returnSortOrder?: SortOrder;
+  returnSort?: SortChoice;
   returnPage?: number;
   /** The list's route/course filter, as the comma-separated values it came in the URL with. */
   returnRoutes?: string;
@@ -61,11 +61,12 @@ function stripHtml(html: string): string {
 }
 
 export default function ApprenticeshipPage({
-  id, returnPostcode, returnRadiusMiles, returnTitle, returnSortBy, returnSortOrder, returnPage,
+  id, returnPostcode, returnRadiusMiles, returnTitle, returnSort = 'nearest', returnPage,
   returnRoutes, returnCourses,
 }: ApprenticeshipPageProps) {
   const { state, result, error, retry } = useApprenticeshipDetails(id ?? '');
   const description = result?.description ? stripHtml(result.description) : '';
+  const closingSoon = closingSoonLabel(daysUntil(result?.closingDate));
 
   // The API returns the street address and postcode separately; joined they read as one line and
   // make a good enough Maps query on their own (the postcode alone would drop the building).
@@ -86,8 +87,7 @@ export default function ApprenticeshipPage({
         postcode: returnPostcode,
         radius: String(returnRadiusMiles ?? ''),
         title: returnTitle ?? '',
-        sortBy: returnSortBy ?? '',
-        sortOrder: returnSortOrder ?? '',
+        ...SORT_PARAMS[returnSort],
         page: String(returnPage ?? 1),
         ...(returnRoutes ? { routes: returnRoutes } : {}),
         ...(returnCourses ? { courses: returnCourses } : {}),
@@ -214,7 +214,9 @@ export default function ApprenticeshipPage({
                 {result.postedDate && (
                   <span className="flex items-center gap-2"><Clock className="w-4 h-4 shrink-0" /> Posted {formatRelativeDate(result.postedDate)}</span>
                 )}
-                {result.closingDate && (
+                {closingSoon ? (
+                  <span className="flex items-center gap-2 font-semibold text-safety"><CalendarClock className="w-4 h-4 shrink-0" /> {closingSoon}</span>
+                ) : result.closingDate && (
                   <span className="flex items-center gap-2"><CalendarClock className="w-4 h-4 shrink-0" /> Closes {formatAbsoluteDate(result.closingDate)}</span>
                 )}
                 {/*

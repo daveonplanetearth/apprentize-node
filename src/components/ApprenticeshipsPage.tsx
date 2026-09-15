@@ -2,10 +2,11 @@ import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   MapPin, Search, ChevronLeft, ChevronRight, Briefcase, Building2,
   TrendingUp, Clock, Loader2, AlertCircle, Ruler, X, LocateFixed,
-  ArrowUpDown, CalendarClock, Users, SlidersHorizontal, ChevronDown,
+  CalendarClock, Users, SlidersHorizontal, ChevronDown,
 } from 'lucide-react';
-import { useApprenticeships } from '../hooks/useApprenticeships';
-import type { SortBy, SortOrder } from '../hooks/useApprenticeships';
+import { SORT_PARAMS, useApprenticeships } from '../hooks/useApprenticeships';
+import type { SortChoice } from '../hooks/useApprenticeships';
+import { closingSoonLabel } from '../hooks/closingDate';
 import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePreferences';
 import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
 import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type RouteOption } from '../hooks/useCourses';
@@ -24,23 +25,16 @@ const DEFAULT_RADIUS = 15;
 const DEFAULT_POSTCODE = 'SW1A 1AA';
 const PAGE_SIZE = 8;
 
-const SORT_BY_OPTIONS: { value: SortBy; label: string }[] = [
-  { value: 'postedDate', label: 'Posted date' },
-  { value: 'closingDate', label: 'Closing date' },
-  { value: 'distance', label: 'Distance' },
-];
-
-const SORT_ORDER_OPTIONS: { value: SortOrder; label: string }[] = [
-  { value: 'desc', label: 'Descending' },
-  { value: 'asc', label: 'Ascending' },
+const SORT_OPTIONS: { value: SortChoice; label: string }[] = [
+  { value: 'nearest', label: 'Nearest' },
+  { value: 'newest', label: 'Newest' },
 ];
 
 interface ApprenticeshipsPageProps {
   initialPostcode?: string;
   initialRadiusMiles?: number;
   initialTitle?: string;
-  initialSortBy?: SortBy;
-  initialSortOrder?: SortOrder;
+  initialSort?: SortChoice;
   initialPage?: number;
   initialViewedId?: string;
   /** Route/course filter from the URL — e.g. an alert email's link, filtered like the email. */
@@ -75,7 +69,7 @@ function isRecentlyPosted(postedDate: string): boolean {
 }
 
 export default function ApprenticeshipsPage({
-  initialPostcode, initialRadiusMiles, initialTitle, initialSortBy, initialSortOrder,
+  initialPostcode, initialRadiusMiles, initialTitle, initialSort,
   initialPage, initialViewedId, initialInterests = NO_INTERESTS,
 }: ApprenticeshipsPageProps) {
   // An explicit postcode in the URL (e.g. from the signup form's "browse now" link) always wins.
@@ -86,8 +80,7 @@ export default function ApprenticeshipsPage({
   const [postcode, setPostcode] = useState(() => initialPostcode || (awaitingStoredPreferences ? '' : DEFAULT_POSTCODE));
   const [radiusMiles, setRadiusMiles] = useState<number>(initialRadiusMiles || DEFAULT_RADIUS);
   const [title, setTitle] = useState(initialTitle || '');
-  const [sortBy, setSortBy] = useState<SortBy>(initialSortBy || 'distance');
-  const [sortOrder, setSortOrder] = useState<SortOrder>(initialSortOrder || 'asc');
+  const [sort, setSort] = useState<SortChoice>(initialSort ?? 'nearest');
   const [page, setPage] = useState(initialPage && initialPage > 0 ? initialPage : 1);
   const [hasSearched, setHasSearched] = useState(!awaitingStoredPreferences);
   const [interests, setInterests] = useState<InterestSelection>(initialInterests);
@@ -129,8 +122,7 @@ export default function ApprenticeshipsPage({
     title: searchTitle,
     page,
     pageSize: PAGE_SIZE,
-    sortBy,
-    sortOrder,
+    sort,
     routeIds: interests.routeIds,
     larsCodes: interests.larsCodes,
     enabled: hasSearched,
@@ -174,14 +166,14 @@ export default function ApprenticeshipsPage({
   // results" link survives React StrictMode's double-invoked mount effect in development.
   // The searched postcode, not the box: a half-typed one mustn't send the current results to page 1.
   const interestsKey = `${interests.routeIds.join(',')}|${interests.larsCodes.join(',')}`;
-  const prevFilters = useRef({ queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey });
+  const prevFilters = useRef({ queriedPostcode, radiusMiles, title, sort, interestsKey });
   useEffect(() => {
     const prev = prevFilters.current;
     const changed = prev.queriedPostcode !== queriedPostcode || prev.radiusMiles !== radiusMiles || prev.title !== title
-      || prev.sortBy !== sortBy || prev.sortOrder !== sortOrder || prev.interestsKey !== interestsKey;
-    prevFilters.current = { queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey };
+      || prev.sort !== sort || prev.interestsKey !== interestsKey;
+    prevFilters.current = { queriedPostcode, radiusMiles, title, sort, interestsKey };
     if (changed && hasSearched) setPage(1);
-  }, [queriedPostcode, radiusMiles, title, sortBy, sortOrder, interestsKey, hasSearched]);
+  }, [queriedPostcode, radiusMiles, title, sort, interestsKey, hasSearched]);
 
   // Keep the address bar in step with the search, so a refresh or a shared link shows the same
   // results — filter included. replaceState fires no hashchange, so this doesn't re-route.
@@ -190,15 +182,14 @@ export default function ApprenticeshipsPage({
     const params = new URLSearchParams({
       postcode: queriedPostcode.trim(),
       radius: String(radiusMiles),
-      sortBy,
-      sortOrder,
+      ...SORT_PARAMS[sort],
       page: String(page),
     });
     if (title.trim()) params.set('title', title.trim());
     if (interests.routeIds.length) params.set('routes', interests.routeIds.join(','));
     if (interests.larsCodes.length) params.set('courses', interests.larsCodes.join(','));
     window.history.replaceState(null, '', `#/apprenticeships?${params.toString()}`);
-  }, [hasSearched, queriedPostcode, radiusMiles, title, sortBy, sortOrder, page, interests]);
+  }, [hasSearched, queriedPostcode, radiusMiles, title, sort, page, interests]);
 
   const showAll = () => {
     setInterests(NO_INTERESTS);
@@ -562,33 +553,20 @@ export default function ApprenticeshipsPage({
                   {filtered && <> in your chosen areas</>}
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="relative">
-                    <CalendarClock className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" />
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value as SortBy)}
-                      aria-label="Sort by"
-                      className="appearance-none rounded-lg border border-line bg-card pl-8 pr-7 py-1.5 text-xs font-medium text-ink transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
-                    >
-                      {SORT_BY_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
-                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8l4 4 4-4" /></svg>
-                  </div>
-                  <div className="relative">
-                    <ArrowUpDown className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" />
-                    <select
-                      value={sortOrder}
-                      onChange={(e) => setSortOrder(e.target.value as SortOrder)}
-                      aria-label="Sort order"
-                      className="appearance-none rounded-lg border border-line bg-card pl-8 pr-7 py-1.5 text-xs font-medium text-ink transition-all focus:outline-none focus:border-ink focus:ring-2 focus:ring-ink/15"
-                    >
-                      {SORT_ORDER_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
-                    <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-soft/60 pointer-events-none" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8l4 4 4-4" /></svg>
+                  <div role="group" aria-label="Sort results" className="inline-flex rounded-lg border border-line bg-card p-0.5">
+                    {SORT_OPTIONS.map((o) => (
+                      <button
+                        key={o.value}
+                        type="button"
+                        aria-pressed={sort === o.value}
+                        onClick={() => setSort(o.value)}
+                        className={`rounded-md px-3 py-1 text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 ${
+                          sort === o.value ? 'bg-ink text-paper' : 'text-ink-soft hover:text-ink'
+                        }`}
+                      >
+                        {o.label}
+                      </button>
+                    ))}
                   </div>
                   <p className="text-xs text-ink-soft font-mono">Page {page} of {totalPages}</p>
                 </div>
@@ -597,13 +575,13 @@ export default function ApprenticeshipsPage({
               <ul className="space-y-3">
                 {result.items.map((job) => {
                   const viewed = viewedIds.has(job.id);
+                  const closingSoon = closingSoonLabel(job.closesInDays);
                   const detailHref = `#/apprenticeship?${new URLSearchParams({
                     id: job.id,
                     postcode: queriedPostcode,
                     radius: String(radiusMiles),
                     title,
-                    sortBy,
-                    sortOrder,
+                    ...SORT_PARAMS[sort],
                     page: String(page),
                     ...(interests.routeIds.length ? { routes: interests.routeIds.join(',') } : {}),
                     ...(interests.larsCodes.length ? { courses: interests.larsCodes.join(',') } : {}),
@@ -653,7 +631,11 @@ export default function ApprenticeshipsPage({
                           <span className="flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" /> {job.level}</span>
                           <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" /> {job.location}{typeof job.distanceMiles === 'number' && <> · {job.distanceMiles.toFixed(1)} mile{job.distanceMiles === 1 ? '' : 's'}</>}</span>
                           <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {job.postedDate}</span>
-                          {job.closingDate && <span className="flex items-center gap-1.5"><CalendarClock className="w-3.5 h-3.5" /> Closes {job.closingDate}</span>}
+                          {closingSoon ? (
+                            <span className="flex items-center gap-1.5 font-semibold text-safety"><CalendarClock className="w-3.5 h-3.5" /> {closingSoon}</span>
+                          ) : job.closingDate && (
+                            <span className="flex items-center gap-1.5"><CalendarClock className="w-3.5 h-3.5" /> Closes {job.closingDate}</span>
+                          )}
                           {typeof job.numberOfPositions === 'number' && job.numberOfPositions > 0 && (
                             <span className="flex items-center gap-1.5">
                               <Users className="w-3.5 h-3.5" /> {job.numberOfPositions} position{job.numberOfPositions === 1 ? '' : 's'}

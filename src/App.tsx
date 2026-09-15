@@ -10,7 +10,7 @@ import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import ApprenticeshipsPage from './components/ApprenticeshipsPage';
 import ApprenticeshipPage from './components/ApprenticeshipPage';
-import type { SortBy, SortOrder } from './hooks/useApprenticeships';
+import { sortChoiceFromParam } from './hooks/useApprenticeships';
 import { applyAnalyticsSwitch } from './hooks/analytics';
 import PreferencesPage from './components/PreferencesPage';
 import ConfirmPage from './components/ConfirmPage';
@@ -18,9 +18,6 @@ import CheckInboxPage from './components/CheckInboxPage';
 import LinkExpiredPage from './components/LinkExpiredPage';
 import PrivacyNoticePage from './components/PrivacyNoticePage';
 import TermsOfServicePage from './components/TermsOfServicePage';
-
-const SORT_BY_VALUES: SortBy[] = ['postedDate', 'closingDate', 'distance'];
-const SORT_ORDER_VALUES: SortOrder[] = ['asc', 'desc'];
 
 // The details page has a second, path-based URL (/apprenticeship/<id>) alongside its hash route:
 // link previews (WhatsApp, iMessage, Slack) and crawlers never send the fragment to the server, so
@@ -113,11 +110,7 @@ export default function App() {
     const initialRadiusMiles = initialRadiusParam ? Number(initialRadiusParam) : undefined;
     const initialTitle = params.get('title') ?? undefined;
 
-    const sortByParam = params.get('sortBy');
-    const initialSortBy = SORT_BY_VALUES.includes(sortByParam as SortBy) ? (sortByParam as SortBy) : undefined;
-    const sortOrderParam = params.get('sortOrder');
-    const initialSortOrder = SORT_ORDER_VALUES.includes(sortOrderParam as SortOrder) ? (sortOrderParam as SortOrder) : undefined;
-
+    const initialSort = sortChoiceFromParam(params.get('sortBy'));
     const initialPageParam = params.get('page');
     const initialPage = initialPageParam ? Number(initialPageParam) : undefined;
     const initialViewedId = params.get('viewedId') ?? undefined;
@@ -131,8 +124,7 @@ export default function App() {
             initialPostcode={initialPostcode}
             initialRadiusMiles={initialRadiusMiles}
             initialTitle={initialTitle}
-            initialSortBy={initialSortBy}
-            initialSortOrder={initialSortOrder}
+            initialSort={initialSort}
             initialPage={initialPage}
             initialViewedId={initialViewedId}
             initialInterests={initialInterests}
@@ -149,10 +141,7 @@ export default function App() {
     const returnRadiusParam = params.get('radius');
     const returnRadiusMiles = returnRadiusParam ? Number(returnRadiusParam) : undefined;
     const returnTitle = params.get('title') ?? undefined;
-    const returnSortByParam = params.get('sortBy');
-    const returnSortBy = SORT_BY_VALUES.includes(returnSortByParam as SortBy) ? (returnSortByParam as SortBy) : undefined;
-    const returnSortOrderParam = params.get('sortOrder');
-    const returnSortOrder = SORT_ORDER_VALUES.includes(returnSortOrderParam as SortOrder) ? (returnSortOrderParam as SortOrder) : undefined;
+    const returnSort = sortChoiceFromParam(params.get('sortBy'));
     const returnPageParam = params.get('page');
     const returnPage = returnPageParam ? Number(returnPageParam) : undefined;
     const returnRoutes = params.get('routes') ?? undefined;
@@ -167,8 +156,7 @@ export default function App() {
             returnPostcode={returnPostcode}
             returnRadiusMiles={returnRadiusMiles}
             returnTitle={returnTitle}
-            returnSortBy={returnSortBy}
-            returnSortOrder={returnSortOrder}
+            returnSort={returnSort}
             returnPage={returnPage}
             returnRoutes={returnRoutes}
             returnCourses={returnCourses}

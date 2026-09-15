@@ -12,6 +12,8 @@ export interface Apprenticeship {
   distanceMiles?: number;
   postedDate: string;
   closingDate?: string;
+  /** Whole days until closingDate (0 = closes today). Missing from an API that predates it. */
+  closesInDays?: number | null;
   // url is the API's pre-resolved link; applicationUrl/vacancyUrl are the raw source URLs it also
   // returns, so a consumer can prefer the employer's own application link (as the details page does).
   url?: string;
@@ -20,8 +22,26 @@ export interface Apprenticeship {
   numberOfPositions?: number;
 }
 
-export type SortBy = 'postedDate' | 'closingDate' | 'distance';
-export type SortOrder = 'asc' | 'desc';
+/**
+ * The two sorts the site offers. The API takes any `sortBy`/`sortOrder` pair (distance,
+ * postedDate or closingDate, each either way); the site only ever sends these two, and keeps
+ * that pair in its URLs because emailed alert links use the same format.
+ */
+export type SortChoice = 'nearest' | 'newest';
+
+export const SORT_PARAMS: Record<SortChoice, { sortBy: string; sortOrder: string }> = {
+  nearest: { sortBy: 'distance', sortOrder: 'asc' },
+  newest: { sortBy: 'postedDate', sortOrder: 'desc' },
+};
+
+/**
+ * A URL's `sortBy` as one of the two sorts: posted date (in either order) is Newest, and anything
+ * else — distance, the retired closingDate, a missing or garbled value — is Nearest. `sortOrder`
+ * is ignored, so an old link can never leave the page in a state its toggle can't show.
+ */
+export function sortChoiceFromParam(sortBy: string | null | undefined): SortChoice {
+  return sortBy?.toLowerCase() === 'posteddate' ? 'newest' : 'nearest';
+}
 
 export interface ApprenticeshipsResult {
   items: Apprenticeship[];
@@ -49,8 +69,7 @@ export interface UseApprenticeshipsParams {
   title: string;
   page: number;
   pageSize: number;
-  sortBy?: SortBy;
-  sortOrder?: SortOrder;
+  sort?: SortChoice;
   /** Only these routes/courses, by the same rule as the alerts. Empty means no filter. */
   routeIds?: number[];
   larsCodes?: number[];
@@ -61,7 +80,7 @@ const NO_IDS: number[] = [];
 
 export function useApprenticeships({
   postcode, radiusMiles, title, page, pageSize,
-  sortBy = 'distance', sortOrder = 'asc', routeIds = NO_IDS, larsCodes = NO_IDS, enabled = true,
+  sort = 'nearest', routeIds = NO_IDS, larsCodes = NO_IDS, enabled = true,
 }: UseApprenticeshipsParams) {
   // Joined so the search callback depends on the ids' values, not on array identity.
   const routes = routeIds.join(',');
@@ -85,7 +104,7 @@ export function useApprenticeships({
       return;
     }
     if (!ENDPOINT) {
-      const data = sampleApprenticeships({ postcode: postcode.trim(), radiusMiles, title, page, pageSize, sortBy, sortOrder });
+      const data = sampleApprenticeships({ postcode: postcode.trim(), radiusMiles, title, page, pageSize, sort });
       setResult(data);
       setState('success');
       return;
@@ -98,8 +117,7 @@ export function useApprenticeships({
       radius: String(radiusMiles),
       page: String(page),
       pageSize: String(pageSize),
-      sortBy,
-      sortOrder,
+      ...SORT_PARAMS[sort],
     });
     if (title.trim()) params.set('title', title.trim());
     if (routes) params.set('routes', routes);
@@ -126,7 +144,7 @@ export function useApprenticeships({
     } catch {
       fail('other', DEFAULT_ERROR);
     }
-  }, [postcode, radiusMiles, title, page, pageSize, sortBy, sortOrder, routes, courses, enabled]);
+  }, [postcode, radiusMiles, title, page, pageSize, sort, routes, courses, enabled]);
 
   useEffect(() => {
     search();
