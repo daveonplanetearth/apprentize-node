@@ -79,7 +79,7 @@ export default function Hero() {
           )}
         </p>
 
-        <form onSubmit={handleSearch} className="mt-8 max-w-lg mx-auto">
+        <form onSubmit={handleSearch} className="mt-5 max-w-lg mx-auto">
           <div className="flex flex-col sm:flex-row gap-2 bubble-card p-2">
             <div className="relative flex-1">
               <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-soft/60 pointer-events-none" />
