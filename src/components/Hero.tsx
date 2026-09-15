@@ -67,7 +67,7 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap">
-          Apprentize is where you browse every live apprenticeship vacancy near you*
+          Apprentize is where you browse every live apprenticeship in England
         </p>
         {/* The real count from the last vacancy sync. The line keeps its height while the count
             loads, or when there's none fit to show, so the page doesn't jump. */}
@@ -77,9 +77,6 @@ export default function Hero() {
               <span className="font-semibold text-safety">{live.figure}</span> {live.noun} to apply for right now
             </>
           )}
-        </p>
-        <p className="mt-1 text-xs text-ink-soft/80">
-          * only apprenticeships in England are currently available, not the whole UK
         </p>
 
         <form onSubmit={handleSearch} className="mt-8 max-w-lg mx-auto">
