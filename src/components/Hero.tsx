@@ -46,7 +46,7 @@ export default function Hero() {
     <section className="relative pt-28 pb-20 sm:pt-32 sm:pb-24 overflow-hidden">
       {/* background */}
       <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
-      <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-safety/5 rounded-full blur-[120px] pointer-events-none" aria-hidden />
+      <div className="absolute top-0 right-0 w-[40rem] h-[40rem] wash wash-safety [--wash-alpha:0.05] pointer-events-none" aria-hidden />
 
       <div className="relative mx-auto max-w-3xl px-5 sm:px-6 text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/90 glossy-pill px-4 py-2 text-sm font-bold uppercase tracking-wide text-safety">

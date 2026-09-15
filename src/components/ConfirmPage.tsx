@@ -51,7 +51,7 @@ export default function ConfirmPage({ token }: ConfirmPageProps) {
     <div className="min-h-screen bg-paper text-ink">
       <section className="relative pt-28 pb-20 sm:pt-32 sm:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
-        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
+        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] wash wash-teal [--wash-alpha:0.08] pointer-events-none" aria-hidden />
 
         <div className="relative mx-auto max-w-lg px-5 sm:px-6 text-center">
           {!ready ? (

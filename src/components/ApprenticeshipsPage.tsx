@@ -272,7 +272,7 @@ export default function ApprenticeshipsPage({
       {/* Header */}
       <section className="relative pt-28 pb-10 sm:pt-32 sm:pb-12 overflow-hidden border-b border-line/60">
         <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
-        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
+        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] wash wash-teal [--wash-alpha:0.08] pointer-events-none" aria-hidden />
         <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
           <p className="text-sm font-bold uppercase tracking-widest text-safety">Browse live listings</p>
           <h1 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Logo from './Logo';
 import { useHasSessionToken } from '../hooks/usePreferences';
@@ -25,7 +25,7 @@ interface NavProps {
 }
 
 export default function Nav({ isHome = false }: NavProps) {
-  const [scrolled, setScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
   // On the home page, always show the CTA even if already subscribed — the visitor may be
   // back to sign up again with a different email.
@@ -34,15 +34,45 @@ export default function Nav({ isHome = false }: NavProps) {
   const accountLinks = hasSessionToken ? [browseLink, preferencesLink] : [browseLink];
   const links = [...marketingLinks, ...accountLinks];
 
+  // The scrolled look is toggled as a data attribute straight on the element, not via React
+  // state, and the handler is coalesced into one rAF per frame. Re-rendering the whole nav on the
+  // first scroll frame was part of a visible stall when scrolling started on mobile.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
+    const header = headerRef.current;
+    if (!header) return;
+
+    let frame = 0;
+    const apply = () => {
+      frame = 0;
+      header.dataset.scrolled = String(window.scrollY > 12);
+    };
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(apply);
+    };
+
+    apply();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (
-    <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-paper/85 backdrop-blur-md border-b border-line/60 shadow-[0_8px_24px_rgba(76,29,149,0.08)]' : 'bg-transparent'}`}>
+    // This bar deliberately has no backdrop filter. Creating such a layer on the first
+    // scroll frame made the compositor re-rasterise everything under a full-width fixed bar —
+    // including the hero's 40rem blurred wash — which stalled the start of the scroll on mobile.
+    // An opaque bg-paper reads near-identically over this background. The transition is scoped to
+    // the properties that actually change; it was transition-all, which animated that filter too.
+    // The border is always present but transparent, so turning it on tints a pixel row instead of
+    // shifting the layout. Note: don't name Tailwind utilities in this comment — the scanner reads
+    // comments and will re-emit the utility into the stylesheet even though nothing uses it.
+    <header
+      ref={headerRef}
+      data-scrolled="false"
+      className="fixed top-0 inset-x-0 z-50 border-b border-transparent bg-transparent transition-[background-color,border-color,box-shadow] duration-300 data-[scrolled=true]:border-line/60 data-[scrolled=true]:bg-paper data-[scrolled=true]:shadow-[0_8px_24px_rgba(76,29,149,0.08)]"
+    >
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         {/* Deliberately not `justify-between`: that distributes free space *between* children, so
             the nav's position depended on whether the CTA was rendered — hiding it (e.g. on

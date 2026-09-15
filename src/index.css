@@ -43,6 +43,31 @@
     mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
   }
 
+  /* Decorative colour washes. These were solid circles with a large CSS blur, which costs a
+     full-size Gaussian pass and promotes its own compositing layer — expensive on mobile, and
+     the hero's sat directly under the fixed nav. A radial gradient paints the same soft falloff
+     during ordinary rasterisation: no filter, no extra layer. Same idea as the body background.
+     Set the tint with .wash-teal / .wash-safety and the peak opacity with [--wash-alpha:N], so
+     the per-instance value stays at the call site where the old bg-teal/8 used to be. The stops
+     approximate a Gaussian shoulder; the glow reaches the element's edge rather than bleeding
+     past it, so a wash sized to match the old one reads very slightly tighter. */
+  .wash {
+    --wash-alpha: 0.1;
+    background-image: radial-gradient(
+      closest-side circle,
+      rgb(var(--wash) / calc(var(--wash-alpha) * 1)) 0%,
+      rgb(var(--wash) / calc(var(--wash-alpha) * 0.55)) 50%,
+      rgb(var(--wash) / calc(var(--wash-alpha) * 0.18)) 75%,
+      rgb(var(--wash) / 0) 100%
+    );
+  }
+  .wash-teal {
+    --wash: 8 191 174;
+  }
+  .wash-safety {
+    --wash: 255 90 31;
+  }
+
   .bubble-card {
     border: 1px solid rgba(255, 255, 255, 0.9);
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(241, 239, 255, 0.86));

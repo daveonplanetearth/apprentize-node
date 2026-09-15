@@ -99,7 +99,7 @@ export default function ApprenticeshipPage({
     <div className="min-h-screen bg-paper text-ink">
       <section className="relative pt-28 pb-10 sm:pt-32 sm:pb-12 overflow-hidden border-b border-line/60">
         <div className="absolute inset-0 bg-grid mask-fade-b pointer-events-none" aria-hidden />
-        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] bg-teal/8 rounded-full blur-[120px] pointer-events-none" aria-hidden />
+        <div className="absolute top-0 left-0 w-[32rem] h-[32rem] wash wash-teal [--wash-alpha:0.08] pointer-events-none" aria-hidden />
         <div className="relative mx-auto max-w-4xl px-5 sm:px-6">
           <a
             href={backHref}

@@ -8,8 +8,8 @@ const stats = [
 export default function Stats() {
   return (
     <section className="py-16 border-t border-line/60 bg-gradient-to-br from-ink via-[#241b4d] to-[#4c1d95] text-paper relative overflow-hidden">
-      <div className="absolute -top-16 left-1/4 w-72 h-72 rounded-full bg-safety/20 blur-3xl pointer-events-none" aria-hidden />
-      <div className="absolute -bottom-16 right-1/4 w-72 h-72 rounded-full bg-teal/20 blur-3xl pointer-events-none" aria-hidden />
+      <div className="absolute -top-16 left-1/4 w-72 h-72 wash wash-safety [--wash-alpha:0.2] pointer-events-none" aria-hidden />
+      <div className="absolute -bottom-16 right-1/4 w-72 h-72 wash wash-teal [--wash-alpha:0.2] pointer-events-none" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
         <dl className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((s) => (

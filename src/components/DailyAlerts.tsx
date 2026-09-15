@@ -4,7 +4,7 @@ import EmailSignup from './EmailSignup';
 export default function DailyAlerts() {
   return (
     <section id="alerts" className="relative py-20 sm:py-28 border-t border-line/60 overflow-hidden">
-      <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-teal/15 blur-3xl pointer-events-none" aria-hidden />
+      <div className="absolute -top-24 -right-24 w-72 h-72 wash wash-teal [--wash-alpha:0.15] pointer-events-none" aria-hidden />
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="max-w-2xl">
           <p className="inline-flex rounded-full glossy-pill px-3 py-1 text-sm font-bold uppercase tracking-widest text-safety">Daily email alerts</p>

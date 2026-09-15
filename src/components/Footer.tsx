@@ -17,7 +17,7 @@ export default function Footer({ isHome = false }: FooterProps) {
       {!hideCta && (
         <div className="relative py-20 sm:py-24 overflow-hidden">
           <div className="absolute inset-0 bg-dots opacity-60 pointer-events-none" aria-hidden />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] bg-safety/8 rounded-full blur-[100px] pointer-events-none" aria-hidden />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30rem] h-[30rem] wash wash-safety [--wash-alpha:0.08] pointer-events-none" aria-hidden />
 
           <div className="relative mx-auto max-w-2xl px-5 sm:px-6 text-center">
             <div className="inline-flex items-center gap-2 rounded-full glossy-pill px-3.5 py-1.5 text-xs font-semibold text-ink-soft">
