@@ -26,6 +26,36 @@ import TermsOfServicePage from './components/TermsOfServicePage';
 // Service host), and Vite does the same in dev/preview, so the SPA still boots and the route is
 // resolved here.
 const DETAILS_PATH = /^\/apprenticeship\/(.+?)\/?$/;
+const CANONICAL_ORIGIN = 'https://www.apprentize.co.uk';
+
+// Routes that are ephemeral/user-specific (preferences, confirm, etc.) canonical to the homepage
+// so search engines don't index them as standalone pages.
+const CANONICAL_HOME = new Set(['preferences', 'confirm', 'check-inbox', 'link-expired', 'signup']);
+
+function useCanonical(path: string, params: URLSearchParams) {
+  useEffect(() => {
+    let href = `${CANONICAL_ORIGIN}/`;
+    if (path === 'apprenticeships') {
+      href = `${CANONICAL_ORIGIN}/apprenticeships`;
+    } else if (path === 'apprenticeship') {
+      const id = params.get('id');
+      href = id ? `${CANONICAL_ORIGIN}/apprenticeship/${id}` : `${CANONICAL_ORIGIN}/`;
+    } else if (path === 'privacy') {
+      href = `${CANONICAL_ORIGIN}/privacy`;
+    } else if (path === 'terms') {
+      href = `${CANONICAL_ORIGIN}/terms`;
+    } else if (CANONICAL_HOME.has(path)) {
+      href = `${CANONICAL_ORIGIN}/`;
+    }
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'canonical';
+      document.head.appendChild(link);
+    }
+    link.href = href;
+  }, [path, params]);
+}
 
 /** "4,7" → [4, 7]. Anything that isn't a positive whole number is dropped, as the API does. */
 function parseIds(value: string | null): number[] {
@@ -75,6 +105,7 @@ function useRoute() {
 
 export default function App() {
   const { path, params } = useRoute();
+  useCanonical(path, params);
 
   // The "don't count me" link (#/?analytics=off, or =on to undo), offered in the privacy notice. A
   // one-off action, so a plain confirmation is enough.
