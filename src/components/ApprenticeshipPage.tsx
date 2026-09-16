@@ -4,7 +4,7 @@ import {
 } from 'lucide-react';
 import { useApprenticeshipDetails } from '../hooks/useApprenticeshipDetails';
 import { SORT_PARAMS, type SortChoice } from '../hooks/useApprenticeships';
-import { recordApplyClick } from '../hooks/analytics';
+import { recordApplyClick, recordShareClick } from '../hooks/analytics';
 import { closingSoonLabel, daysUntil } from '../hooks/closingDate';
 
 interface ApprenticeshipPageProps {
@@ -136,6 +136,7 @@ export default function ApprenticeshipPage({
                   href={`https://wa.me/?text=${encodeURIComponent(`Hi! I've found an apprenticeship you might be interested in - ${shareUrl(result.id)}`)}`}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => recordShareClick(result.id)}
                   aria-label={`Share ${result.title} on WhatsApp`}
                   className="inline-flex items-center gap-1.5 rounded-xl bg-teal/10 text-teal font-semibold px-5 py-2.5 text-sm hover:bg-teal hover:text-paper transition-colors"
                 >

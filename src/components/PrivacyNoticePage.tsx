@@ -1,6 +1,6 @@
 // Keep in step with Apprentize.Api's AppConstants.CurrentPrivacyVersion, which records the
 // version each new subscriber signed up under.
-const LAST_UPDATED = '14 September 2026';
+const LAST_UPDATED = '16 September 2026';
 
 interface SectionProps {
   id: string;
@@ -67,7 +67,8 @@ export default function PrivacyNoticePage() {
                   <strong className="text-ink">Anonymous usage statistics</strong> — the searches made (the postcode
                   district only, such as "B15", never the full postcode; the radius; any search words; the areas or
                   courses filtered by; and how many results came back), which vacancies are viewed, and when "Apply
-                  now" is clicked. To estimate how many people use the site each day, your IP address and browser
+                  now" or "Share on WhatsApp" is clicked. Clicking "Share on WhatsApp" records only that the button
+                  was tapped on that vacancy — we never see who, if anyone, you send it to, or what you write. To estimate how many people use the site each day, your IP address and browser
                   details are turned into a code using a random value that changes every day and is then deleted.
                   We never store your IP address or browser details, the code can't be turned back into them, and
                   codes can't be linked from one day to the next. None of this is linked to your account, and no

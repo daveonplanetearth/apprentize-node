@@ -1,8 +1,9 @@
 // Anonymous usage statistics are recorded by the API as searches and vacancy views arrive — no
 // cookies, no tracking script, nothing identifying anyone (see the privacy notice). This module
-// holds the two things only the browser can do: say "don't count this browser" (the opt-out link
-// the privacy notice offers anyone, and how the site owner keeps their own testing out), and report
-// an "Apply" click, which leaves for the employer's site where the API would never see it.
+// holds the things only the browser can do: say "don't count this browser" (the opt-out link the
+// privacy notice offers anyone, and how the site owner keeps their own testing out), and report the
+// two clicks that leave for another site — "Apply now" and "Share on WhatsApp" — which the API
+// would otherwise never see.
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string | undefined;
 
@@ -41,14 +42,14 @@ export function analyticsHeaders(): Record<string, string> {
 }
 
 /**
- * Reports an "Apply" click. Fire-and-forget: `keepalive` lets the request finish even as the
- * browser moves on to the employer's page, and any failure is ignored — it must never get in the
- * way of someone applying.
+ * Fire-and-forget report of a click that leaves the site: `keepalive` lets the request finish even
+ * as the browser moves on, and any failure is ignored — it must never get in the way of what the
+ * visitor is doing.
  */
-export function recordApplyClick(vacancyId: string): void {
+function recordVacancyClick(event: 'apply' | 'share', vacancyId: string): void {
   if (!API_BASE_URL || isOptedOut()) return;
   try {
-    void fetch(`${API_BASE_URL}/api/events/apply`, {
+    void fetch(`${API_BASE_URL}/api/events/${event}`, {
       method: 'POST',
       keepalive: true,
       headers: { 'Content-Type': 'application/json' },
@@ -57,4 +58,17 @@ export function recordApplyClick(vacancyId: string): void {
   } catch {
     // Ignore.
   }
+}
+
+/** Reports an "Apply now" click, which leaves for the employer's own site. */
+export function recordApplyClick(vacancyId: string): void {
+  recordVacancyClick('apply', vacancyId);
+}
+
+/**
+ * Reports a "Share on WhatsApp" click. It counts the tap, not a message: WhatsApp opens in its own
+ * tab and the site never learns whether anything was sent, or to whom.
+ */
+export function recordShareClick(vacancyId: string): void {
+  recordVacancyClick('share', vacancyId);
 }
