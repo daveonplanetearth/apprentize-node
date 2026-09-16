@@ -2,8 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logo.png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <!--
+      Google only shows a site's favicon in Search when it's square with a side that's a multiple
+      of 48px, so the icons below are generated from public/logo.png (160x160 — a size Search
+      rejects, which is why results showed the default globe). /favicon.ico stays at the root as
+      the fallback Googlebot and older browsers request by convention; public/staticwebapp.config.json
+      already excludes .ico/.png from the SPA fallback, so these are served as real files.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" href="/favicon-96.png" sizes="96x96" />
+    <link rel="icon" type="image/png" href="/favicon-192.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Apprentize — Free daily apprenticeship alerts</title>
     <meta name="description" content="Find An Apprenticeship's own alert only goes out once a week. Apprentize checks the same official data every day and emails you the moment an apprenticeship in England opens — sector, region, level. Completely free." />
@@ -18,8 +27,16 @@
     <meta property="og:site_name" content="Apprentize" />
     <meta property="og:title" content="Apprentize — Free daily apprenticeship alerts" />
     <meta property="og:description" content="Browse live UK apprenticeship vacancies and get a free daily email the moment a matching one opens." />
-    <!-- No og:url — scrapers then attribute the card to the URL that was actually shared. -->
+    <!-- No og:url — scrapers then attribute the card to the URL that was actually shared.
+         og:image, though, must be absolute (scrapers don't resolve relative paths), so it names
+         the canonical www host the apex domain redirects to. public/og-image.png is generated
+         from the logo and hero copy at the 1200x630 Facebook/X/LinkedIn card size. -->
+    <meta property="og:image" content="https://www.apprentize.co.uk/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Apprentize — search live apprenticeships. Every live apprenticeship in England, plus a free daily email the moment a matching one opens." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.apprentize.co.uk/og-image.png" />
 
     <!-- The hero's live count calls the API as soon as the app mounts; open that connection while
          the bundle is still downloading. Vite fills in the URL from .env / .env.production. -->
@@ -27,9 +44,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet" />
-    <meta property="og:image" content="https://www.apprentize.co.uk/logo.png" />
-    <meta name="twitter:image" content="https://www.apprentize.co.uk/logo.png" />
-    <link rel="canonical" href="https://www.apprentize.co.uk/" />
 </head>
   <body>
     <div id="root"></div>
