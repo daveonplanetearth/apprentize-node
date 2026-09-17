@@ -49,8 +49,8 @@ export default function PrivacyNoticePage() {
               <p>
                 We have not appointed a statutory Data Protection Officer — data protection queries and requests
                 are handled directly by our team at{' '}
-                <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
-                  privacy@experiencedmachines.com
+                <a href="mailto:hello@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                  hello@experiencedmachines.com
                 </a>
                 .
               </p>
@@ -247,8 +247,8 @@ export default function PrivacyNoticePage() {
                 </a>{' '}
                 — update your postcode, radius and interests, unsubscribe from alerts, or permanently delete your account.
                 For anything else, or if you no longer have access to your preferences link, email{' '}
-                <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
-                  privacy@experiencedmachines.com
+                <a href="mailto:hello@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                  hello@experiencedmachines.com
                 </a>
                 .
               </p>
@@ -257,8 +257,8 @@ export default function PrivacyNoticePage() {
             <Section id="complaints" title="11. How to complain">
               <p>
                 We'd like the chance to put things right, so please contact us first at{' '}
-                <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
-                  privacy@experiencedmachines.com
+                <a href="mailto:hello@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                  hello@experiencedmachines.com
                 </a>
                 .
               </p>
@@ -289,8 +289,8 @@ export default function PrivacyNoticePage() {
                 <br />
                 3rd Floor, 86–90 Paul Street, London, England, United Kingdom, EC2A 4NE
                 <br />
-                <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
-                  privacy@experiencedmachines.com
+                <a href="mailto:hello@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                  hello@experiencedmachines.com
                 </a>
               </p>
             </Section>

@@ -171,8 +171,8 @@ export default function TermsOfServicePage() {
                 <br />
                 3rd Floor, 86–90 Paul Street, London, England, United Kingdom, EC2A 4NE
                 <br />
-                <a href="mailto:privacy@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
-                  privacy@experiencedmachines.com
+                <a href="mailto:hello@experiencedmachines.com" className="font-semibold text-teal hover:text-teal-soft transition-colors">
+                  hello@experiencedmachines.com
                 </a>
               </p>
             </Section>
