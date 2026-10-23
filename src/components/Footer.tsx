@@ -32,7 +32,7 @@ export default function Footer({ isHome = false }: FooterProps) {
               Earn now. Train for the future.
             </h2>
             <p className="mt-4 text-lg text-ink-soft text-pretty">
-              Enter your email and Apprentize will notify you the day a matching apprenticeship or job opens.
+              Enter your email and Apprentize will notify you the day a matching apprenticeship opens.
             </p>
 
             <div className="mt-8 max-w-md mx-auto">

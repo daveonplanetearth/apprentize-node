@@ -12,9 +12,15 @@ function workHubMiles(radiusMiles: number): number {
 
 // Work Hub reads its search box from these query params and prefills them on arrival. Only the
 // filters a tile needs are sent, so nothing else on Work Hub's side is narrowed. Every link sorts
-// newest first, so the visitor lands on the most recent postings.
+// newest first, so the visitor lands on the most recent postings, with Work Hub's filter panel closed.
 function workHubUrl(postcode: string, miles: number, filters: Record<string, string>): string {
-  const params = new URLSearchParams({ ...filters, location: postcode, milesFromPostcode: String(miles), sortOption: 'DATE' });
+  const params = new URLSearchParams({
+    ...filters,
+    location: postcode,
+    milesFromPostcode: String(miles),
+    sortOption: 'DATE',
+    filtersVisible: 'false',
+  });
   return `${WORK_HUB_SEARCH_URL}?${params.toString()}`;
 }
 
@@ -36,7 +42,7 @@ export default function WorkHubCard({ postcode, radiusMiles }: WorkHubCardProps)
     <section aria-labelledby="work-hub-heading" className="mt-10 rounded-2xl border border-line bg-card p-5 sm:p-6">
       <h2 id="work-hub-heading" className="flex items-center gap-2.5 font-display font-bold text-ink text-lg">
         <Briefcase className="w-5 h-5 text-teal shrink-0" />
-        Need paid work while you search?
+        Need paid work while you search for an apprenticeship?
       </h2>
       <p className="mt-1.5 text-sm text-ink-soft">
         Find local jobs on Work Hub, the government's free job site. Experience from a job can make your apprenticeship applications stronger.

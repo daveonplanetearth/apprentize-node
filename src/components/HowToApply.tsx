@@ -19,7 +19,7 @@ const steps: AccordionEntry[] = [
   },
   {
     q: "I signed up for alerts — what happens next?",
-    a: 'Once a day, we check for new apprenticeships and jobs matching your postcode, radius, and age group, and email you a summary. You then click through and apply directly with the employer, same as browsing.',
+    a: 'Once a day, we check for new apprenticeships matching your postcode, radius, and age group, and email you a summary. You then click through and apply directly with the employer, same as browsing.',
   },
 ];
 

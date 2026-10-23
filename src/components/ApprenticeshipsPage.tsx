@@ -24,7 +24,7 @@ const TYPING_PAUSE_MS = 500;
 const RADIUS_OPTIONS = [5, 10, 15, 20, 25, 30, 50] as const;
 const DEFAULT_RADIUS = 15;
 const DEFAULT_POSTCODE = 'SW1A 1AA';
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 5;
 
 const SORT_OPTIONS: { value: SortChoice; label: string }[] = [
   { value: 'nearest', label: 'Nearest' },
@@ -271,7 +271,7 @@ export default function ApprenticeshipsPage({
             Apprenticeships and jobs near you
           </h1>
           <p className="mt-4 text-lg text-ink-soft leading-relaxed max-w-2xl text-pretty">
-            Search live apprenticeship vacancies by postcode, radius and job title. Results update as you refine your search.
+            Search live apprenticeship and job vacancies by postcode, radius and job title. Results update as you refine your search.
           </p>
         </div>
       </section>

@@ -14,7 +14,7 @@ const steps = [
   {
     icon: Mail,
     title: 'You get an email that day',
-    body: 'The day a matching apprenticeship or job appears, you receive a clean, scannable email with a direct link to apply. Or browse live listings yourself, any time.',
+    body: 'The day a matching apprenticeship appears you receive a clean, scannable email with a direct link to apply. Or browse live listings yourself, any time.',
   },
 ];
 
