@@ -54,20 +54,25 @@ export default function Hero() {
             <span className="absolute inset-0 rounded-full bg-safety animate-pulse-ring" />
             <span className="relative rounded-full w-2 h-2 bg-safety" />
           </span>
-          Free apprenticeship search
+          Earn while you search
         </div>
 
         <h1 className="mt-6 font-display font-extrabold text-ink text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight">
-          Search <span className="font-semibold bg-[linear-gradient(90deg,#ff0080,#ff8c00,#ffd700,#00d26a,#00bfff,#7c3aed,#ff0080)] bg-[length:200%_auto] bg-clip-text text-transparent animate-[spectrum-shift_4s_linear_infinite]">live</span> <span className="relative whitespace-nowrap">
-            <span className="relative z-10 text-safety">apprenticeships</span>
-            <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden>
-              <path d="M2 8C40 3 160 3 198 8" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
+          Find an{' '}
+          <span className="font-semibold bg-[linear-gradient(90deg,#ff0080,#ff8c00,#ffd700,#00d26a,#00bfff,#7c3aed,#ff0080)] bg-[length:200%_auto] bg-clip-text text-transparent animate-[spectrum-shift_4s_linear_infinite]">
+            apprenticeship
+          </span>{' '}
+          and a{' '}
+          <span className="relative whitespace-nowrap">
+            <span className="relative z-10 text-safety">job</span>
+            <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 100 12" fill="none" preserveAspectRatio="none" aria-hidden>
+              <path d="M2 8C20 3 80 3 98 8" stroke="#FF5A1F" strokeWidth="3.5" strokeLinecap="round" />
             </svg>
           </span>
         </h1>
 
-        <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty whitespace-nowrap">
-          Apprentize is where you browse every live apprenticeship in England
+        <p className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl mx-auto text-pretty">
+          Browse every live apprenticeship in England and find local jobs nearby — so you can earn now while you train for the future.
         </p>
         {/* The real count from the last vacancy sync. The line keeps its height while the count
             loads, or when there's none fit to show, so the page doesn't jump. */}
@@ -135,7 +140,7 @@ export default function Hero() {
 
         <div className="mt-5">
           <p className="text-sm text-ink-soft">
-            Prefer to get a daily email when new roles open?
+            Prefer to get a daily email when new apprenticeships or jobs open?
             <br />
             <a href="#alerts" className="font-semibold text-ink underline underline-offset-2 hover:text-safety transition-colors">
               Set up free alerts

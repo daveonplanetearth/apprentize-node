@@ -3,18 +3,18 @@ import { Settings2, Filter, Mail } from 'lucide-react';
 const steps = [
   {
     icon: Settings2,
-    title: 'We monitor the source',
-    body: 'Apprentize pulls from the same official Find An Apprenticeship vacancy feed every single day.',
+    title: 'We monitor the sources',
+    body: 'Apprentize pulls apprenticeships from the official Find An Apprenticeship feed and entry-level jobs from job boards across the UK — every single day.',
   },
   {
     icon: Filter,
     title: 'We filter for your match',
-    body: 'Tell us your region and distance you are willing to travel. We only flag roles that meet your criteria — you never wade through irrelevant listings.',
+    body: 'Tell us your region and how far you are willing to travel. We only flag apprenticeships and jobs that meet your criteria — you never wade through irrelevant listings.',
   },
   {
     icon: Mail,
     title: 'You get an email that day',
-    body: 'The day a matching vacancy appears, you receive a clean, scannable email with a direct link to apply. Or just browse live listings yourself, any time.',
+    body: 'The day a matching apprenticeship or job appears, you receive a clean, scannable email with a direct link to apply. Or browse live listings yourself, any time.',
   },
 ];
 
@@ -28,7 +28,7 @@ export default function HowItWorks() {
             Three steps. Done in under a minute.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            Search live listings whenever you like, or set a free daily alert once and let new roles come to you.
+            Search live apprenticeships and jobs whenever you like, or set a free daily alert once and let new roles come to you.
           </p>
         </div>
 

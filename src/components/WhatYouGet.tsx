@@ -1,12 +1,14 @@
-import { TrendingUp, MapPin, Search, Link2, Eye, Share2 } from 'lucide-react';
+import { TrendingUp, MapPin, Search, Link2, Eye, Share2, Briefcase, Layers } from 'lucide-react';
 
 const features = [
-  { icon: TrendingUp, title: 'Daily checks, not weekly', body: "Find An Apprenticeship emails you weekly. We check every day — so you hear about new roles the day they open, not six days later." },
-  { icon: Search, title: 'Search by areas and courses', body: 'Only interested in certain kinds of work? Pick whole apprenticeship areas like "Digital" or "Construction", or narrow it down to specific courses — your alerts and search results only show what matches.' },
-  { icon: Eye, title: 'Clean, scannable emails', body: 'No clutter. Each alert lists the new matching roles with salary, level, and company — plus a direct link straight to the application page.' },
-  { icon: MapPin, title: 'Location-aware', body: 'Set your postcode and how far you\'re willing to travel — apprenticeships near you get surfaced first.' },
-  { icon: Share2, title: 'Share to WhatsApp', body: 'Spot a role a friend or family member would love? Share any apprenticeship straight to WhatsApp from the browse page — one tap, no copy-paste.' },
-  { icon: Link2, title: 'Direct apply links', body: 'Every listing links straight to the official posting. No middleman, no redirects, no job-board paywalls.' },
+  { icon: Layers, title: 'Apprenticeships & jobs in one place', body: 'Browse every live apprenticeship in England alongside entry-level jobs nearby. One search, one set of alerts — no need to check separate sites.' },
+  { icon: Briefcase, title: 'Earn while you search', body: 'Waiting for the right apprenticeship to open? Find a local job now so you are earning — not just waiting. The right apprenticeship comes up, and you are ready.' },
+  { icon: TrendingUp, title: 'Daily checks, not weekly', body: 'The official Find An Apprenticeship service emails you weekly. We check every day — so you hear about new roles the day they open, not six days later.' },
+  { icon: Search, title: 'Search by area and courses', body: 'Only interested in certain kinds of work? Pick whole apprenticeship areas like "Digital" or "Construction", or narrow it down to specific courses — your alerts and search results only show what matches.' },
+  { icon: Eye, title: 'Clean, scannable emails', body: 'No clutter. Each alert lists the new matching apprenticeships and jobs with salary, level, and company — plus a direct link straight to the application page.' },
+  { icon: MapPin, title: 'Location-aware', body: 'Set your postcode and how far you are willing to travel — apprenticeships and jobs near you get surfaced first.' },
+  { icon: Share2, title: 'Share to WhatsApp', body: 'Spot a role a friend or family member would love? Share any listing straight to WhatsApp from the browse page — one tap, no copy-paste.' },
+  { icon: Link2, title: 'Direct apply links', body: 'Every listing links straight to the official posting or employer. No middleman, no redirects, no job-board paywalls.' },
 ];
 
 export default function WhatYouGet() {
@@ -16,14 +18,14 @@ export default function WhatYouGet() {
         <div className="max-w-2xl">
           <p className="inline-flex rounded-full glossy-pill px-3 py-1 text-sm font-bold uppercase tracking-widest text-safety">What you get</p>
           <h2 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
-            Everything the weekly alert misses.
+            Apprenticeships and jobs, working together.
           </h2>
           <p className="mt-4 text-lg text-ink-soft text-pretty">
-            The official Find an Apprenticeship service is great — but it only notifies you once a week. Apprentize fills the gap.
+            The official Find an Apprenticeship service is great — but it only covers apprenticeships and only notifies you once a week. Apprentize gives you both apprenticeships and local jobs, checked daily.
           </p>
         </div>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {features.map((f) => (
             <div
               key={f.title}

@@ -1,7 +1,7 @@
 const stats = [
-  { value: 'Daily', label: 'Checks against the official feed' },
+  { value: 'Daily', label: 'Checks across apprenticeships and jobs' },
   { value: 'England', label: 'Apprenticeships covered' },
-  { value: '60s', label: 'To set up your alert' },
+  { value: '2 in 1', label: 'Apprenticeships plus local jobs' },
   { value: 'Free', label: 'For job seekers' },
 ];
 

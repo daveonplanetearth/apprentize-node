@@ -29,10 +29,10 @@ export default function Footer({ isHome = false }: FooterProps) {
             </div>
 
             <h2 className="mt-6 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
-              Don't miss the next one.
+              Earn now. Train for the future.
             </h2>
             <p className="mt-4 text-lg text-ink-soft text-pretty">
-              Enter your email and Apprentize will notify you the day a matching apprenticeship in England opens.
+              Enter your email and Apprentize will notify you the day a matching apprenticeship or job opens.
             </p>
 
             <div className="mt-8 max-w-md mx-auto">
