@@ -11,6 +11,7 @@ import { getStoredSessionToken, fetchStoredPreferences } from '../hooks/usePrefe
 import { useViewedApprenticeships } from '../hooks/useViewedApprenticeships';
 import { NO_INTERESTS, useCourses, type CourseInfo, type InterestSelection, type RouteOption } from '../hooks/useCourses';
 import InterestPicker from './InterestPicker';
+import WorkHubCard from './WorkHubCard';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import { canUseMyLocation, useMyLocation } from '../hooks/useMyLocation';
 import { isPostcodeShaped, POSTCODE_FORMAT_ERROR, samePostcode } from '../hooks/postcode';
@@ -267,7 +268,7 @@ export default function ApprenticeshipsPage({
         <div className="relative mx-auto max-w-6xl px-5 sm:px-6">
           <p className="text-sm font-bold uppercase tracking-widest text-safety">Browse live listings</p>
           <h1 className="mt-3 font-display font-extrabold text-ink text-3xl sm:text-4xl lg:text-5xl tracking-tight text-balance">
-            Apprenticeships near you
+            Apprenticeships and jobs near you
           </h1>
           <p className="mt-4 text-lg text-ink-soft leading-relaxed max-w-2xl text-pretty">
             Search live apprenticeship vacancies by postcode, radius and job title. Results update as you refine your search.
@@ -695,6 +696,11 @@ export default function ApprenticeshipsPage({
                 </div>
               )}
             </>
+          )}
+
+          {/* Paid work on Work Hub — after any finished search, empty or not */}
+          {showResults && state === 'success' && result && (
+            <WorkHubCard postcode={queriedPostcode} radiusMiles={radiusMiles} />
           )}
         </div>
       </div>
